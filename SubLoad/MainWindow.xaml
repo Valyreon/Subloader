@@ -28,6 +28,7 @@
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#6bb9f0"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#6bb9f0"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
             </DataGrid.Resources>
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">

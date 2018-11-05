@@ -6,6 +6,7 @@ using SubLib;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using CookComputing.XmlRpc;
 
 namespace SubLoad
 {
@@ -14,6 +15,7 @@ namespace SubLoad
         private ObservableCollection<SubtitleEntry> Collection = new ObservableCollection<SubtitleEntry>();
         private OSIntermediary messenger = new OSIntermediary();
         private string currentPath = (System.Windows.Application.Current as App).PathArg;
+        private static readonly int maxAttempts = 10;
         
         public MainWindow()
         {
@@ -49,26 +51,45 @@ namespace SubLoad
             }
         }
 
-        private async System.Threading.Tasks.Task ProcessFileAsync (string path)
+        private async Task ProcessFileAsync (string path)
         {
             Collection.Clear();
             statusText.Text = "Searching subtitles...";
             SearchSubtitlesResponse ssre = null;
-            try
+            int nTries = 0;
+            if (!messenger.IsLoggedIn)
             {
-                if(!messenger.IsLoggedIn)
-                    await Task.Run(() => messenger.OSLogIn());
-                await Task.Run(()=> messenger.SearchOS(path, "all", ref ssre));
-            } 
-            catch (CookComputing.XmlRpc.XmlRpcServerException)
-            {
-                statusText.Text = "Server error. Try to refresh.";
+                while (!messenger.IsLoggedIn && nTries <= maxAttempts)
+                {
+                    try
+                    {
+                        await Task.Run(() => messenger.OSLogIn());
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    finally
+                    {
+                        nTries++;
+                    }
+                }
             }
-            catch (Exception ex)
+            nTries = 0;
+            while (ssre==null && nTries <= maxAttempts)
             {
-                System.Windows.Forms.MessageBox.Show(ex.Message, "Unexpected error");
-                statusText.Text = "Unexpected error.";
+                try
+                {
+                    await Task.Run(() => messenger.SearchOS(path, "all", ref ssre));
+                }
+                catch (Exception)
+                {
+                }
+                finally
+                {
+                    nTries++;
+                }
             }
+            
             if (ssre != null && (ssre.data == null || ssre.data.Length==0))
             {
                 statusText.Text = "No subtitles found.";
@@ -76,6 +97,7 @@ namespace SubLoad
             }
             else if(ssre==null)
             {
+                statusText.Text = "Server error. Try refreshing.";
                 return;
             }
             else
@@ -97,7 +119,22 @@ namespace SubLoad
                 {
                     statusText.Text = "Downloading...";
                     byte[] subtitleStream = null;
-                    await Task.Run(()=>messenger.DownloadSubtitle(selected.GetSubtitleFileID(), ref subtitleStream));
+                    int nTries = 0;
+                    while (subtitleStream==null && nTries <= maxAttempts)
+                    {
+                        try
+                        {
+                            await Task.Run(() => messenger.DownloadSubtitle(selected.GetSubtitleFileID(), ref subtitleStream));
+                        }
+                        catch (Exception)
+                        {
+                        }
+                        finally
+                        {
+                            nTries++;
+                        }
+                    }
+                    
                     if (subtitleStream != null)
                     {
                         ByteArrayToFile(Path.ChangeExtension(currentPath, selected.GetFormat()), subtitleStream);
@@ -105,7 +142,7 @@ namespace SubLoad
                     } 
                     else
                     {
-                        statusText.Text = "Error downloading.";
+                        statusText.Text = "Error while downloading.";
                     }
                 }
             }
@@ -120,7 +157,7 @@ namespace SubLoad
             Close();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
             try
             {
