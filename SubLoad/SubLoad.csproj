@@ -1,0 +1,419 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9550547E-41DC-4E46-B3A2-F328E75965C9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SubLoad</RootNamespace>
+    <AssemblyName>SubLoad</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>subtitles_ebF_icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CookComputing.XmlRpcV2, Version=2.5.0.0, Culture=neutral, PublicKeyToken=a7d6e17aa302004d, processorArchitecture=MSIL">
+      <HintPath>..\packages\xmlrpcnet.2.5.0\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
+    </Reference>
+    <Reference Include="GetHash, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SubLib\SubLib\bin\Release\netstandard2.0\GetHash.dll</HintPath>
+    </Reference>
+    <Reference Include="SubLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\SubLib\SubLib\bin\Release\netstandard2.0\SubLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="SubtitleEntry.cs" />
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Simple Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="subtitles_ebF_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\CookComputing.XmlRpcV2.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\GetHash.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\Microsoft.Win32.Primitives.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\netstandard.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\SubLib.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.AppContext.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Collections.Concurrent.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Collections.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Collections.NonGeneric.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Collections.Specialized.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.ComponentModel.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.ComponentModel.EventBasedAsync.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.ComponentModel.Primitives.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.ComponentModel.TypeConverter.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Console.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Data.Common.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Diagnostics.Contracts.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Diagnostics.Debug.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Diagnostics.FileVersionInfo.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Diagnostics.Process.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Diagnostics.StackTrace.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Diagnostics.TextWriterTraceListener.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Diagnostics.Tools.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Diagnostics.TraceSource.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Diagnostics.Tracing.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Drawing.Primitives.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Dynamic.Runtime.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Globalization.Calendars.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Globalization.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Globalization.Extensions.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.IO.Compression.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.IO.Compression.ZipFile.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.IO.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.IO.FileSystem.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.IO.FileSystem.DriveInfo.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.IO.FileSystem.Primitives.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.IO.FileSystem.Watcher.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.IO.IsolatedStorage.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.IO.MemoryMappedFiles.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.IO.Pipes.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.IO.UnmanagedMemoryStream.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Linq.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Linq.Expressions.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Linq.Parallel.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Linq.Queryable.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Net.Http.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Net.NameResolution.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Net.NetworkInformation.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Net.Ping.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Net.Primitives.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Net.Requests.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Net.Security.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Net.Sockets.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Net.WebHeaderCollection.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Net.WebSockets.Client.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Net.WebSockets.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.ObjectModel.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Reflection.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Reflection.Extensions.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Reflection.Primitives.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Resources.Reader.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Resources.ResourceManager.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Resources.Writer.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Runtime.CompilerServices.VisualC.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Runtime.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Runtime.Extensions.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Runtime.Handles.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Runtime.InteropServices.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Runtime.InteropServices.RuntimeInformation.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Runtime.Numerics.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Runtime.Serialization.Formatters.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Runtime.Serialization.Json.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Runtime.Serialization.Primitives.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Runtime.Serialization.Xml.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Security.Claims.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Security.Cryptography.Algorithms.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Security.Cryptography.Csp.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Security.Cryptography.Encoding.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Security.Cryptography.Primitives.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Security.Cryptography.X509Certificates.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Security.Principal.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Security.SecureString.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Text.Encoding.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Text.Encoding.Extensions.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Text.RegularExpressions.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Threading.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Threading.Overlapped.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Threading.Tasks.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Threading.Tasks.Parallel.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Threading.Thread.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Threading.ThreadPool.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Threading.Timer.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.ValueTuple.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Xml.ReaderWriter.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Xml.XDocument.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Xml.XmlDocument.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Xml.XmlSerializer.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Xml.XPath.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Release\System.Xml.XPath.XDocument.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

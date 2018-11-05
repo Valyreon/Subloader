@@ -1,0 +1,17 @@
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\bin\Release\SubLoad.exe.config
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\bin\Release\SubLoad.exe
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad.exe.config
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\Simple Styles.baml
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\MainWindow.g.cs
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\App.g.cs
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad_MarkupCompile.cache
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad_MarkupCompile.lref
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\App.baml
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\MainWindow.baml
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad.g.resources
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad.Properties.Resources.resources
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad.csproj.GenerateResource.cache
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad.csproj.CoreCompileInputs.cache
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad.csproj.CopyComplete
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad.exe
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad.csprojAssemblyReference.cache
