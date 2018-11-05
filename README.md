@@ -9,7 +9,9 @@ Search and download is provided by **[Opensubtitles](http://www.opensubtitles.or
 
 ### Installation
 
-Subloader requires **.NET Framework 4.6.1** to run. Chances are you already have it installed on your computer.
+Subloader requires **.NET Framework 4.6.1** to run. 
+
+Download the **[latest version of Subloader](https://github.com/Valyreon/Subloader/releases)**, run the setup and that is it. Enjoy!
 
 ### Contributions
 
