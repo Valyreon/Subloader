@@ -46,10 +46,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\SubLib\SubLib\bin\Release\netstandard2.0\GetHash.dll</HintPath>
     </Reference>
-    <Reference Include="SubLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SubLib\SubLib\bin\Release\netstandard2.0\SubLib.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
@@ -71,6 +67,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="sublibrary\DownloadSubtitleResponse.cs" />
+    <Compile Include="sublibrary\ISubRPC.cs" />
+    <Compile Include="sublibrary\LogInResponse.cs" />
+    <Compile Include="sublibrary\LogOutResponse.cs" />
+    <Compile Include="sublibrary\MovieInfo.cs" />
+    <Compile Include="sublibrary\OSIntermediary.cs" />
+    <Compile Include="sublibrary\SearchSubtitlesResponse.cs" />
+    <Compile Include="sublibrary\SubInfo.cs" />
     <Compile Include="SubtitleEntry.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

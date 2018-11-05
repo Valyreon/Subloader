@@ -1,6 +1,5 @@
 F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\bin\Release\SubLoad.exe.config
 F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\bin\Release\SubLoad.exe
-F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad.exe.config
 F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\Simple Styles.baml
 F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\MainWindow.g.cs
 F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\App.g.cs
