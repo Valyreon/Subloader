@@ -1,3 +1,4 @@
+<img align="right" height="192px" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/subtitles.png"/>
 
 # Subloader
 
@@ -9,17 +10,17 @@ Search and download is provided by **[Opensubtitles](http://www.opensubtitles.or
 
 ### Installation
 
-Subloader requires **.NET Framework 4.6.1** to run. 
+Subloader requires **.NET Framework 4.6.1** to run. It was developed in Visual Studio Community 2017.
 
 Download the **[latest version of Subloader](https://github.com/Valyreon/Subloader/releases)**, run the setup and that's it. You can now right click your video file and get your subtitles in a matter of seconds. Enjoy!
 
-### Contributions
+### Acknowledgments
 
 Subloader works thanks to following open-source projects:
 
 * **[XML-RPC.NET](http://xml-rpc.net/)** - a library for implementing XML-RPC Services and clients in the .NET environment
 
-Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Flaticon](www.flaticon.com )**.
+Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Flaticon](https://www.flaticon.com )**.
 
 If you find **Subloader** useful, consider donating at **[PayPal](https://www.paypal.me/valyreon)**.
 ### Screenshots
@@ -28,7 +29,7 @@ If you find **Subloader** useful, consider donating at **[PayPal](https://www.pa
 ### To do
 - **Language filter**
   
-  I have started implementing this but stopped because during testing I realized that not all subtitles at the database are             properly tagged. I will probably implement some simple text file setting for language on client side, and not by using OS API, to avoid this problem and avoid adding clutter to the UI.
+  I have started implementing this but stopped because during testing I realized that not all subtitles at the database are             properly tagged. I will probably implement some simple text file setting for a language filter on client side, and not by using OS API, to avoid this problem and avoid adding clutter to the UI.
   
 License
 ----
