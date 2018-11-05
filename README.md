@@ -17,6 +17,16 @@ Subloader requires **.NET Framework 4.6.1** to run. It was developed in Visual S
 
 Download the **[latest version of Subloader](https://github.com/Valyreon/Subloader/releases)**, run the setup and that's it. You can now right click your video file and get your subtitles in a matter of seconds. Enjoy!
 
+### Usage
+
+Subloader can be opened from Start Menu, and then using the 'Open' button you can choose a video file. Search will begin immediately. 
+
+After the search is complete, you can select a subtitle from the list and click 'Download'. 
+
+When you click 'Download' Subloader will download subtitle in the same directory where video file is, under the same name and appropriate extension. If there is an existing subtitle with the same name, it will overwrite it.
+
+Installer will also add 'Find subtitles' menu in right click context menu of .avi, .mkv and .mp4 files for easy access.
+
 ### Acknowledgments
 
 Subloader works thanks to following open-source projects:
