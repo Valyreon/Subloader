@@ -13,7 +13,7 @@ Search and download is provided by **[Opensubtitles](http://www.opensubtitles.or
 
 ### Installation
 
-Subloader requires **.NET Framework 4.6.1** to run. It was developed in Visual Studio Community 2017.
+Subloader requires **[.NET Framework 4.6.1](https://www.microsoft.com/net/download/thank-you/net461)** to run. It was developed in Visual Studio Community 2017.
 
 Download the **[latest version of Subloader](https://github.com/Valyreon/Subloader/releases)**, run the setup and that's it. You can now right click your video file and get your subtitles in a matter of seconds. Enjoy!
 
