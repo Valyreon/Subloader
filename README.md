@@ -25,6 +25,8 @@ After the search is complete, you can select a subtitle from the list and click 
 
 When you click 'Download' Subloader will download subtitle in the same directory where video file is, under the same name and appropriate extension. If there is an existing subtitle with the same name, it will overwrite it.
 
+Depending on the time of day, opensubtitles server will sometimes be busy and you will get a 'Server error'. In that case, just click 'Refresh' until it responds.
+
 Installer will also add 'Find subtitles' menu in right click context menu of .avi, .mkv and .mp4 files for easy access.
 
 ### Acknowledgments
