@@ -29,6 +29,13 @@ Depending on the time of day, opensubtitles server will sometimes be busy and yo
 
 Installer will also add 'Find subtitles' menu in right click context menu of .avi, .mkv and .mp4 files for easy access.
 
+You can also now make a **filter for languages**, though it is still not very user friendly. Subloader now tries to read from a file called lang.cfg that should be located in the installation directory. To configure it, make a file called `lang.txt` and open it with Notepad. In it write your desired languages, each in a new line, in English. It's not case sensitive. Then copy it to the Subloaders installation directory. For example:
+```
+english
+german
+greek
+```
+
 ### Acknowledgments
 
 Subloader works thanks to following open-source projects:
@@ -39,12 +46,14 @@ Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Fla
 
 If you find **Subloader** useful, consider donating at **[PayPal](https://www.paypal.me/valyreon)**.
 ### Screenshots
-![Subtitles search]()
+![Subtitles search](https://raw.githubusercontent.com/Valyreon/Subloader/master/Subloaderscreen.PNG)
 
 ### To do
-- **Language filter**
+- **Language settings window**
   
-  I have started implementing this but stopped because during testing I realized that not all subtitles at the database are             properly tagged. I will probably implement some simple text file setting for a language filter on client side, and not by using OS API, to avoid this problem and avoid adding clutter to the UI.
+  Subloader now reads from lang.cfg in install directory for languages if lang.cfg exists. Window for configuring the filter from UI is next.
+  
+- **Interfacing with more subtitle databases**
   
 License
 ----
