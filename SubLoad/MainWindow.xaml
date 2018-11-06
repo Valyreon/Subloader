@@ -20,22 +20,30 @@
         </LinearGradientBrush>
     </Window.BorderBrush>
     <StackPanel Margin="0">
-        <DataGrid CanUserResizeRows="False" HeadersVisibility="Column" IsReadOnly="True" x:Name="dataTable" GridLinesVisibility="None" Height="400" BorderThickness="0,0,0,1" BorderBrush="#bbbbbb" AlternatingRowBackground="#e8e8e8" AutoGenerateColumns="False" SelectionChanged="TableRowNewSelect" Background="#f5f5f5">
+        <DataGrid 
+            CanUserResizeRows="False" 
+            HeadersVisibility="Column" 
+            IsReadOnly="True" 
+            x:Name="dataTable" 
+            GridLinesVisibility="None" 
+            Height="400" BorderThickness="0,0,0,1" 
+            BorderBrush="#bbbbbb" 
+            AlternatingRowBackground="#e8e8e8" 
+            AutoGenerateColumns="False" 
+            SelectionChanged="TableRowNewSelect" 
+            Background="#f5f5f5"
+            RowHeight="20" CellStyle="{StaticResource Body_Content_DataGrid_Centering}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Width="15*" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="Language" Width="5*" Binding="{Binding Language}" SortDirection="Ascending"/>
+                
             </DataGrid.Columns>
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#6bb9f0"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#6bb9f0"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
             </DataGrid.Resources>
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                </Style>
-            </DataGrid.CellStyle>
+            
         </DataGrid>
         <StatusBar Height="23" BorderThickness="0,0,0,1" BorderBrush="#bbbbbb" Background="#e8e8e8">
             <StatusBarItem>
@@ -49,4 +57,5 @@
             <Button x:Name="closeButton" Content="Done" Width="110" Height="30" Margin="0,10" Click="CloseButton_Click" Background="#ffffff"/>
         </StackPanel>
     </StackPanel>
+    
 </Window>

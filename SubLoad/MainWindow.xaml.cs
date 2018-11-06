@@ -7,6 +7,9 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using CookComputing.XmlRpc;
+using System.Threading;
+using System.Collections.Generic;
+using Microsoft.Win32;
 
 namespace SubLoad
 {
@@ -16,7 +19,9 @@ namespace SubLoad
         private OSIntermediary messenger = new OSIntermediary();
         private string currentPath = (System.Windows.Application.Current as App).PathArg;
         private static readonly int maxAttempts = 10;
-        
+        private List<string> languages = new List<string>();
+        private bool isConfigRead = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -33,7 +38,7 @@ namespace SubLoad
 
         private async void ChooseFileButton_ClickAsync(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog fDialog = new OpenFileDialog
+            System.Windows.Forms.OpenFileDialog fDialog = new System.Windows.Forms.OpenFileDialog
             {
                 Filter = "Video files |*.wmv; *.3g2; *.3gp; *.3gp2; *.3gpp; *.amv; *.asf;  *.avi; *.bin; *.cue; *.divx; *.dv; *.flv; *.gxf; *.iso; *.m1v; *.m2v; *.m2t; *.m2ts; *.m4v; " +
                           " *.mkv; *.mov; *.mp2; *.mp2v; *.mp4; *.mp4v; *.mpa; *.mpe; *.mpeg; *.mpeg1; *.mpeg2; *.mpeg4; *.mpg; *.mpv2; *.mts; *.nsv; *.nuv; *.ogg; *.ogm; *.ogv; *.ogx; *.ps; *.rec; *.rm; *.rmvb; *.tod; *.ts; *.tts; *.vob; *.vro; *.webm; *.dat; "
@@ -53,6 +58,8 @@ namespace SubLoad
 
         private async Task ProcessFileAsync (string path)
         {
+            if (!isConfigRead)
+                ReadConfig();
             Collection.Clear();
             statusText.Text = "Searching subtitles...";
             SearchSubtitlesResponse ssre = null;
@@ -102,11 +109,34 @@ namespace SubLoad
             }
             else
             {
-                foreach (SubInfo x in ssre.data)
-                {
-                    Collection.Add(new SubtitleEntry(x.SubFileName, x.LanguageName, Int32.Parse(x.IDSubtitleFile), x.SubFormat));
-                }
+                    foreach (SubInfo x in ssre.data)
+                    {
+                        if (languages.Contains(x.LanguageName.ToLower()) || languages.Count == 0)
+                        {
+                            App.Current.Dispatcher.Invoke(
+                            () => { Collection.Add(new SubtitleEntry(x.SubFileName, x.LanguageName, Int32.Parse(x.IDSubtitleFile), x.SubFormat)); }
+                            );
+                            await Task.Run(() => Thread.Sleep(20));
+                        }
+                    }
                 statusText.Text = "Select a subtitle and click Download.";
+            }
+        }
+
+        private void ReadConfig()
+        {
+            try
+            {
+                string line;
+                StreamReader cfgfile = new StreamReader((Registry.CurrentUser.OpenSubKey("Software\\Subtitle Loader").GetValue(null) as string) + "\\lang.cfg");
+                while ((line = cfgfile.ReadLine()) != null)
+                {
+                    languages.Add(line.ToLower());
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
 
