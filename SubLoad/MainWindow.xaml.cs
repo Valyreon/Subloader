@@ -58,7 +58,6 @@ namespace SubLoad
 
         private async Task ProcessFileAsync (string path)
         {
-            System.Windows.Forms.MessageBox.Show("test", "testCon");
             if (!isConfigRead)
                 ReadConfig();
             Collection.Clear();
