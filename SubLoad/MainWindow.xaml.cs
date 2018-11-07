@@ -58,6 +58,7 @@ namespace SubLoad
 
         private async Task ProcessFileAsync (string path)
         {
+            System.Windows.Forms.MessageBox.Show("test", "testCon");
             if (!isConfigRead)
                 ReadConfig();
             Collection.Clear();
@@ -167,7 +168,7 @@ namespace SubLoad
                     
                     if (subtitleStream != null)
                     {
-                        ByteArrayToFile(Path.ChangeExtension(currentPath, selected.GetFormat()), subtitleStream);
+                        File.WriteAllBytes(Path.ChangeExtension(currentPath, selected.GetFormat()), subtitleStream);
                         statusText.Text = "Subtitle downloaded.";
                     } 
                     else
@@ -204,22 +205,6 @@ namespace SubLoad
         {
             if (currentPath != null)
                 await ProcessFileAsync(currentPath);
-        }
-
-        public static bool ByteArrayToFile(string fileName, byte[] byteArray)
-        {
-            try
-            {
-                var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-                fs.Write(byteArray, 0, byteArray.Length);
-                fs.Close();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show(ex.Message, "Unexpected error");
-                return false;
-            }
         }
 
         private void TableRowNewSelect(object sender, RoutedEventArgs e)
