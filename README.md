@@ -29,7 +29,7 @@ Depending on the time of day, opensubtitles server will sometimes be busy and yo
 
 Installer will also add 'Find subtitles' menu in right click context menu of .avi, .mkv and .mp4 files for easy access.
 
-You can also now make a **filter for languages**, though it is still not very user friendly. Subloader now tries to read from a file called lang.cfg that should be located in the installation directory. To configure it, make a file called `lang.txt` and open it with Notepad. In it write your desired languages, each in a new line, in English. It's not case sensitive. Then copy it to the Subloaders installation directory. For example:
+You can also now make a **filter for languages**, though it is still not very user friendly. Subloader now tries to read from a file called lang.cfg that should be located in the installation directory. To configure it, make a file called `lang.cfg` and open it with Notepad. In it write your desired languages, each in a new line, in English. It's not case sensitive. Then copy it to the Subloaders installation directory. For example:
 ```
 english
 german
