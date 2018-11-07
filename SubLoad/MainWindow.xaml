@@ -1,4 +1,5 @@
-﻿<Window x:Name="windowElement" x:Class="SubLoad.MainWindow"
+﻿<Window x:Name="windowElement" 
+        x:Class="SubLoad.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -28,22 +29,23 @@
             GridLinesVisibility="None" 
             Height="400" BorderThickness="0,0,0,1" 
             BorderBrush="#bbbbbb" 
-            AlternatingRowBackground="#e8e8e8" 
+            AlternatingRowBackground="#f2f2f2" 
             AutoGenerateColumns="False" 
             SelectionChanged="TableRowNewSelect" 
             Background="#f5f5f5"
-            RowHeight="20" CellStyle="{StaticResource Body_Content_DataGrid_Centering}">
+            RowHeight="20" 
+            CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
+            Style="{StaticResource DatagridStyle}"
+            ScrollViewer.VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Width="15*" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="Language" Width="5*" Binding="{Binding Language}" SortDirection="Ascending"/>
-                
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Name" Width="15*" Binding="{Binding Name}"/>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Language" Width="5*" Binding="{Binding Language}" SortDirection="Ascending"/>
             </DataGrid.Columns>
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#6bb9f0"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#6bb9f0"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
             </DataGrid.Resources>
-            
         </DataGrid>
         <StatusBar Height="23" BorderThickness="0,0,0,1" BorderBrush="#bbbbbb" Background="#e8e8e8">
             <StatusBarItem>
