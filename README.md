@@ -3,7 +3,7 @@
 # Subloader
 ![](https://img.shields.io/badge/Price-Free-brightgreen.svg)
 ![](https://img.shields.io/badge/License-MIT-blue.svg)
-![](https://img.shields.io/badge/Release-1.0.1-blue.svg)
+![](https://img.shields.io/badge/Release-1.1.1-blue.svg)
 
 **Subloader** is a simple and minimalistic software written in **C#** that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using XMLRPC API for searching and downloading subtitles.
 
