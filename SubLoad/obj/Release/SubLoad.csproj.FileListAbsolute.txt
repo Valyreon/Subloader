@@ -28,3 +28,4 @@ C:\Users\Lamora\Desktop\New folder\Subloader\SubLoad\obj\Release\SubLoad.csproj.
 C:\Users\Lamora\Desktop\New folder\Subloader\SubLoad\obj\Release\SubLoad.csproj.CoreCompileInputs.cache
 C:\Users\Lamora\Desktop\New folder\Subloader\SubLoad\obj\Release\SubLoad.csproj.CopyComplete
 C:\Users\Lamora\Desktop\New folder\Subloader\SubLoad\obj\Release\SubLoad.exe
+F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\SubLoad.csprojAssemblyReference.cache

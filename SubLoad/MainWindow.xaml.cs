@@ -109,17 +109,20 @@ namespace SubLoad
             }
             else
             {
-                    foreach (SubInfo x in ssre.data)
+                foreach (SubInfo x in ssre.data)
+                {
+                    if (languages.Contains(x.LanguageName.ToLower()) || languages.Count == 0)
                     {
-                        if (languages.Contains(x.LanguageName.ToLower()) || languages.Count == 0)
-                        {
-                            App.Current.Dispatcher.Invoke(
-                            () => { Collection.Add(new SubtitleEntry(x.SubFileName, x.LanguageName, Int32.Parse(x.IDSubtitleFile), x.SubFormat)); }
-                            );
-                            await Task.Run(() => Thread.Sleep(20));
-                        }
+                        App.Current.Dispatcher.Invoke(
+                        () => { Collection.Add(new SubtitleEntry(x.SubFileName, x.LanguageName, Int32.Parse(x.IDSubtitleFile), x.SubFormat)); }
+                        );
+                        await Task.Run(() => Thread.Sleep(20));
                     }
-                statusText.Text = "Select a subtitle and click Download.";
+                }
+                if(Collection.Count>0)
+                    statusText.Text = "Select a subtitle and click Download.";
+                else
+                    statusText.Text = "No subtitles found.";
             }
         }
 
