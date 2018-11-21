@@ -12,8 +12,11 @@
         ResizeMode="CanMinimize" 
         Background="#e8e8e8" 
         Closing="Window_Closing" 
-        Loaded="Window_LoadedAsync" 
-        Left="0" Top="0">
+        Loaded="Window_LoadedAsync"
+        Left="0" Top="0"
+        UseLayoutRounding="True"
+        RenderOptions.BitmapScalingMode="HighQuality"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.BorderBrush>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="Black" Offset="0"/>
@@ -36,7 +39,8 @@
             RowHeight="20" 
             CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
             Style="{StaticResource DatagridStyle}"
-            ScrollViewer.VerticalScrollBarVisibility="Auto">
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            ItemsSource="{Binding Collection}">
             <DataGrid.Columns>
                 <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Name" Width="15*" Binding="{Binding Name}"/>
                 <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Language" Width="5*" Binding="{Binding Language}" SortDirection="Ascending"/>

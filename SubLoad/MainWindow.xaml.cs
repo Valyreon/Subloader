@@ -4,9 +4,7 @@ using System.IO;
 using System.Windows;
 using SubLib;
 using System.ComponentModel;
-using System.Windows.Forms;
 using System.Threading.Tasks;
-using CookComputing.XmlRpc;
 using System.Threading;
 using System.Collections.Generic;
 using Microsoft.Win32;
@@ -15,9 +13,17 @@ namespace SubLoad
 {
     public sealed partial class MainWindow : Window
     {
-        private ObservableCollection<SubtitleEntry> Collection = new ObservableCollection<SubtitleEntry>();
+        ObservableCollection<SubtitleEntry> collection = new ObservableCollection<SubtitleEntry>();
+        public ObservableCollection<SubtitleEntry> Collection
+        {
+            get
+            {
+                return collection;
+            }
+        }
+
         private OSIntermediary messenger = new OSIntermediary();
-        private string currentPath = (System.Windows.Application.Current as App).PathArg;
+        private string currentPath = (Application.Current as App).PathArg;
         private static readonly int maxAttempts = 10;
         private List<string> languages = new List<string>();
         private bool isConfigRead = false;
@@ -25,7 +31,6 @@ namespace SubLoad
         public MainWindow()
         {
             InitializeComponent();
-            dataTable.ItemsSource = Collection;
             dataTable.Items.IsLiveSorting = true;
             dataTable.Items.SortDescriptions.Add(new SortDescription("Language", ListSortDirection.Ascending));
         }
@@ -213,5 +218,6 @@ namespace SubLoad
         {
             statusText.Text = "Select a subtitle and click Download.";
         }
+        
     }
 }

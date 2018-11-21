@@ -9,7 +9,7 @@ namespace SubLib
 {
     public class OSIntermediary
     {
-        static string userAgent = "SubLoad v1";
+        static readonly string userAgent = "SubLoad v1";
         ISubRPC proxy = XmlRpcProxyGen.Create<ISubRPC>();
         private LogInResponse logInInfo = null;
 
