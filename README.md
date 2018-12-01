@@ -46,7 +46,7 @@ Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Fla
 
 If you find **Subloader** useful, consider donating at **[PayPal](https://www.paypal.me/valyreon)**.
 ### Screenshots
-
+![](https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot.png)
 
 ### To do
 - **Language settings window**
