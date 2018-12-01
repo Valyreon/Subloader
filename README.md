@@ -7,7 +7,7 @@
 
 **Subloader** is a simple and minimalistic software written in **C#** that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using XMLRPC API for searching and downloading subtitles.
 
-Subloader searches subtitles by using a special file hash. This enables the user to get the best possible search results for their video file. **Installer** will also add an entry to **right click context menu** of **.avi**, **.mkv** and **.mp4** files for easy access.
+Subloader searches subtitles by using a special file hash. This enables the user to get the best possible search results for their video file. **Installer** will also add an entry to **right click context menu** of **.avi**, **.mkv** and **.mp4** files for easy access. **Note:** This feature might not work on Windows 7.
 
 Search and download is provided by **[Opensubtitles](http://www.opensubtitles.org/)**. Big thanks to their team for this great project. Please consider showing your appreciation by **[supporting them](https://www.opensubtitles.org/en/support)**.
 
