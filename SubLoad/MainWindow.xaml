@@ -16,7 +16,8 @@
         Left="0" Top="0"
         UseLayoutRounding="True"
         RenderOptions.BitmapScalingMode="HighQuality"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}" 
+        FontFamily="Segoe UI Semibold">
     <Window.BorderBrush>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="Black" Offset="0"/>
@@ -25,33 +26,58 @@
     </Window.BorderBrush>
     <StackPanel Margin="0">
         <DataGrid 
+            FontFamily="Segoe UI"
             CanUserResizeRows="False" 
             HeadersVisibility="Column" 
             IsReadOnly="True" 
             x:Name="dataTable" 
-            GridLinesVisibility="None" 
+            GridLinesVisibility="All"
+            HorizontalGridLinesBrush="#EDEDED"
+            VerticalGridLinesBrush="#EDEDED"
             Height="400" BorderThickness="0,0,0,1" 
             BorderBrush="#bbbbbb" 
-            AlternatingRowBackground="#f2f2f2" 
+            AlternatingRowBackground="#f9f9f9" 
             AutoGenerateColumns="False" 
             SelectionChanged="TableRowNewSelect" 
             Background="#f5f5f5"
-            RowHeight="20" 
+            RowHeight="22" 
             CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
             Style="{StaticResource DatagridStyle}"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
             ItemsSource="{Binding Collection}">
             <DataGrid.Columns>
-                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Name" Width="15*" Binding="{Binding Name}"/>
-                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Language" Width="5*" Binding="{Binding Language}" SortDirection="Ascending"/>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Name" Width="15*" Binding="{Binding Name}">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="Background" Value="#e8e8e8"/>
+                            <Setter Property="BorderBrush" Value="#bbb"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Language" Width="5*" Binding="{Binding Language}" SortDirection="Ascending">
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="Background" Value="#e8e8e8"/>
+                            <Setter Property="BorderBrush" Value="#bbb"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="Height" Value="25"/>
+                            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
+            
             <DataGrid.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#6bb9f0"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#6bb9f0"/>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
             </DataGrid.Resources>
         </DataGrid>
-        <StatusBar Height="23" BorderThickness="0,0,0,1" BorderBrush="#bbbbbb" Background="#e8e8e8">
+        <StatusBar Height="23" BorderThickness="0,0,0,1" BorderBrush="#bbbbbb" Background="#e8e8e8" FontFamily="Segoe UI Semibold">
             <StatusBarItem>
                 <TextBlock x:Name="statusText" Text="Open a video file." Height="25" TextAlignment="Center" FontStyle="Italic" Width="500" HorizontalAlignment="Center" MinHeight="25" />
             </StatusBarItem>
