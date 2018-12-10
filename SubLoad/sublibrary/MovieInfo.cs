@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SubLib
+﻿namespace SubLib
 {
     public class MovieInfo
     {
@@ -12,9 +8,9 @@ namespace SubLib
 
         public MovieInfo(string path, string languages)
         {
-            moviehash = GetHash.Main.ToHexadecimal(GetHash.Main.ComputeHash(path));
-            sublanguageid = languages;
-            moviebytesize = new System.IO.FileInfo(path).Length;
+            this.moviehash = GetHash.Main.ToHexadecimal(GetHash.Main.ComputeHash(path));
+            this.sublanguageid = languages;
+            this.moviebytesize = new System.IO.FileInfo(path).Length;
         }
     }
 }

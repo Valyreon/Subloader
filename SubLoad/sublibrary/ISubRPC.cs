@@ -1,8 +1,7 @@
-﻿using System;
-using CookComputing.XmlRpc;
-
-namespace SubLib
+﻿namespace SubLib
 {
+    using CookComputing.XmlRpc;
+
     [XmlRpcUrl("http://api.opensubtitles.org/xml-rpc")]
     public interface ISubRPC : IXmlRpcProxy
     {

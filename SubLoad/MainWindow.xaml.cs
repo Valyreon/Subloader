@@ -1,133 +1,144 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Windows;
-using SubLib;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
-using Microsoft.Win32;
-
-namespace SubLoad
+﻿namespace SubLoad
 {
+    using Microsoft.Win32;
+    using SubLib;
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.IO;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Windows;
+
     public sealed partial class MainWindow : Window
     {
-        ObservableCollection<SubtitleEntry> collection = new ObservableCollection<SubtitleEntry>();
+        private const int MaxAttempts = 10;
+
+        private OSIntermediary messenger = new OSIntermediary();
+        private string currentPath = (Application.Current as App).PathArg;
+        private List<string> languages = new List<string>();
+        private bool isConfigRead = false;
+        private ObservableCollection<SubtitleEntry> collection = new ObservableCollection<SubtitleEntry>();
+
+        public MainWindow()
+        {
+            this.InitializeComponent();
+            this.dataTable.Items.IsLiveSorting = true;
+            this.dataTable.Items.SortDescriptions.Add(new SortDescription("Language", ListSortDirection.Ascending));
+        }
+
         public ObservableCollection<SubtitleEntry> Collection
         {
             get
             {
-                return collection;
+                return this.collection;
             }
-        }
-
-        private OSIntermediary messenger = new OSIntermediary();
-        private string currentPath = (Application.Current as App).PathArg;
-        private static readonly int maxAttempts = 10;
-        private List<string> languages = new List<string>();
-        private bool isConfigRead = false;
-
-        public MainWindow()
-        {
-            InitializeComponent();
-            dataTable.Items.IsLiveSorting = true;
-            dataTable.Items.SortDescriptions.Add(new SortDescription("Language", ListSortDirection.Ascending));
         }
 
         private async void Window_LoadedAsync(object sender, RoutedEventArgs e)
         {
-            if (currentPath != null)
-                await ProcessFileAsync(currentPath);
+            if (this.currentPath != null)
+            {
+                await this.ProcessFileAsync(this.currentPath);
+            }
         }
 
         private async void ChooseFileButton_ClickAsync(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.OpenFileDialog fDialog = new System.Windows.Forms.OpenFileDialog
+            System.Windows.Forms.OpenFileDialog fileChooseDialog = new System.Windows.Forms.OpenFileDialog
             {
                 Filter = "Video files |*.wmv; *.3g2; *.3gp; *.3gp2; *.3gpp; *.amv; *.asf;  *.avi; *.bin; *.cue; *.divx; *.dv; *.flv; *.gxf; *.iso; *.m1v; *.m2v; *.m2t; *.m2ts; *.m4v; " +
                           " *.mkv; *.mov; *.mp2; *.mp2v; *.mp4; *.mp4v; *.mpa; *.mpe; *.mpeg; *.mpeg1; *.mpeg2; *.mpeg4; *.mpg; *.mpv2; *.mts; *.nsv; *.nuv; *.ogg; *.ogm; *.ogv; *.ogx; *.ps; *.rec; *.rm; *.rmvb; *.tod; *.ts; *.tts; *.vob; *.vro; *.webm; *.dat; "
             };
-            fDialog.ShowDialog();
+            fileChooseDialog.ShowDialog();
             try
             {
-                System.IO.FileInfo fInfo = new System.IO.FileInfo(fDialog.FileName);
-                Collection.Clear();
-                await ProcessFileAsync(currentPath = fInfo.FullName);
+                System.IO.FileInfo fileInfo = new System.IO.FileInfo(fileChooseDialog.FileName);
+                this.Collection.Clear();
+                await this.ProcessFileAsync(this.currentPath = fileInfo.FullName);
             }
             catch (Exception)
             {
-                statusText.Text = "Open a video file.";
+                this.statusText.Text = "Open a video file.";
             }
         }
 
-        private async Task ProcessFileAsync (string path)
+        private async Task ProcessFileAsync(string path)
         {
-            if (!isConfigRead)
-                ReadConfig();
-            Collection.Clear();
-            statusText.Text = "Searching subtitles...";
-            SearchSubtitlesResponse ssre = null;
-            int nTries = 0;
-            if (!messenger.IsLoggedIn)
+            if (!this.isConfigRead)
             {
-                while (!messenger.IsLoggedIn && nTries <= maxAttempts)
+                this.ReadConfig();
+            }
+
+            this.Collection.Clear();
+            this.statusText.Text = "Searching subtitles...";
+            SearchSubtitlesResponse ssre = null;
+            int numberOfTries = 0;
+            if (!this.messenger.IsLoggedIn)
+            {
+                while (!this.messenger.IsLoggedIn && numberOfTries <= MaxAttempts)
                 {
                     try
                     {
-                        await Task.Run(() => messenger.OSLogIn());
+                        await Task.Run(() => this.messenger.OSLogIn());
                     }
                     catch (Exception)
                     {
                     }
                     finally
                     {
-                        nTries++;
+                        numberOfTries++;
                     }
                 }
             }
-            nTries = 0;
-            while (ssre==null && nTries <= maxAttempts)
+
+            numberOfTries = 0;
+            while (ssre == null && numberOfTries <= MaxAttempts)
             {
                 try
                 {
-                    await Task.Run(() => messenger.SearchOS(path, "all", ref ssre));
+                    await Task.Run(() => this.messenger.SearchOS(path, "all", ref ssre));
                 }
                 catch (Exception)
                 {
                 }
                 finally
                 {
-                    nTries++;
+                    numberOfTries++;
                 }
             }
-            
-            if (ssre != null && (ssre.data == null || ssre.data.Length==0))
+
+            if (ssre != null && (ssre.data == null || ssre.data.Length == 0))
             {
-                statusText.Text = "No subtitles found.";
+                this.statusText.Text = "No subtitles found.";
                 return;
             }
-            else if(ssre==null)
+            else if (ssre == null)
             {
-                statusText.Text = "Server error. Try refreshing.";
+                this.statusText.Text = "Server error. Try refreshing.";
                 return;
             }
             else
             {
                 foreach (SubInfo x in ssre.data)
                 {
-                    if (languages.Contains(x.LanguageName.ToLower()) || languages.Count == 0)
+                    if (this.languages.Contains(x.LanguageName.ToLower()) || this.languages.Count == 0)
                     {
                         App.Current.Dispatcher.Invoke(
-                        () => { Collection.Add(new SubtitleEntry(x.SubFileName, x.LanguageName, Int32.Parse(x.IDSubtitleFile), x.SubFormat)); }
-                        );
+                        () => { this.Collection.Add(new SubtitleEntry(x.SubFileName, x.LanguageName, int.Parse(x.IDSubtitleFile), x.SubFormat)); });
                         await Task.Run(() => Thread.Sleep(20));
                     }
                 }
-                if(Collection.Count>0)
-                    statusText.Text = "Select a subtitle and click Download.";
+
+                if (this.Collection.Count > 0)
+                {
+                    this.statusText.Text = "Select a subtitle and click Download.";
+                }
                 else
-                    statusText.Text = "No subtitles found.";
+                {
+                    this.statusText.Text = "No subtitles found.";
+                }
             }
         }
 
@@ -139,60 +150,60 @@ namespace SubLoad
                 StreamReader cfgfile = new StreamReader((Registry.CurrentUser.OpenSubKey("Software\\Subtitle Loader").GetValue(null) as string) + "\\lang.cfg");
                 while ((line = cfgfile.ReadLine()) != null)
                 {
-                    languages.Add(line.ToLower());
+                    this.languages.Add(line.ToLower());
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Console.Out.WriteLine(e.Message);
             }
         }
 
         private async void DownloadButton_ClickAsync(object sender, RoutedEventArgs e)
         {
-            SubtitleEntry selected = (SubtitleEntry)dataTable.SelectedItem;
+            SubtitleEntry selected = (SubtitleEntry)this.dataTable.SelectedItem;
             try
             {
                 if (selected != null)
                 {
-                    statusText.Text = "Downloading...";
+                    this.statusText.Text = "Downloading...";
                     byte[] subtitleStream = null;
-                    int nTries = 0;
-                    while (subtitleStream==null && nTries <= maxAttempts)
+                    int numberOfTries = 0;
+                    while (subtitleStream == null && numberOfTries <= MaxAttempts)
                     {
                         try
                         {
-                            await Task.Run(() => messenger.DownloadSubtitle(selected.GetSubtitleFileID(), ref subtitleStream));
+                            await Task.Run(() => this.messenger.DownloadSubtitle(selected.GetSubtitleFileID(), ref subtitleStream));
                         }
                         catch (Exception)
                         {
                         }
                         finally
                         {
-                            nTries++;
+                            numberOfTries++;
                         }
                     }
-                    
+
                     if (subtitleStream != null)
                     {
-                        File.WriteAllBytes(Path.ChangeExtension(currentPath, selected.GetFormat()), subtitleStream);
-                        statusText.Text = "Subtitle downloaded.";
-                    } 
+                        File.WriteAllBytes(Path.ChangeExtension(this.currentPath, selected.GetFormat()), subtitleStream);
+                        this.statusText.Text = "Subtitle downloaded.";
+                    }
                     else
                     {
-                        statusText.Text = "Error while downloading.";
+                        this.statusText.Text = "Error while downloading.";
                     }
                 }
             }
             catch (Exception)
             {
-                statusText.Text = "Error while downloading. Try again.";
+                this.statusText.Text = "Error while downloading. Try again.";
             }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            this.Close();
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -200,24 +211,22 @@ namespace SubLoad
             try
             {
                 this.Hide();
-                messenger.OSLogOut();
+                this.messenger.OSLogOut();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
+                Console.Out.WriteLine(ex.Message);
             }
         }
 
         private async void RefreshButton_ClickAsync(object sender, RoutedEventArgs e)
         {
-            if (currentPath != null)
-                await ProcessFileAsync(currentPath);
+            if (this.currentPath != null)
+            {
+                await this.ProcessFileAsync(this.currentPath);
+            }
         }
 
-        private void TableRowNewSelect(object sender, RoutedEventArgs e)
-        {
-            statusText.Text = "Select a subtitle and click Download.";
-        }
-        
+        private void TableRowNewSelect(object sender, RoutedEventArgs e) => this.statusText.Text = "Select a subtitle and click Download.";
     }
 }

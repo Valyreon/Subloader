@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SubLib
+﻿namespace SubLib
 {
     public class SearchSubtitlesResponse
     {
