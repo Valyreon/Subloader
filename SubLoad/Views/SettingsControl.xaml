@@ -23,13 +23,13 @@
             BorderBrush="#bbbbbb" 
             AlternatingRowBackground="#f9f9f9" 
             AutoGenerateColumns="False" 
-            SelectedItem="{Binding SelectedItem}"
+            SelectedItem="{Binding SelectedWantedLanguage}"
             Background="#f5f5f5"
             RowHeight="22" 
             CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
             Style="{StaticResource DatagridStyle}"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
-            ItemsSource="{Binding SubtitleList}">
+            ItemsSource="{Binding WantedLanguageList}">
                 <DataGrid.Columns>
                     <DataGridTextColumn ElementStyle="{StaticResource ColumnElementStyle}" Header="Chosen languages" Width="15*" Binding="{Binding Name}">
                         <DataGridTextColumn.HeaderStyle>
@@ -66,7 +66,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <ComboBox ItemsSource="{Binding LanguageList}" VerticalAlignment="Top" Grid.Row="0" Height="30" Text="Select language to add"></ComboBox>
+            <ComboBox ItemsSource="{Binding LanguageList}" SelectedItem="{Binding SelectedLanguage}" VerticalAlignment="Top" Grid.Row="0" Height="30" Text="Select language to add"></ComboBox>
             <Button Command="{Binding AddCommand}" VerticalAlignment="Top" Grid.Row="1" Height="30" Content="Add"></Button>
             <Button Command="{Binding DeleteCommand}" VerticalAlignment="Top" Grid.Row="2" Height="30" Content="Delete"></Button>
             <Button Command="{Binding SaveCommand}" VerticalAlignment="Top" Grid.Row="5" Height="30" Content="Save"></Button>
