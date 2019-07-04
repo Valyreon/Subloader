@@ -5,4 +5,7 @@
     <DataTemplate DataType="{x:Type vm:MainViewModel}">
         <view:MainControl />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+        <view:SettingsControl />
+    </DataTemplate>
 </ResourceDictionary>

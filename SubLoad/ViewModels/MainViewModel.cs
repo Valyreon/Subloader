@@ -73,7 +73,8 @@ namespace SubLoad.ViewModels
 
         public void GoToSettings()
         {
-
+            SettingsViewModel settingsControl = new SettingsViewModel(this.currentWindow);
+            this.currentWindow.ChangeCurrentControlTo(settingsControl);
         }
 
         public async void Refresh()

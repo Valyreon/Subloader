@@ -11,6 +11,7 @@ namespace SubLoad.ViewModels
     public class GeneralWindowViewModel : ObservableObject
     {
         private readonly IView thisWindow;
+        private object previousControl = null;
 
         private object currentControl;
 
@@ -34,9 +35,16 @@ namespace SubLoad.ViewModels
 
             internal set
             {
+                previousControl = this.currentControl;
                 this.currentControl = value;
                 this.RaisePropertyChangedEvent("CurrentControl");
             }
+        }
+
+        internal void ToPreviousControl()
+        {
+            this.CurrentControl = previousControl;
+            previousControl = null;
         }
     }
 }

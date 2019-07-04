@@ -9,5 +9,6 @@ namespace SubLoad.Views
     public interface IView
     {
         void ChangeCurrentControlTo(object x);
+        void GoToPreviousControl();
     }
 }

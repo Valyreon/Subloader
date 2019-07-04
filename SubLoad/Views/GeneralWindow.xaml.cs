@@ -30,5 +30,10 @@ namespace SubLoad.Views
         {
             ((GeneralWindowViewModel)DataContext).CurrentControl = x;
         }
+
+        public void GoToPreviousControl()
+        {
+            ((GeneralWindowViewModel)DataContext).ToPreviousControl();
+        }
     }
 }
