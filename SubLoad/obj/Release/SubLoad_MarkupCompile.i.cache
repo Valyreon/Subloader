@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\obj\Release\
+C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\
 SubLoad
 none
 false
 
-F:\Documents\Visual Studio 2017\Projects\SubLoad\SubLoad\App.xaml
-2-1509017259
+C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\App.xaml
+41133210681
 
-181604957407
-161092714971
-MainWindow.xaml;Simple Styles.xaml;
+22-2042344086
+16-1605227449
+Simple Styles.xaml;Views\DataTemplates.xaml;Views\GeneralWindow.xaml;Views\MainControl.xaml;
 
-False
+True
 

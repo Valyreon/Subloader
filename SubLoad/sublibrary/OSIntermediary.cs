@@ -4,12 +4,19 @@
     using System;
     using System.IO;
     using System.IO.Compression;
+    using System.Threading.Tasks;
 
-    public class OSIntermediary
+    public class OSIntermediary :IDisposable
     {
         private const string UserAgent = "SubLoad v1";
+        private const int MaxAttempts = 10;
         private readonly ISubRPC proxy = XmlRpcProxyGen.Create<ISubRPC>();
         private LogInResponse logInInfo = null;
+
+        public OSIntermediary()
+        {
+
+        }
 
         public bool IsLoggedIn
         {
@@ -19,19 +26,54 @@
             }
         }
 
-        public void OSLogIn()
+        public async Task OSLogIn()
         {
-            if (this.logInInfo != null)
+            await Task.Run(() =>
             {
-                this.OSLogOut();
+                int numberOfTries = 0;
+                while (!this.IsLoggedIn && numberOfTries <= MaxAttempts)
+                {
+                    try
+                    {
+                        this.logInInfo = this.proxy.LogIn(string.Empty, string.Empty, "en", UserAgent);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    finally
+                    {
+                        numberOfTries++;
+                    }
+                }
+            });
+            if(this.IsLoggedIn == false)
+            {
+                throw new Exception("Can't connect to OpenSubtitles.");
             }
-
-            this.logInInfo = this.proxy.LogIn(string.Empty, string.Empty, "en", UserAgent);
         }
 
-        public void SearchOS(string path, string languages, ref SearchSubtitlesResponse res)
+        public async Task<SearchSubtitlesResponse> SearchOS(string path, string languages)
         {
-            res = this.proxy.SearchSubtitles(this.logInInfo.token, new MovieInfo[] { new MovieInfo(path, languages) });
+            SearchSubtitlesResponse response = null;
+            await Task.Run(() =>
+            {
+                int numberOfTries = 0;
+                while (response == null && numberOfTries <= 10)
+                {
+                    try
+                    {
+                        response = this.proxy.SearchSubtitles(this.logInInfo.token, new MovieInfo[] { new MovieInfo(path, languages) });
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    finally
+                    {
+                        numberOfTries++;
+                    }
+                }
+            });
+            return response;
         }
 
         public void OSLogOut()
@@ -40,10 +82,29 @@
             this.logInInfo = null;
         }
 
-        public void DownloadSubtitle(int subtitle_id, ref byte[] x)
+        public async Task<byte[]> DownloadSubtitle(int subtitle_id)
         {
-            DownloadSubtitleResponse response = this.proxy.DownloadSubtitles(this.logInInfo.token, new int[] { subtitle_id });
-            x = Decompress(Convert.FromBase64String(response.data[0].data));
+            byte[] subtitleStream = null;
+            await Task.Run(() =>
+            {
+                int numberOfTries = 0;
+                while (subtitleStream == null && numberOfTries <= 10)
+                {
+                    try
+                    {
+                        DownloadSubtitleResponse response = this.proxy.DownloadSubtitles(this.logInInfo.token, new int[] { subtitle_id });
+                        subtitleStream = Decompress(Convert.FromBase64String(response.data[0].data));
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    finally
+                    {
+                        numberOfTries++;
+                    }
+                }
+            });
+            return subtitleStream;
         }
 
         private static byte[] Decompress(byte[] gzip)
@@ -67,6 +128,11 @@
                     return memory.ToArray();
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            this.OSLogOut();
         }
     }
 }
