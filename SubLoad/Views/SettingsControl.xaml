@@ -66,7 +66,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <ComboBox ItemsSource="{Binding LanguageList}" SelectedItem="{Binding SelectedLanguage}" VerticalAlignment="Top" Grid.Row="0" Height="30" Text="Select language to add"></ComboBox>
+            <ComboBox VerticalContentAlignment="Center" DisplayMemberPath="Name" ItemsSource="{Binding LanguageList}" SelectedItem="{Binding SelectedLanguage}" VerticalAlignment="Top" Grid.Row="0" Height="30" Text="Select language to add"></ComboBox>
             <Button Command="{Binding AddCommand}" VerticalAlignment="Top" Grid.Row="1" Height="30" Content="Add"></Button>
             <Button Command="{Binding DeleteCommand}" VerticalAlignment="Top" Grid.Row="2" Height="30" Content="Delete"></Button>
             <Button Command="{Binding SaveCommand}" VerticalAlignment="Top" Grid.Row="5" Height="30" Content="Save"></Button>

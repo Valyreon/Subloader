@@ -8,8 +8,15 @@ namespace SubLoad.Models
 {
     public class SubtitleLanguage
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Code { get; set; }
+        public int Id { get; }
+        public string Name { get; }
+        public string Code { get; }
+
+        public SubtitleLanguage(int id, string name, string code)
+        {
+            this.Id = id;
+            this.Name = name;
+            this.Code = code;
+        }
     }
 }

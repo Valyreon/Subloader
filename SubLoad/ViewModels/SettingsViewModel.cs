@@ -49,6 +49,10 @@ namespace SubLoad.ViewModels
         public SettingsViewModel(IView thisWindow)
         {
             this.currentWindow = thisWindow;
+            LanguageList.Add(new SubtitleLanguage(1, "English", "eng"));
+            LanguageList.Add(new SubtitleLanguage(2, "Serbian", "srb"));
+            LanguageList.Add(new SubtitleLanguage(3, "Croatian", "cro"));
+            SelectedLanguage = LanguageList[0];
         }
 
         public ICommand AddCommand { get => new DelegateCommand(Add); }
@@ -66,6 +70,7 @@ namespace SubLoad.ViewModels
         public void Delete()
         {
             WantedLanguageList.Remove(this.SelectedWantedLanguage);
+            this.SelectedWantedLanguage = null;
         }
 
         public void SaveAndBack()
