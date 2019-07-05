@@ -28,6 +28,7 @@ namespace SubLoad.ViewModels
             {
                 selectedWantedLanguage = value;
                 RaisePropertyChangedEvent("SelectedWantedLanguage");
+                RaisePropertyChangedEvent("IsWantedLanguageSelected");
             }
         }
 
@@ -43,7 +44,20 @@ namespace SubLoad.ViewModels
             {
                 selectedLanguage = value;
                 RaisePropertyChangedEvent("SelectedLanguage");
+                RaisePropertyChangedEvent("IsLanguageSelected");
             }
+        }
+
+        public bool IsLanguageSelected
+        {
+            get => SelectedLanguage != null;
+            set { }
+        }
+
+        public bool IsWantedLanguageSelected
+        {
+            get => SelectedWantedLanguage != null;
+            set { }
         }
 
         private string searchText;
@@ -60,7 +74,7 @@ namespace SubLoad.ViewModels
                 LanguageList.Clear();
                 foreach(var x in SubtitleLanguage.AllLanguages)
                 {
-                    if(x.Name.ToLower().Contains(searchText.ToLower()) && !WantedLanguageList.Contains(x))
+                    if(x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Contains(x))
                     {
                         LanguageList.Add(x);
                     }
@@ -76,7 +90,8 @@ namespace SubLoad.ViewModels
             {
                 LanguageList.Add(x);
             }
-            SelectedLanguage = LanguageList[0];
+            SelectedLanguage = null;
+            SelectedWantedLanguage = null;
         }
 
         public ICommand AddCommand { get => new DelegateCommand(Add); }

@@ -71,8 +71,8 @@
                 </DataGrid.Resources>
             </DataGrid>
 
-            <Button Command="{Binding AddCommand}" VerticalAlignment="Top" Grid.Row="2" Grid.Column="2" Width="40" Height="40" FontFamily="Marlett" FontSize="20" Content="3"></Button>
-            <Button Command="{Binding DeleteCommand}" VerticalAlignment="Top" Grid.Row="4" Grid.Column="2" Width="40" Height="40" FontFamily="Marlett" FontSize="20" Content="4"></Button>
+            <Button Command="{Binding AddCommand}" IsEnabled="{Binding IsLanguageSelected, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Grid.Row="2" Grid.Column="2" Width="40" Height="40" FontFamily="Marlett" FontSize="20" Content="3"></Button>
+            <Button Command="{Binding DeleteCommand}" IsEnabled="{Binding IsWantedLanguageSelected, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Grid.Row="4" Grid.Column="2" Width="40" Height="40" FontFamily="Marlett" FontSize="20" Content="4"></Button>
             <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Top">
                 <Label>Search:</Label>
                 <TextBox Width="166"  Height="30" VerticalAlignment="Top" VerticalContentAlignment="Center" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
