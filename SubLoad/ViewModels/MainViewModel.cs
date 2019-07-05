@@ -111,7 +111,7 @@ namespace SubLoad.ViewModels
         {
             if (this.CurrentPath != null)
             {
-                await Task.Run(() => this.ProcessFileAsync()); //await this
+                await Task.Run(() => this.ProcessFileAsync());
             }
         }
 
