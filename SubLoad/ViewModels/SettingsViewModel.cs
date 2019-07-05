@@ -1,11 +1,7 @@
 ﻿using SubLoad.Models;
 using SubLoad.Views;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace SubLoad.ViewModels
@@ -83,12 +79,20 @@ namespace SubLoad.ViewModels
             }
         }
 
-        public SettingsViewModel(IView thisWindow)
+        public SettingsViewModel(IView thisWindow, IEnumerable<SubtitleLanguage> wantLangs)
         {
             this.currentWindow = thisWindow;
             foreach(var x in SubtitleLanguage.AllLanguages)
             {
                 LanguageList.Add(x);
+            }
+
+            if (wantLangs != null)
+            {
+                foreach (var x in wantLangs)
+                {
+                    WantedLanguageList.Add(x);
+                }
             }
             SelectedLanguage = null;
             SelectedWantedLanguage = null;
@@ -121,7 +125,7 @@ namespace SubLoad.ViewModels
 
         public void SaveAndBack()
         {
-            // save here
+            ApplicationSettings.WriteApplicationSettings(WantedLanguageList);
             this.currentWindow.GoToPreviousControl();
         }
     }

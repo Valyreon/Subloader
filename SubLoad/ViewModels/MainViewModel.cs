@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using SubLib;
+using SubLoad.Models;
 using SubLoad.Views;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace SubLoad.ViewModels
 {
@@ -19,6 +21,9 @@ namespace SubLoad.ViewModels
         private readonly IView currentWindow;
         private string statusText;
         private string currentPath = (Application.Current as App).PathArg;
+
+        private List<SubtitleLanguage> wantedLanguages;
+        private bool shouldReadConfig = true;
 
         public MainViewModel(IView window)
         {
@@ -52,8 +57,10 @@ namespace SubLoad.ViewModels
 
         public void LoadConfig()
         {
-            var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            Console.WriteLine("");
+            if (shouldReadConfig)
+            {
+                wantedLanguages = ApplicationSettings.LoadApplicationSettings();
+            }
         }
 
         public void ChooseFile()
@@ -80,8 +87,9 @@ namespace SubLoad.ViewModels
 
         public void GoToSettings()
         {
-            SettingsViewModel settingsControl = new SettingsViewModel(this.currentWindow);
+            SettingsViewModel settingsControl = new SettingsViewModel(this.currentWindow, wantedLanguages);
             this.currentWindow.ChangeCurrentControlTo(settingsControl);
+            shouldReadConfig = true;
         }
 
         public async void Refresh()
@@ -124,11 +132,13 @@ namespace SubLoad.ViewModels
 
         private async void ProcessFileAsync(string path)
         {
+            LoadConfig();
+
             SearchSubtitlesResponse ssre = null;
             using (OSIntermediary messenger = new OSIntermediary())
             {
                 await messenger.OSLogIn();
-                this.SubtitleList.Clear();
+                Application.Current.Dispatcher.Invoke(() => this.SubtitleList.Clear());
                 this.StatusText = "Searching subtitles...";
                 ssre = await messenger.SearchOS(currentPath, "all");
             }
@@ -143,11 +153,14 @@ namespace SubLoad.ViewModels
             }
             else
             {
-                foreach (SubInfo x in ssre.data)
+                foreach (var x in ssre.data)
                 {
-                    App.Current.Dispatcher.Invoke(
-                    () => { this.SubtitleList.Add(new SubtitleEntry(x.SubFileName, x.LanguageName, int.Parse(x.IDSubtitleFile), x.SubFormat)); });
-                    await Task.Run(() => Thread.Sleep(20));
+                    if (wantedLanguages == null || wantedLanguages.Count==0 || wantedLanguages.Where((subLang) => subLang.Name == x.LanguageName).Any())
+                    {
+                        App.Current.Dispatcher.Invoke(
+                            () => { this.SubtitleList.Add(new SubtitleEntry(x.SubFileName, x.LanguageName, int.Parse(x.IDSubtitleFile), x.SubFormat)); });
+                        await Task.Run(() => Thread.Sleep(20));
+                    }
                 }
 
                 if (this.SubtitleList.Count > 0)

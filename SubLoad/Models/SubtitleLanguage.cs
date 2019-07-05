@@ -18,7 +18,7 @@ namespace SubLoad.Models
             new SubtitleLanguage("Achinese", "ace"),
             new SubtitleLanguage("Acoli", "ach"),
             new SubtitleLanguage("Adangme", "ada"),
-            new SubtitleLanguage("adygh", "ady"),
+            new SubtitleLanguage("Adygh", "ady"),
             new SubtitleLanguage("Afro-Asiatic", "afa"),
             new SubtitleLanguage("Afrihili", "afh"),
             new SubtitleLanguage("Afrikaans", "afr"),
