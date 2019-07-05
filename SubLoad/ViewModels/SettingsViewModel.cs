@@ -22,6 +22,8 @@ namespace SubLoad.ViewModels
 
             set
             {
+                if (value != null && SelectedLanguage != null)
+                    SelectedLanguage = null;
                 selectedWantedLanguage = value;
                 RaisePropertyChangedEvent("SelectedWantedLanguage");
                 RaisePropertyChangedEvent("IsWantedLanguageSelected");
@@ -38,6 +40,8 @@ namespace SubLoad.ViewModels
 
             set
             {
+                if (value != null && SelectedWantedLanguage != null)
+                    SelectedWantedLanguage = null;
                 selectedLanguage = value;
                 RaisePropertyChangedEvent("SelectedLanguage");
                 RaisePropertyChangedEvent("IsLanguageSelected");

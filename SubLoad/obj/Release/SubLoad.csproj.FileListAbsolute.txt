@@ -71,3 +71,6 @@ F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.c
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csproj.CoreCompileInputs.cache
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csproj.CopyComplete
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.exe
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\CookComputing.XmlRpcV2.dll
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\GetHash.dll
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csprojAssemblyReference.cache
