@@ -48,6 +48,13 @@ namespace SubLoad.ViewModels
         public ICommand RefreshCommand { get => new DelegateCommand(Refresh); }
         public ICommand SettingsCommand { get => new DelegateCommand(GoToSettings); }
         public ICommand DownloadCommand { get => new DelegateCommand(Download); }
+        public ICommand MainLoadedCommand { get => new DelegateCommand(LoadConfig); }
+
+        public void LoadConfig()
+        {
+            var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            Console.WriteLine("");
+        }
 
         public void ChooseFile()
         {

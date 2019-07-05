@@ -69,3 +69,5 @@ C:\Users\Luka\Downloads\Subloader\SubLoad\obj\Debug\SubLoad.pdb
 C:\Users\Luka\Downloads\Subloader\SubLoad\obj\Debug\Views\SettingsControl.g.cs
 C:\Users\Luka\Downloads\Subloader\SubLoad\obj\Debug\Views\SettingsControl.baml
 C:\Users\Luka\Downloads\Subloader\SubLoad\obj\Debug\SubLoad.csprojAssemblyReference.cache
+C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debug\Views\SettingsControl.g.cs
+C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debug\Views\SettingsControl.baml

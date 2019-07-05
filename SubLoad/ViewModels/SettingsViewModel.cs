@@ -46,12 +46,36 @@ namespace SubLoad.ViewModels
             }
         }
 
+        private string searchText;
+        public string SearchText
+        {
+            get
+            {
+                return searchText;
+            }
+
+            set
+            {
+                searchText = value;
+                LanguageList.Clear();
+                foreach(var x in SubtitleLanguage.AllLanguages)
+                {
+                    if(x.Name.ToLower().Contains(searchText.ToLower()) && !WantedLanguageList.Contains(x))
+                    {
+                        LanguageList.Add(x);
+                    }
+                }
+                RaisePropertyChangedEvent("SearchText");
+            }
+        }
+
         public SettingsViewModel(IView thisWindow)
         {
             this.currentWindow = thisWindow;
-            LanguageList.Add(new SubtitleLanguage(1, "English", "eng"));
-            LanguageList.Add(new SubtitleLanguage(2, "Serbian", "srb"));
-            LanguageList.Add(new SubtitleLanguage(3, "Croatian", "cro"));
+            foreach(var x in SubtitleLanguage.AllLanguages)
+            {
+                LanguageList.Add(x);
+            }
             SelectedLanguage = LanguageList[0];
         }
 
@@ -61,16 +85,23 @@ namespace SubLoad.ViewModels
 
         public void Add()
         {
-            if(!WantedLanguageList.Where((x)=> x.Name == this.SelectedLanguage.Name).Any())
+            if (SelectedLanguage != null)
             {
-                WantedLanguageList.Add(this.SelectedLanguage);
+                var selected = SelectedLanguage;
+                LanguageList.Remove(selected);
+                WantedLanguageList.Add(selected);
             }
         }
 
         public void Delete()
         {
-            WantedLanguageList.Remove(this.SelectedWantedLanguage);
-            this.SelectedWantedLanguage = null;
+            if (SelectedWantedLanguage != null)
+            {
+                var selected = SelectedWantedLanguage;
+                WantedLanguageList.Remove(selected);
+                LanguageList.Add(selected);
+                SearchText = SearchText;
+            }
         }
 
         public void SaveAndBack()

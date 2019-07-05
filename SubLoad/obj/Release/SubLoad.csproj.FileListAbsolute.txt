@@ -47,3 +47,6 @@ C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj
 C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csproj.CopyComplete
 C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\GeneratedInternalTypeHelper.g.cs
 C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\DataTemplates.baml
+C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csprojAssemblyReference.cache
+C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\SettingsControl.g.cs
+C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\SettingsControl.baml
