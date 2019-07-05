@@ -92,7 +92,7 @@ namespace SubLoad.ViewModels
             {
                 FileInfo fileInfo = new FileInfo(fileChooseDialog.FileName);
                 this.SubtitleList.Clear();
-                this.ProcessFileAsync();
+                CurrentPath = fileChooseDialog.FileName;
             }
             catch (Exception)
             {
