@@ -20,7 +20,7 @@ namespace SubLoad.ViewModels
     {
         private readonly IView currentWindow;
         private string statusText;
-        private string currentPath = (Application.Current as App).PathArg;
+        private string currentPath;
 
         private List<SubtitleLanguage> wantedLanguages;
         private bool shouldReadConfig = true;
@@ -29,11 +29,25 @@ namespace SubLoad.ViewModels
         {
             currentWindow = window;
             StatusText = "Open a video file.";
+            CurrentPath = (Application.Current as App).PathArg;
         }
 
         public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
 
         public SubtitleEntry SelectedItem { get; set; }
+
+        public string CurrentPath
+        {
+            get { return currentPath; }
+            set
+            {
+                currentPath = value;
+                if (currentPath!=null)
+                {
+                    ProcessFileAsync();
+                }
+            }
+        }
 
         public string StatusText
         {
@@ -60,6 +74,7 @@ namespace SubLoad.ViewModels
             if (shouldReadConfig)
             {
                 wantedLanguages = ApplicationSettings.LoadApplicationSettings();
+                shouldReadConfig = false;
             }
         }
 
@@ -77,7 +92,7 @@ namespace SubLoad.ViewModels
             {
                 FileInfo fileInfo = new FileInfo(fileChooseDialog.FileName);
                 this.SubtitleList.Clear();
-                this.ProcessFileAsync(this.currentPath = fileInfo.FullName);
+                this.ProcessFileAsync();
             }
             catch (Exception)
             {
@@ -94,9 +109,9 @@ namespace SubLoad.ViewModels
 
         public async void Refresh()
         {
-            if (this.currentPath != null)
+            if (this.CurrentPath != null)
             {
-                await Task.Run(() => this.ProcessFileAsync(this.currentPath)); //await this
+                await Task.Run(() => this.ProcessFileAsync()); //await this
             }
         }
 
@@ -114,7 +129,7 @@ namespace SubLoad.ViewModels
 
                         if (subtitleStream != null)
                         {
-                            File.WriteAllBytes(Path.ChangeExtension(this.currentPath, SelectedItem.GetFormat()), subtitleStream);
+                            File.WriteAllBytes(Path.ChangeExtension(this.CurrentPath, SelectedItem.GetFormat()), subtitleStream);
                             this.StatusText = "Subtitle downloaded.";
                         }
                         else
@@ -130,7 +145,7 @@ namespace SubLoad.ViewModels
             }
         }
 
-        private async void ProcessFileAsync(string path)
+        private async void ProcessFileAsync()
         {
             LoadConfig();
 
@@ -140,7 +155,7 @@ namespace SubLoad.ViewModels
                 await messenger.OSLogIn();
                 Application.Current.Dispatcher.Invoke(() => this.SubtitleList.Clear());
                 this.StatusText = "Searching subtitles...";
-                ssre = await messenger.SearchOS(currentPath, "all");
+                ssre = await messenger.SearchOS(CurrentPath, "all");
             }
 
             if (ssre != null && (ssre.data == null || ssre.data.Length == 0))

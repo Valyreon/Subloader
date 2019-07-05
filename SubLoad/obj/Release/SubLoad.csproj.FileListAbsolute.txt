@@ -49,4 +49,4 @@ C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj
 C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\DataTemplates.baml
 C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\SettingsControl.g.cs
 C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\SettingsControl.baml
-C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\CookComputing.XmlRpcV2.dll
+C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csprojAssemblyReference.cache
