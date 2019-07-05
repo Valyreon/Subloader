@@ -5,16 +5,51 @@ using System.Linq;
 
 namespace SubLoad.Models
 {
-    public static class ApplicationSettings
+    public class ApplicationSettings
     {
-        public static List<SubtitleLanguage> LoadApplicationSettings()
+        private static ApplicationSettings _instance;
+
+        public static ApplicationSettings GetInstance()
+        {
+            if (_instance == null)
+            {
+                Refresh();
+            }
+            return _instance;
+        }
+
+        public static void Refresh()
+        {
+            _instance = LoadApplicationSettings();
+        }
+
+        private List<SubtitleLanguage> wantedLanguages;
+        public List<SubtitleLanguage> WantedLanguages
+        {
+            get
+            {
+                return wantedLanguages;
+            }
+            set
+            {
+                wantedLanguages = value;
+                WriteApplicationSettings();
+            }
+        }
+
+        private ApplicationSettings(List<SubtitleLanguage> langWant)
+        {
+            wantedLanguages = langWant;
+        }
+
+        private static ApplicationSettings LoadApplicationSettings()
         {
             var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.cfg");
             return LoadApplicationSettings(pathToDefaultConfig);
         }
 
-        public static List<SubtitleLanguage> LoadApplicationSettings(string path)
+        private static ApplicationSettings LoadApplicationSettings(string path)
         {
             List<SubtitleLanguage> langs = new List<SubtitleLanguage>();
 
@@ -25,29 +60,29 @@ namespace SubLoad.Models
             using (var reader = new StreamReader(fileStream))
             {
                 string line;
-                while((line = reader.ReadLine()) != null)
+                while ((line = reader.ReadLine()) != null)
                 {
                     langs.Add(SubtitleLanguage.AllLanguages.Where(s => s.Code == line).First());
                 }
             }
 
-            return langs;
+            return new ApplicationSettings(langs);
         }
 
-        public static void WriteApplicationSettings(IEnumerable<SubtitleLanguage> list)
+        private static void WriteApplicationSettings()
         {
             var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.cfg");
-            WriteApplicationSettings(pathToDefaultConfig, list);
+            WriteApplicationSettings(pathToDefaultConfig);
         }
 
-        public static void WriteApplicationSettings(string path, IEnumerable<SubtitleLanguage> list)
+        private static void WriteApplicationSettings(string path)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             using (var fileStream = new FileStream(path, FileMode.Create))
-            using(var writer = new StreamWriter(fileStream))
+            using (var writer = new StreamWriter(fileStream))
             {
-                foreach(var x in list)
+                foreach (var x in GetInstance().WantedLanguages)
                 {
                     writer.WriteLine(x.Code);
                 }

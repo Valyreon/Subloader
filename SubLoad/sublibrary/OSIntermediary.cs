@@ -6,7 +6,7 @@
     using System.IO.Compression;
     using System.Threading.Tasks;
 
-    public class OSIntermediary :IDisposable
+    public class OSIntermediary
     {
         private const string UserAgent = "SubLoad v1";
         private const int MaxAttempts = 10;
@@ -128,11 +128,6 @@
                     return memory.ToArray();
                 }
             }
-        }
-
-        public void Dispose()
-        {
-            this.OSLogOut();
         }
     }
 }

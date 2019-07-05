@@ -129,7 +129,12 @@ namespace SubLoad.ViewModels
 
         public void SaveAndBack()
         {
-            ApplicationSettings.WriteApplicationSettings(WantedLanguageList);
+            List<SubtitleLanguage> wanted = new List<SubtitleLanguage>();
+            foreach(var x in WantedLanguageList)
+            {
+                wanted.Add(x);
+            }
+            ApplicationSettings.GetInstance().WantedLanguages = wanted;
             this.currentWindow.GoToPreviousControl();
         }
     }

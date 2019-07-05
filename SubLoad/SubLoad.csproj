@@ -69,6 +69,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\ApplicationSettings.cs" />
+    <Compile Include="Models\OpenSubtitlesWorker.cs" />
     <Compile Include="Models\SubtitleLanguage.cs" />
     <Compile Include="sublibrary\DownloadSubtitleResponse.cs" />
     <Compile Include="sublibrary\ISubRPC.cs" />

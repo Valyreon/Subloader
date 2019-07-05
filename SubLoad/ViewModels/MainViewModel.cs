@@ -19,8 +19,7 @@ namespace SubLoad.ViewModels
         private string statusText;
         private string currentPath;
 
-        private List<SubtitleLanguage> wantedLanguages;
-        private bool shouldReadConfig = true;
+        private OpenSubtitlesWorker Worker { get; } = new OpenSubtitlesWorker();
 
         public MainViewModel(IView window)
         {
@@ -39,7 +38,7 @@ namespace SubLoad.ViewModels
             set
             {
                 currentPath = value;
-                if (currentPath!=null)
+                if (currentPath != null)
                 {
                     ProcessFileAsync();
                 }
@@ -64,16 +63,6 @@ namespace SubLoad.ViewModels
         public ICommand RefreshCommand { get => new DelegateCommand(Refresh); }
         public ICommand SettingsCommand { get => new DelegateCommand(GoToSettings); }
         public ICommand DownloadCommand { get => new DelegateCommand(Download); }
-        public ICommand MainLoadedCommand { get => new DelegateCommand(LoadConfig); }
-
-        public void LoadConfig()
-        {
-            if (shouldReadConfig)
-            {
-                wantedLanguages = ApplicationSettings.LoadApplicationSettings();
-                shouldReadConfig = false;
-            }
-        }
 
         public void ChooseFile()
         {
@@ -99,9 +88,8 @@ namespace SubLoad.ViewModels
 
         public void GoToSettings()
         {
-            SettingsViewModel settingsControl = new SettingsViewModel(this.currentWindow, wantedLanguages);
+            SettingsViewModel settingsControl = new SettingsViewModel(this.currentWindow, ApplicationSettings.GetInstance().WantedLanguages);
             this.currentWindow.ChangeCurrentControlTo(settingsControl);
-            shouldReadConfig = true;
         }
 
         public async void Refresh()
@@ -114,75 +102,59 @@ namespace SubLoad.ViewModels
 
         public async void Download()
         {
-            using (OSIntermediary messenger = new OSIntermediary())
+            try
             {
-                await messenger.OSLogIn();
-                try
+                this.StatusText = "Downloading...";
+                bool success = await Worker.Download(SelectedItem, Path.ChangeExtension(this.CurrentPath, SelectedItem.GetFormat()));
+                if (success)
                 {
-                    if (SelectedItem != null)
-                    {
-                        this.StatusText = "Downloading...";
-                        byte[] subtitleStream = await messenger.DownloadSubtitle(SelectedItem.GetSubtitleFileID());
-
-                        if (subtitleStream != null)
-                        {
-                            File.WriteAllBytes(Path.ChangeExtension(this.CurrentPath, SelectedItem.GetFormat()), subtitleStream);
-                            this.StatusText = "Subtitle downloaded.";
-                        }
-                        else
-                        {
-                            this.StatusText = "Error while downloading.";
-                        }
-                    }
+                    this.StatusText = "Subtitle downloaded.";
                 }
-                catch (Exception)
+                else
                 {
-                    this.StatusText = "Error while downloading. Try again.";
+                    this.StatusText = "Error while downloading.";
                 }
+            }
+            catch (Exception ex)
+            {
+                this.StatusText = ex.Message;//"Error while downloading. Try again.";
             }
         }
 
         private async void ProcessFileAsync()
         {
-            LoadConfig();
-
-            SearchSubtitlesResponse ssre = null;
-            using (OSIntermediary messenger = new OSIntermediary())
+            try
             {
-                await messenger.OSLogIn();
-                Application.Current.Dispatcher.Invoke(() => this.SubtitleList.Clear());
-                this.StatusText = "Searching subtitles...";
-                ssre = await messenger.SearchOS(CurrentPath, "all");
-            }
-
-            if (ssre != null && (ssre.data == null || ssre.data.Length == 0))
-            {
-                this.StatusText = "No subtitles found.";
-            }
-            else if (ssre == null)
-            {
-                this.StatusText = "Server error. Try refreshing.";
-            }
-            else
-            {
-                foreach (var x in ssre.data)
+                App.Current.Dispatcher.Invoke(() => this.SubtitleList.Clear());
+                var results = await Worker.Search(CurrentPath);
+                if (results == null)
                 {
-                    if (wantedLanguages == null || wantedLanguages.Count==0 || wantedLanguages.Where((subLang) => subLang.Name == x.LanguageName).Any())
-                    {
-                        App.Current.Dispatcher.Invoke(
-                            () => { this.SubtitleList.Add(new SubtitleEntry(x.SubFileName, x.LanguageName, int.Parse(x.IDSubtitleFile), x.SubFormat)); });
-                        await Task.Run(() => Thread.Sleep(20));
-                    }
+                    StatusText = "Server error. Try refreshing.";
                 }
-
-                if (this.SubtitleList.Count > 0)
+                else if (results.Count == 0)
                 {
-                    this.StatusText = "Select a subtitle and click Download.";
+                    StatusText = "No subtitles found.";
                 }
                 else
                 {
-                    this.StatusText = "No subtitles found.";
+                    foreach (var x in results)
+                    {
+                        App.Current.Dispatcher.Invoke(() => this.SubtitleList.Add(x));
+                        await Task.Run(() => Thread.Sleep(20));
+                    }
+                    if (this.SubtitleList.Count > 0)
+                    {
+                        this.StatusText = "Select a subtitle and click Download.";
+                    }
+                    else
+                    {
+                        this.StatusText = "No subtitles found.";
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                StatusText = ex.Message;
             }
         }
     }
