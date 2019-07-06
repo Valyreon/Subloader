@@ -48,7 +48,7 @@ If you find **Subloader** useful, consider donating at **[PayPal](https://www.pa
   
   ~~Subloader now reads from lang.cfg in install directory for languages if lang.cfg exists. Window for configuring the filter from UI is next.~~
   
- - ~~**Move to MVVM**~~
+- ~~**Move to MVVM**~~
   
   ~~Refactor and restructure Subloader so it uses Model-View-ViewModel design.~~
   
