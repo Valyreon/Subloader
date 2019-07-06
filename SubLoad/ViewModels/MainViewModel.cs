@@ -125,6 +125,7 @@ namespace SubLoad.ViewModels
         {
             try
             {
+                StatusText = "Searching subtitles...";
                 App.Current.Dispatcher.Invoke(() => this.SubtitleList.Clear());
                 var results = await Worker.Search(CurrentPath);
                 if (results == null)
