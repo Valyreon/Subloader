@@ -19,13 +19,14 @@ namespace SubLoad.Models
             ssre = await messenger.SearchOS(path, "all");
             await Task.Run(() => messenger.OSLogOut());
 
-            if (ssre != null && (ssre.data == null || ssre.data.Length == 0))
-            {
-                return new List<SubtitleEntry>();
-            }
-            else if (ssre == null)
+
+            if (ssre == null)
             {
                 return null;
+            }
+            else if (ssre != null && (ssre.data == null || ssre.data.Length == 0))
+            {
+                return new List<SubtitleEntry>();
             }
             else
             {
