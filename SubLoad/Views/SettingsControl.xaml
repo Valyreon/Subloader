@@ -123,6 +123,6 @@
                 </DataGrid.Resources>
             </DataGrid>
         </Grid>
-        <Button Margin="0,7,0,0" Command="{Binding SaveCommand}" VerticalAlignment="Top" Grid.Row="5" Height="30" Content="Save"></Button>
+        <Button Margin="0,7,0,0" Command="{Binding SaveCommand}" VerticalAlignment="Top" Grid.Row="5" Height="30" Content="Save" Background="#ffffff"></Button>
     </StackPanel>
 </UserControl>
