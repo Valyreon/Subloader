@@ -29,7 +29,7 @@ Depending on the time of day, opensubtitles server will sometimes be busy and yo
 
 Installer will also add 'Find subtitles' menu in right click context menu of .avi, .mkv and .mp4 files for easy access.
 
-SubLoader now has a working UI for configuring wanted subtitle languages. You can access it via 'Settings' button on the SubLoader main form in the bottom right corner.
+SubLoader now has a working UI for configuring wanted subtitle languages. You can access it via 'Settings' button on the main form in the bottom right corner.
 
 ### Acknowledgments
 
@@ -42,7 +42,7 @@ Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Fla
 If you find **Subloader** useful, consider donating at **[PayPal](https://www.paypal.me/valyreon)**.
 ### Screenshots
 ![](https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot.png)
-
+![](https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot2.png)
 ### To do
 - ~~**Language settings window**~~
   
