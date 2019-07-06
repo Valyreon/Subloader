@@ -8,7 +8,7 @@ namespace SubLoad.ViewModels
 {
     public class SettingsViewModel: ObservableObject
     {
-        private IView currentWindow;
+        private readonly IView currentWindow;
         public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
         public ObservableCollection<SubtitleLanguage> WantedLanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
 
@@ -124,6 +124,7 @@ namespace SubLoad.ViewModels
                 WantedLanguageList.Remove(selected);
                 LanguageList.Add(selected);
                 SearchText = SearchText;
+                SelectedWantedLanguage = WantedLanguageList.Count == 0 ? null : WantedLanguageList[0];
             }
         }
 

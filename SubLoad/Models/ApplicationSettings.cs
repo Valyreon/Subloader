@@ -54,7 +54,10 @@ namespace SubLoad.Models
             List<SubtitleLanguage> langs = new List<SubtitleLanguage>();
 
             if (!File.Exists(path))
-                return null;
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                File.Create(path).Close();
+            }
 
             using (var fileStream = new FileStream(path, FileMode.Open))
             using (var reader = new StreamReader(fileStream))

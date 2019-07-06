@@ -74,3 +74,27 @@ F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.e
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\CookComputing.XmlRpcV2.dll
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\GetHash.dll
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csprojAssemblyReference.cache
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\SubLoad.exe.config
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\SubLoad.exe
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\CookComputing.XmlRpcV2.dll
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\GetHash.dll
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csprojAssemblyReference.cache
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Simple Styles.baml
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\GeneralWindow.g.cs
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\MainControl.g.cs
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\SettingsControl.g.cs
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\App.g.cs
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\GeneratedInternalTypeHelper.g.cs
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad_MarkupCompile.cache
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad_MarkupCompile.lref
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\App.baml
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\DataTemplates.baml
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\GeneralWindow.baml
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\MainControl.baml
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\SettingsControl.baml
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.g.resources
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.Properties.Resources.resources
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csproj.GenerateResource.cache
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csproj.CoreCompileInputs.cache
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csproj.CopyComplete
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.exe
