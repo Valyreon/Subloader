@@ -24,12 +24,13 @@ namespace SubLoad.ViewModels
 
         public MainViewModel(IView window)
         {
-            // Must first add suppliers before setting path.
+            // Must first add suppliers before processing.
             suppliers.Add(new OpenSubtitles());
 
             currentWindow = window;
             StatusText = "Open a video file.";
-            CurrentPath = (Application.Current as App).PathArg;
+            currentPath = (Application.Current as App).PathArg;
+            this.ProcessFileAsync();
         }
 
         public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
