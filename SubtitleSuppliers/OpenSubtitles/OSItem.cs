@@ -1,9 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
 
 namespace SubtitleSuppliers.OpenSubtitles
 {
@@ -59,5 +55,17 @@ namespace SubtitleSuppliers.OpenSubtitles
 
         [JsonProperty("SubtitlesLink")]
         public string SubtitlesLink { get; set; }
+
+        public string Language => this.LanguageName;
+
+        public string Name => this.SubFileName;
+
+        public void Download(string savePath)
+        {
+            using (var client = new WebClient())
+            {
+                client.DownloadFile(this.SubDownloadLink, savePath);
+            }
+        }
     }
 }

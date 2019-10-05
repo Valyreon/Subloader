@@ -120,3 +120,4 @@ C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debu
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debug\SubLoad.csproj.CopyComplete
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debug\SubLoad.exe
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debug\SubLoad.pdb
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debug\SubLoad.csprojAssemblyReference.cache
