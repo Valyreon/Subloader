@@ -47,7 +47,7 @@ namespace SubtitleSuppliers.OpenSubtitles
 
         private string FormHashSearchUrl(string path)
         {
-            var moviehash = GetHash.Main.ToHexadecimal(GetHash.Main.ComputeHash(path));
+            var moviehash = Hasher.ToHexadecimal(Hasher.ComputeMovieHash(path));
             FileInfo file = new FileInfo(path);
             var movieByteSize = file.Length;
 

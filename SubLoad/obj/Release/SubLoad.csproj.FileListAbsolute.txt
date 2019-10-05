@@ -74,8 +74,6 @@ F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\GetHash.d
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csprojAssemblyReference.cache
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\SubLoad.exe.config
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\SubLoad.exe
-C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\CookComputing.XmlRpcV2.dll
-C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\GetHash.dll
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csprojAssemblyReference.cache
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Simple Styles.baml
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\GeneralWindow.g.cs
@@ -100,3 +98,7 @@ F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\SubtitleS
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\Newtonsoft.Json.dll
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\SubtitleSuppliers.pdb
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\Newtonsoft.Json.xml
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\SubtitleSuppliers.dll
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\Newtonsoft.Json.dll
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\SubtitleSuppliers.pdb
+C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\Newtonsoft.Json.xml

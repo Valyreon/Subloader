@@ -29,8 +29,7 @@ namespace SubLoad.ViewModels
 
             currentWindow = window;
             StatusText = "Open a video file.";
-            currentPath = (Application.Current as App).PathArg;
-            this.ProcessFileAsync();
+            CurrentPath = (Application.Current as App).PathArg;
         }
 
         public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
