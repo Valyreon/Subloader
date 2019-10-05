@@ -31,11 +31,11 @@ namespace SubtitleSuppliers.OpenSubtitles
                 string responseQueryBody = await responseQuery.Content.ReadAsStringAsync(); // this is json string
                 var resultQuery = JsonConvert.DeserializeObject<IList<OSItem>>(responseQueryBody).ToList();
 
-                return ConvertList(resultHash.Concat(resultQuery).Distinct().ToList());
+                return ConvertList(resultHash.Concat(resultQuery).Distinct());
             }
         }
 
-        private List<ISubtitleResultItem> ConvertList(IList<OSItem> list)
+        private List<ISubtitleResultItem> ConvertList(IEnumerable<OSItem> list)
         {
             List<ISubtitleResultItem> result = new List<ISubtitleResultItem>();
             foreach(var x in list)

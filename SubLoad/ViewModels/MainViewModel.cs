@@ -18,16 +18,18 @@ namespace SubLoad.ViewModels
     {
         private readonly IView currentWindow;
         private string statusText;
-        private string currentPath = null;
+        private string currentPath;
 
         private readonly List<ISubtitleSupplier> suppliers = new List<ISubtitleSupplier>();
 
         public MainViewModel(IView window)
         {
+            // Must first add suppliers before setting path.
+            suppliers.Add(new OpenSubtitles());
+
             currentWindow = window;
             StatusText = "Open a video file.";
             CurrentPath = (Application.Current as App).PathArg;
-            suppliers.Add(new OpenSubtitles());
         }
 
         public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();

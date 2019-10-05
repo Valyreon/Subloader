@@ -68,10 +68,8 @@ F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\Views\Set
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.g.resources
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.Properties.Resources.resources
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csproj.GenerateResource.cache
-F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csproj.CoreCompileInputs.cache
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csproj.CopyComplete
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.exe
-F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\CookComputing.XmlRpcV2.dll
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\GetHash.dll
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csprojAssemblyReference.cache
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\SubLoad.exe.config
@@ -98,3 +96,7 @@ C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Rele
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csproj.CoreCompileInputs.cache
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.csproj.CopyComplete
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Release\SubLoad.exe
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\SubtitleSuppliers.dll
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\Newtonsoft.Json.dll
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\SubtitleSuppliers.pdb
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Release\Newtonsoft.Json.xml
