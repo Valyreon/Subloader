@@ -12,7 +12,7 @@ namespace EndpointTesting
         public async Task TestMethod1()
         {
             OpenSubtitles supplier = new OpenSubtitles();
-            var x = await supplier.SearchAsync(@"F:\Torrents\Aquaman.2018.1080p.BluRay.x264-SPARKS[rarbg]\Aquaman.2018.1080p.BluRay.x264-SPARKS.mkv", "");
+            var x = await supplier.SearchAsync(@"F:\Torrents\Aquaman.2018.1080p.BluRay.x264-SPARKS[rarbg]\Aquaman.2018.1080p.BluRay.x264-SPARKS.mkv");
         }
     }
 }

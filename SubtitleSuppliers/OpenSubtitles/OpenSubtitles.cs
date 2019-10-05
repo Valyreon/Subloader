@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -13,8 +14,6 @@ namespace SubtitleSuppliers.OpenSubtitles
 
         public async Task<IList<ISubtitleResultItem>> SearchAsync(string path)
         {
-            string postUrl = this.FormUrl(path);
-
             using (HttpClient client = new HttpClient { Timeout = new TimeSpan(0, 0, 0, 0, -1) })
             {
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -22,6 +21,8 @@ namespace SubtitleSuppliers.OpenSubtitles
 
                 var response = await client.PostAsync(this.FormUrl(path), null);
                 string responseBody = await response.Content.ReadAsStringAsync(); // this is json string
+
+                var result = JsonConvert.DeserializeObject<IEnumerable<OSItem>>(responseBody);
             }
 
             return null;
@@ -32,7 +33,7 @@ namespace SubtitleSuppliers.OpenSubtitles
             var moviehash = GetHash.Main.ToHexadecimal(GetHash.Main.ComputeHash(path));
             FileInfo file = new System.IO.FileInfo(path);
             var movieByteSize = file.Length;
-            // /moviebytesize-750005572/moviehash-319b23c54e9cf314
+
             // string[] nameParts = file.Name.Split('.');
             return baseRestUrl
                 + $"/moviebytesize-{movieByteSize}"
