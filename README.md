@@ -33,10 +33,6 @@ SubLoader now has a working UI for configuring wanted subtitle languages. You ca
 
 ### Acknowledgments
 
-Subloader works thanks to following open-source projects:
-
-* **[XML-RPC.NET](http://xml-rpc.net/)** - a library for implementing XML-RPC Services and clients in the .NET environment
-
 Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Flaticon](https://www.flaticon.com )**.
 
 If you find **Subloader** useful, consider donating at **[PayPal](https://www.paypal.me/valyreon)**.

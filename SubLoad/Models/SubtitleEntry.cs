@@ -1,47 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SubtitleSuppliers;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SubLoad
 {
     public class SubtitleEntry: INotifyPropertyChanged
     {
-        private string name;
-        private string language;
-        private int SubFileID;
-        private string SubFormat;
+        private readonly ISubtitleResultItem model;
 
-        public int GetSubtitleFileID()
+        public SubtitleEntry(ISubtitleResultItem item)
         {
-            return SubFileID;
-        }
-
-        public string GetFormat()
-        {
-            return SubFormat;
-        }
-
-        public SubtitleEntry(string n, string l, int id, string format)
-        {
-            name = n;
-            language = l;
-            SubFileID = id;
-            SubFormat = format;
+            model = item;
         }
 
         public string Name
         {
             get
             {
-                return name;
-            }
-            set
-            {
-                name = value;
-                this.OnPropertyChanged("Name");
+                return model.Name;
             }
         }
 
@@ -49,14 +24,11 @@ namespace SubLoad
         {
             get
             {
-                return language;
-            }
-            set
-            {
-                name = value;
-                this.OnPropertyChanged("Language");
+                return model.Language;
             }
         }
+
+        public ISubtitleResultItem Model { get => model; }
 
         protected void OnPropertyChanged(string name)
         {
