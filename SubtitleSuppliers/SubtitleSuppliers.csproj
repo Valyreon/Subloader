@@ -51,7 +51,6 @@
   <ItemGroup>
     <Compile Include="ISubtitleResultItem.cs" />
     <Compile Include="OpenSubtitles\OpenSubtitles.cs" />
-    <Compile Include="OpenSubtitles\OpenSubtitlesHashComparer.cs" />
     <Compile Include="OpenSubtitles\OSItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ISubtitleSupplier.cs" />

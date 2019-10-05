@@ -18,19 +18,20 @@ namespace SubtitleSuppliers.OpenSubtitles
         {
             using (HttpClient client = new HttpClient { Timeout = new TimeSpan(0, 0, 0, 0, -1) })
             {
-                var comparer = new OpenSubtitlesHashComparer();
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Add("X-User-Agent", userAgentId);
 
                 var responseHash = await client.PostAsync(this.FormHashSearchUrl(path), null);
                 string responseHashBody = await responseHash.Content.ReadAsStringAsync(); // this is json string
-                var resultHash = JsonConvert.DeserializeObject<IList<OSItem>>(responseHashBody).Distinct(comparer).ToList();
+                var resultHash = JsonConvert.DeserializeObject<IList<OSItem>>(responseHashBody).ToList();
+
+                // return ConvertList(resultHash);
 
                 var responseQuery = await client.PostAsync(this.FormQuerySearchUrl(path), null);
-                string responseQueryBody = await responseHash.Content.ReadAsStringAsync(); // this is json string
-                var resultQuery = JsonConvert.DeserializeObject<IList<OSItem>>(responseQueryBody).Distinct(comparer).ToList();
+                string responseQueryBody = await responseQuery.Content.ReadAsStringAsync(); // this is json string
+                var resultQuery = JsonConvert.DeserializeObject<IList<OSItem>>(responseQueryBody).ToList();
 
-                return ConvertList(resultHash.Union(resultQuery, comparer).ToList());
+                return ConvertList(resultHash.Concat(resultQuery).Distinct().ToList());
             }
         }
 
@@ -49,7 +50,6 @@ namespace SubtitleSuppliers.OpenSubtitles
             var moviehash = GetHash.Main.ToHexadecimal(GetHash.Main.ComputeHash(path));
             FileInfo file = new FileInfo(path);
             var movieByteSize = file.Length;
-
 
             return baseRestUrl
                 + $"/moviebytesize-{movieByteSize}"

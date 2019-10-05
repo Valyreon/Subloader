@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Net;
 
 namespace SubtitleSuppliers.OpenSubtitles
 {
-    public class OSItem : ISubtitleResultItem
+    public class OSItem : ISubtitleResultItem, IEquatable<OSItem>
     {
         [JsonProperty("IDSubMovieFile")]
         public string IDSubMovieFile { get; set; }
@@ -66,8 +67,16 @@ namespace SubtitleSuppliers.OpenSubtitles
         {
             using (var client = new WebClient())
             {
-                client.DownloadFile(this.SubDownloadLink, savePath);
+                client.DownloadFileAsync(new Uri(this.SubDownloadLink), savePath);
             }
+        }
+
+        public bool Equals(OSItem other)
+        {
+            if (SubHash == other.SubHash)
+                return true;
+
+            return false;
         }
     }
 }

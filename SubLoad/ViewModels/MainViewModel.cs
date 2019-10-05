@@ -18,7 +18,7 @@ namespace SubLoad.ViewModels
     {
         private readonly IView currentWindow;
         private string statusText;
-        private string currentPath;
+        private string currentPath = null;
 
         private readonly List<ISubtitleSupplier> suppliers = new List<ISubtitleSupplier>();
 
@@ -102,7 +102,7 @@ namespace SubLoad.ViewModels
             }
         }
 
-        public async void Download()
+        public void Download()
         {
             try
             {
