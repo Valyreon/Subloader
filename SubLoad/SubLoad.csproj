@@ -40,9 +40,6 @@
     <ApplicationIcon>subtitles_ebF_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CookComputing.XmlRpcV2, Version=3.0.0.0, Culture=neutral, PublicKeyToken=a7d6e17aa302004d, processorArchitecture=MSIL">
-      <HintPath>..\packages\xmlrpcnet.3.0.0.266\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
-    </Reference>
     <Reference Include="GetHash, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\GetHash.dll</HintPath>
@@ -69,16 +66,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\ApplicationSettings.cs" />
-    <Compile Include="Models\OpenSubtitlesWorker.cs" />
     <Compile Include="Models\SubtitleLanguage.cs" />
-    <Compile Include="sublibrary\DownloadSubtitleResponse.cs" />
-    <Compile Include="sublibrary\ISubRPC.cs" />
-    <Compile Include="sublibrary\LogInResponse.cs" />
-    <Compile Include="sublibrary\LogOutResponse.cs" />
-    <Compile Include="sublibrary\MovieInfo.cs" />
-    <Compile Include="sublibrary\OSIntermediary.cs" />
-    <Compile Include="sublibrary\SearchSubtitlesResponse.cs" />
-    <Compile Include="sublibrary\SubInfo.cs" />
     <Compile Include="Models\SubtitleEntry.cs" />
     <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ViewModels\GeneralWindowViewModel.cs" />
@@ -138,7 +126,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -150,6 +137,11 @@
   <ItemGroup>
     <Resource Include="subtitles_ebF_icon.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SubtitleSuppliers\SubtitleSuppliers.csproj">
+      <Project>{88C0E38B-0673-4664-A112-4AB711FED031}</Project>
+      <Name>SubtitleSuppliers</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

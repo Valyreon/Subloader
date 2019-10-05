@@ -74,7 +74,6 @@ C:\Users\luka.budrak\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Debug\SubLoad.exe.config
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Debug\SubLoad.exe
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Debug\SubLoad.pdb
-F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Debug\CookComputing.XmlRpcV2.dll
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Debug\GetHash.dll
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debug\Simple Styles.baml
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debug\Views\GeneralWindow.g.cs
@@ -121,3 +120,7 @@ C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debu
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debug\SubLoad.exe
 C:\Users\Lamora\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debug\SubLoad.pdb
 F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\obj\Debug\SubLoad.csprojAssemblyReference.cache
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Debug\SubtitleSuppliers.dll
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Debug\Newtonsoft.Json.dll
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Debug\SubtitleSuppliers.pdb
+F:\Documents\Visual Studio 2019\Projects\Subloader\SubLoad\bin\Debug\Newtonsoft.Json.xml

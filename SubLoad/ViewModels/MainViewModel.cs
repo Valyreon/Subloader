@@ -1,6 +1,7 @@
-﻿using SubLib;
-using SubLoad.Models;
+﻿using SubLoad.Models;
 using SubLoad.Views;
+using SubtitleSuppliers;
+using SubtitleSuppliers.OpenSubtitles;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,13 +20,14 @@ namespace SubLoad.ViewModels
         private string statusText;
         private string currentPath;
 
-        private OpenSubtitlesWorker Worker { get; } = new OpenSubtitlesWorker();
+        private readonly List<ISubtitleSupplier> suppliers = new List<ISubtitleSupplier>();
 
         public MainViewModel(IView window)
         {
             currentWindow = window;
             StatusText = "Open a video file.";
             CurrentPath = (Application.Current as App).PathArg;
+            suppliers.Add(new OpenSubtitles());
         }
 
         public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
@@ -105,19 +107,13 @@ namespace SubLoad.ViewModels
             try
             {
                 this.StatusText = "Downloading...";
-                bool success = await Worker.Download(SelectedItem, Path.ChangeExtension(this.CurrentPath, SelectedItem.GetFormat()));
-                if (success)
-                {
-                    this.StatusText = "Subtitle downloaded.";
-                }
-                else
-                {
-                    this.StatusText = "Error while downloading.";
-                }
+                SelectedItem.Model.Download(Path.ChangeExtension(this.CurrentPath, SelectedItem.Model.Format));
+                this.StatusText = "Subtitle downloaded.";
             }
             catch (Exception ex)
             {
-                this.StatusText = ex.Message;//"Error while downloading. Try again.";
+                //this.StatusText = ex.Message;//"Error while downloading. Try again.";
+                this.StatusText = "Error while downloading.";
             }
         }
 
@@ -127,7 +123,7 @@ namespace SubLoad.ViewModels
             {
                 StatusText = "Searching subtitles...";
                 App.Current.Dispatcher.Invoke(() => this.SubtitleList.Clear());
-                var results = await Worker.Search(CurrentPath);
+                var results = await this.SearchSuppliers();
                 if (results == null)
                 {
                     StatusText = "Server error. Try refreshing.";
@@ -157,6 +153,24 @@ namespace SubLoad.ViewModels
             {
                 StatusText = ex.Message;
             }
+        }
+
+        private async Task<List<SubtitleEntry>> SearchSuppliers()
+        {
+            List<SubtitleEntry> result = new List<SubtitleEntry>();
+            foreach(var supplier in suppliers)
+            {
+                var results = await supplier.SearchAsync(currentPath);
+                foreach(var item in results)
+                {
+                    var settings = ApplicationSettings.GetInstance();
+                    if (settings.WantedLanguages == null || settings.WantedLanguages.Count == 0 || settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
+                    {
+                        result.Add(new SubtitleEntry(item));
+                    }
+                }
+            }
+            return result;
         }
     }
 }

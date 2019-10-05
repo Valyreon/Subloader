@@ -60,6 +60,8 @@ namespace SubtitleSuppliers.OpenSubtitles
 
         public string Name => this.SubFileName;
 
+        public string Format => this.SubFormat;
+
         public void Download(string savePath)
         {
             using (var client = new WebClient())
