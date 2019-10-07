@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SubLoad.Views"
-             mc:Ignorable="d" 
-             Height="473" Width="502" 
+             mc:Ignorable="d" Width="502" 
              Background="#e8e8e8"
              UseLayoutRounding="True"
              RenderOptions.BitmapScalingMode="HighQuality"
@@ -67,11 +66,16 @@
                 <TextBlock Text="{Binding StatusText, UpdateSourceTrigger=PropertyChanged}" Height="25" TextAlignment="Center" FontStyle="Italic" Width="500" HorizontalAlignment="Center" MinHeight="25" />
             </StatusBarItem>
         </StatusBar>
-        <StackPanel Height="50" Orientation="Horizontal" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <Button Content="Open" Width="110" Height="30" Margin="0,10,10,10" Command="{Binding ChooseFileCommand}" Background="#ffffff"/>
-            <Button Content="Refresh" Width="110" Height="30" Margin="0,10,10,10" Command="{Binding RefreshCommand}" Background="#ffffff"/>
-            <Button Content="Download" Width="110" Height="30" Margin="0,10,10,10" Command="{Binding DownloadCommand}" Background="#ffffff" IsDefault="true"/>
-            <Button Content="Settings" Width="110" Height="30" Margin="0,10" Command="{Binding SettingsCommand}" Background="#ffffff"/>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Height="27" Orientation="Horizontal">
+            <CheckBox Margin="5,6" Content="Search by name"/>
+            <CheckBox Margin="5,6" Content="Search by hash"/>
         </StackPanel>
+        <StackPanel Height="48" Orientation="Horizontal" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <Button Content="Open" Width="112" Height="30" Margin="0,0,10,10" Command="{Binding ChooseFileCommand}" Background="#ffffff"/>
+            <Button Content="Refresh" Width="112" Height="30" Margin="0,0,10,10" Command="{Binding RefreshCommand}" Background="#ffffff"/>
+            <Button Content="Download" Width="112" Height="30" Margin="0,0,10,10" Command="{Binding DownloadCommand}" Background="#ffffff" IsDefault="true"/>
+            <Button Content="Settings" Width="112" Height="30" Margin="0,0,0,10" Command="{Binding SettingsCommand}" Background="#ffffff"/>
+        </StackPanel>
+
     </StackPanel>
 </UserControl>
