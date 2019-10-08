@@ -47,7 +47,7 @@
 
         void SelectAllText(object sender, RoutedEventArgs e)
         {
-            var textBox = e.OriginalSource as TextBox;
+            TextBox textBox = e.OriginalSource as TextBox;
             if (textBox != null)
                 textBox.SelectAll();
         }

@@ -1,14 +1,15 @@
-﻿using SubLoad.Models;
-using SubLoad.Views;
+﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using SubLoad.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace SubLoad.ViewModels
 {
-    public class SettingsViewModel: ObservableObject
+    public class SettingsViewModel: ViewModelBase
     {
-        private readonly IView currentWindow;
+        private readonly INavigator navigator;
         public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
         public ObservableCollection<SubtitleLanguage> WantedLanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
 
@@ -23,10 +24,11 @@ namespace SubLoad.ViewModels
             set
             {
                 if (value != null && SelectedLanguage != null)
-                    SelectedLanguage = null;
-                selectedWantedLanguage = value;
-                RaisePropertyChangedEvent("SelectedWantedLanguage");
-                RaisePropertyChangedEvent("IsWantedLanguageSelected");
+                    Set("SelectedLanguage", ref selectedLanguage, null);//SelectedLanguage = null;
+                //selectedWantedLanguage = value;
+                Set("SelectedWantedLanguage", ref selectedWantedLanguage, value);
+                //RaisePropertyChangedEvent("SelectedWantedLanguage");
+                //RaisePropertyChangedEvent("IsWantedLanguageSelected");
             }
         }
 
@@ -41,10 +43,10 @@ namespace SubLoad.ViewModels
             set
             {
                 if (value != null && SelectedWantedLanguage != null)
-                    SelectedWantedLanguage = null;
-                selectedLanguage = value;
-                RaisePropertyChangedEvent("SelectedLanguage");
-                RaisePropertyChangedEvent("IsLanguageSelected");
+                    Set("SelectedWantedLanguage", ref selectedWantedLanguage, null);//SelectedWantedLanguage = null;
+                Set("SelectedLanguage", ref selectedLanguage, null);// selectedLanguage = value;
+                //RaisePropertyChangedEvent("SelectedLanguage");
+                //RaisePropertyChangedEvent("IsLanguageSelected");
             }
         }
 
@@ -79,14 +81,15 @@ namespace SubLoad.ViewModels
                         LanguageList.Add(x);
                     }
                 }
-                RaisePropertyChangedEvent("SearchText");
+                Set("SearchText", ref searchText, value);
             }
         }
 
-        public SettingsViewModel(IView thisWindow, IEnumerable<SubtitleLanguage> wantLangs)
+        public SettingsViewModel(INavigator navigator)
         {
-            this.currentWindow = thisWindow;
-            foreach(var x in SubtitleLanguage.AllLanguages)
+            this.navigator = navigator;
+            var wantLangs = ApplicationSettings.GetInstance().WantedLanguages;
+            foreach (var x in SubtitleLanguage.AllLanguages)
             {
                 LanguageList.Add(x);
             }
@@ -102,9 +105,9 @@ namespace SubLoad.ViewModels
             SelectedWantedLanguage = null;
         }
 
-        public ICommand AddCommand { get => new DelegateCommand(Add); }
-        public ICommand DeleteCommand { get => new DelegateCommand(Delete); }
-        public ICommand SaveCommand { get => new DelegateCommand(SaveAndBack); }
+        public ICommand AddCommand { get => new RelayCommand(Add); }
+        public ICommand DeleteCommand { get => new RelayCommand(Delete); }
+        public ICommand SaveCommand { get => new RelayCommand(SaveAndBack); }
 
         public void Add()
         {
@@ -136,7 +139,7 @@ namespace SubLoad.ViewModels
                 wanted.Add(x);
             }
             ApplicationSettings.GetInstance().WantedLanguages = wanted;
-            this.currentWindow.GoToPreviousControl();
+            navigator.GoToPreviousControl();
         }
     }
 }

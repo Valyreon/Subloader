@@ -18,22 +18,12 @@ namespace SubLoad.Views
     /// <summary>
     /// Interaction logic for GeneralWindow.xaml
     /// </summary>
-    public partial class GeneralWindow : Window, IView
+    public partial class GeneralWindow : Window
     {
         public GeneralWindow()
         {
             this.InitializeComponent();
-            this.DataContext = new GeneralWindowViewModel(this);
-        }
-
-        public void ChangeCurrentControlTo(object x)
-        {
-            ((GeneralWindowViewModel)DataContext).CurrentControl = x;
-        }
-
-        public void GoToPreviousControl()
-        {
-            ((GeneralWindowViewModel)DataContext).ToPreviousControl();
+            this.DataContext = new GeneralWindowViewModel();
         }
     }
 }

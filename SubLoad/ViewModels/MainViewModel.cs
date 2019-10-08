@@ -1,5 +1,6 @@
-﻿using SubLoad.Models;
-using SubLoad.Views;
+﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using SubLoad.Models;
 using SubtitleSuppliers;
 using SubtitleSuppliers.OpenSubtitles;
 using System;
@@ -14,20 +15,20 @@ using System.Windows.Input;
 
 namespace SubLoad.ViewModels
 {
-    public class MainViewModel : ObservableObject
+    public class MainViewModel : ViewModelBase
     {
-        private readonly IView currentWindow;
+        private readonly INavigator navigator;
         private string statusText;
         private string currentPath;
 
         private readonly List<ISubtitleSupplier> suppliers = new List<ISubtitleSupplier>();
 
-        public MainViewModel(IView window)
+        public MainViewModel(INavigator navigator)
         {
+            this.navigator = navigator;
             // Must first add suppliers before processing.
             suppliers.Add(new OpenSubtitles());
 
-            currentWindow = window;
             StatusText = "Open a video file.";
             CurrentPath = (Application.Current as App).PathArg;
         }
@@ -58,15 +59,14 @@ namespace SubLoad.ViewModels
 
             set
             {
-                statusText = value;
-                RaisePropertyChangedEvent("StatusText");
+                Set("StatusText", ref statusText, value);
             }
         }
 
-        public ICommand ChooseFileCommand { get => new DelegateCommand(ChooseFile); }
-        public ICommand RefreshCommand { get => new DelegateCommand(Refresh); }
-        public ICommand SettingsCommand { get => new DelegateCommand(GoToSettings); }
-        public ICommand DownloadCommand { get => new DelegateCommand(Download); }
+        public ICommand ChooseFileCommand { get => new RelayCommand(ChooseFile); }
+        public ICommand RefreshCommand { get => new RelayCommand(Refresh); }
+        public ICommand SettingsCommand { get => new RelayCommand(GoToSettings); }
+        public ICommand DownloadCommand { get => new RelayCommand(Download); }
 
         public void ChooseFile()
         {
@@ -92,8 +92,8 @@ namespace SubLoad.ViewModels
 
         public void GoToSettings()
         {
-            SettingsViewModel settingsControl = new SettingsViewModel(this.currentWindow, ApplicationSettings.GetInstance().WantedLanguages);
-            this.currentWindow.ChangeCurrentControlTo(settingsControl);
+            SettingsViewModel settingsControl = new SettingsViewModel(navigator);
+            navigator.GoToControl(settingsControl);
         }
 
         public async void Refresh()
@@ -106,13 +106,15 @@ namespace SubLoad.ViewModels
 
         public void Download()
         {
+            if (SelectedItem == null)
+                return;
             try
             {
                 this.StatusText = "Downloading...";
                 SelectedItem.Model.Download(Path.ChangeExtension(this.CurrentPath, SelectedItem.Model.Format));
                 this.StatusText = "Subtitle downloaded.";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //this.StatusText = ex.Message;//"Error while downloading. Try again.";
                 this.StatusText = "Error while downloading.";

@@ -1,16 +1,10 @@
-﻿using SubLoad.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using CommonServiceLocator;
+using GalaSoft.MvvmLight;
 
 namespace SubLoad.ViewModels
 {
-    public class GeneralWindowViewModel : ObservableObject
+    public class GeneralWindowViewModel : ViewModelBase, INavigator
     {
-        private readonly IView thisWindow;
         private object previousControl = null;
 
         private object currentControl;
@@ -19,11 +13,9 @@ namespace SubLoad.ViewModels
         /// Initializes a new instance of the <see cref="GeneralViewModel"/>.
         /// </summary>
         /// <param name="thisWindow">Window in which all the UserControls are to be shown in.</param>
-        public GeneralWindowViewModel(IView thisWindow)
+        public GeneralWindowViewModel()
         {
-            this.thisWindow = thisWindow;
-            MainViewModel mainModel = new MainViewModel(this.thisWindow);
-            this.CurrentControl = mainModel;
+            this.CurrentControl = new MainViewModel(this);
         }
 
         public object CurrentControl
@@ -36,12 +28,16 @@ namespace SubLoad.ViewModels
             internal set
             {
                 previousControl = this.currentControl;
-                this.currentControl = value;
-                this.RaisePropertyChangedEvent("CurrentControl");
+                Set("CurrentControl", ref currentControl, value);
             }
         }
 
-        internal void ToPreviousControl()
+        public void GoToControl(object control)
+        {
+            this.CurrentControl = control;
+        }
+
+        public void GoToPreviousControl()
         {
             this.CurrentControl = previousControl;
             previousControl = null;
