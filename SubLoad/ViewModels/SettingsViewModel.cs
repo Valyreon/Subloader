@@ -24,11 +24,9 @@ namespace SubLoad.ViewModels
             set
             {
                 if (value != null && SelectedLanguage != null)
-                    Set("SelectedLanguage", ref selectedLanguage, null);//SelectedLanguage = null;
-                //selectedWantedLanguage = value;
+                    Set("SelectedLanguage", ref selectedLanguage, null);
                 Set("SelectedWantedLanguage", ref selectedWantedLanguage, value);
-                //RaisePropertyChangedEvent("SelectedWantedLanguage");
-                //RaisePropertyChangedEvent("IsWantedLanguageSelected");
+                RaisePropertyChanged("IsWantedLanguageSelected");
             }
         }
 
@@ -43,10 +41,9 @@ namespace SubLoad.ViewModels
             set
             {
                 if (value != null && SelectedWantedLanguage != null)
-                    Set("SelectedWantedLanguage", ref selectedWantedLanguage, null);//SelectedWantedLanguage = null;
-                Set("SelectedLanguage", ref selectedLanguage, null);// selectedLanguage = value;
-                //RaisePropertyChangedEvent("SelectedLanguage");
-                //RaisePropertyChangedEvent("IsLanguageSelected");
+                    Set("SelectedWantedLanguage", ref selectedWantedLanguage, null);
+                Set("SelectedLanguage", ref selectedLanguage, value);
+                RaisePropertyChanged("IsLanguageSelected");
             }
         }
 
