@@ -35,7 +35,6 @@ SubLoader now has a working UI for configuring wanted subtitle languages. You ca
 
 Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Flaticon](https://www.flaticon.com )**.
 
-If you find **Subloader** useful, consider donating at **[PayPal](https://www.paypal.me/valyreon)**.
 ### Screenshots
 ![](https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot.png)
 ![](https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot2.png)
