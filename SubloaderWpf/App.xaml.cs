@@ -29,7 +29,6 @@ namespace SubloaderWpf
             if (e.Args.Length > 0)
             {
                 this.PathArg = e.Args[0];
-                base.OnStartup(e);
             }
             base.OnStartup(e);
         }
@@ -56,8 +55,7 @@ namespace SubloaderWpf
 
         void SelectAllText(object sender, RoutedEventArgs e)
         {
-            TextBox textBox = e.OriginalSource as TextBox;
-            if (textBox != null)
+            if (e.OriginalSource is TextBox textBox)
                 textBox.SelectAll();
         }
     }

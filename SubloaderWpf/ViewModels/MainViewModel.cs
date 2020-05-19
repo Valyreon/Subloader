@@ -31,8 +31,8 @@ namespace SubloaderWpf.ViewModels
             suppliers.Add(new OpenSubtitles());
 
             StatusText = "Open a video file.";
-            CurrentPath = (Application.Current as App).PathArg;
             SearchByHash = true;
+            CurrentPath = (Application.Current as App).PathArg;
         }
 
         public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
@@ -171,6 +171,7 @@ namespace SubloaderWpf.ViewModels
                         App.Current.Dispatcher.Invoke(() => this.SubtitleList.Add(x));
                         await Task.Run(() => Thread.Sleep(20));
                     }
+
                     if (this.SubtitleList.Count > 0)
                     {
                         this.StatusText = "Select a subtitle and click Download.";
