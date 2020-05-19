@@ -41,6 +41,7 @@ namespace SuppliersLibrary.OpenSubtitles
             if(byHash)
             {
                 var responseHash = await client.PostAsync(this.FormHashSearchUrl(path), null);
+                CheckStatus(responseHash);
                 string responseHashBody = await responseHash.Content.ReadAsStringAsync(); // this is json string
                 var resultHash = JsonConvert.DeserializeObject<IList<OSItem>>(responseHashBody).ToList();
 
@@ -50,6 +51,7 @@ namespace SuppliersLibrary.OpenSubtitles
             if(byName)
             {
                 var responseQuery = await client.PostAsync(this.FormQuerySearchUrl(path), null);
+                CheckStatus(responseQuery);
                 string responseQueryBody = await responseQuery.Content.ReadAsStringAsync(); // this is json string
                 var resultQuery = JsonConvert.DeserializeObject<IList<OSItem>>(responseQueryBody).ToList();
 
@@ -87,6 +89,14 @@ namespace SuppliersLibrary.OpenSubtitles
 
             return baseRestUrl
                 + $"/query-{HttpUtility.UrlEncode(nameString)}";
+        }
+
+        private void CheckStatus(HttpResponseMessage msg)
+        {
+            if(msg.IsSuccessStatusCode == false)
+            {
+                throw new ApplicationException(msg.ReasonPhrase);
+            }
         }
     }
 }
