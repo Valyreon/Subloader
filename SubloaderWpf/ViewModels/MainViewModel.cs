@@ -19,6 +19,8 @@ namespace SubloaderWpf.ViewModels
         private readonly INavigator navigator;
         private string statusText;
         private string currentPath;
+        private bool searchByName;
+        private bool searchByHash;
 
         private readonly List<ISubtitleSupplier> suppliers = new List<ISubtitleSupplier>();
 
@@ -30,6 +32,7 @@ namespace SubloaderWpf.ViewModels
 
             StatusText = "Open a video file.";
             CurrentPath = (Application.Current as App).PathArg;
+            SearchByHash = true;
         }
 
         public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
@@ -59,6 +62,32 @@ namespace SubloaderWpf.ViewModels
             set
             {
                 Set("StatusText", ref statusText, value);
+            }
+        }
+
+        public bool SearchByName
+        {
+            get
+            {
+                return searchByName;
+            }
+
+            set
+            {
+                Set("SearchByName", ref searchByName, value);
+            }
+        }
+
+        public bool SearchByHash
+        {
+            get
+            {
+                return searchByHash;
+            }
+
+            set
+            {
+                Set("SearchByHash", ref searchByHash, value);
             }
         }
 
@@ -163,7 +192,7 @@ namespace SubloaderWpf.ViewModels
             List<SubtitleEntry> result = new List<SubtitleEntry>();
             foreach(var supplier in suppliers)
             {
-                var results = await supplier.SearchAsync(currentPath);
+                var results = await supplier.SearchAsync(currentPath, new object[] { SearchByHash, SearchByName });
                 foreach(var item in results)
                 {
                     var settings = ApplicationSettings.GetInstance();

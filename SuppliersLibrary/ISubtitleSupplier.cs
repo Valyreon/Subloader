@@ -5,6 +5,6 @@ namespace SuppliersLibrary
 {
     public interface ISubtitleSupplier
     {
-        Task<IList<ISubtitleResultItem>> SearchAsync(string path);
+        Task<IList<ISubtitleResultItem>> SearchAsync(string path, object[] parameters = null);
     }
 }

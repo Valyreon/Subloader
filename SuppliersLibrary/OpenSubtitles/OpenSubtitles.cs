@@ -14,25 +14,49 @@ namespace SuppliersLibrary.OpenSubtitles
         private readonly string baseRestUrl = "https://rest.opensubtitles.org/search";
         private readonly string userAgentId = "SubLoad v1";
 
-        public async Task<IList<ISubtitleResultItem>> SearchAsync(string path)
+        public async Task<IList<ISubtitleResultItem>> SearchAsync(string path, object[] parameters = null)
         {
-            using (HttpClient client = new HttpClient { Timeout = new TimeSpan(0, 0, 0, 0, -1) })
-            {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Add("X-User-Agent", userAgentId);
+            using HttpClient client = new HttpClient { Timeout = new TimeSpan(0, 0, 0, 0, -1) };
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Add("X-User-Agent", userAgentId);
 
+            bool byHash = false, byName = false;
+
+            if(parameters == null)
+            {
+                byHash = true;
+            }
+            else if (parameters.Length == 2)
+            {
+                byHash = (bool)parameters[0];
+                byName = (bool)parameters[1];
+            }
+            else
+            {
+                throw new ArgumentException("Parameters should either be null or 2 provided.");
+            }
+
+            List<ISubtitleResultItem> results = new List<ISubtitleResultItem>();
+
+            if(byHash)
+            {
                 var responseHash = await client.PostAsync(this.FormHashSearchUrl(path), null);
                 string responseHashBody = await responseHash.Content.ReadAsStringAsync(); // this is json string
                 var resultHash = JsonConvert.DeserializeObject<IList<OSItem>>(responseHashBody).ToList();
 
-                // return ConvertList(resultHash);
+                results.AddRange(ConvertList(resultHash));
+            }
 
+            if(byName)
+            {
                 var responseQuery = await client.PostAsync(this.FormQuerySearchUrl(path), null);
                 string responseQueryBody = await responseQuery.Content.ReadAsStringAsync(); // this is json string
                 var resultQuery = JsonConvert.DeserializeObject<IList<OSItem>>(responseQueryBody).ToList();
 
-                return ConvertList(resultHash.Concat(resultQuery).Distinct());
+                results.AddRange(ConvertList(resultQuery));
             }
+
+            return results;
         }
 
         private List<ISubtitleResultItem> ConvertList(IEnumerable<OSItem> list)
