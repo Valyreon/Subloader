@@ -1,7 +1,8 @@
 !include "MUI2.nsh"
+Unicode True
 Name "Subloader Installer"
 OutFile "installer.exe"
-InstallDir "$PROGRAMFILES\Subloader"
+InstallDir "$PROGRAMFILES64\Subloader"
 
 ;--------------------------------
 ;defines
@@ -24,6 +25,8 @@ Section "Install"
   SetOutPath "$INSTDIR"
    
   File "SubLoad.exe"
+  
+  Call UninstallPrevious
    
   ;create start-menu items
   CreateDirectory "$SMPROGRAMS\Subloader"
@@ -93,12 +96,27 @@ Section "Uninstall"
 	;Delete Start Menu Shortcuts
 	Delete "$SMPROGRAMS\Subloader\*.*"
 	RmDir  "$SMPROGRAMS\Subloader"
-  
-  ;Delete stuff from AppData
-  RMDir /r "$APPDATA\SubLoader"
 
 	;Delete Uninstaller And Unistall Registry Entries
 	DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Subloader"
 	DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Subloader"
  
 SectionEnd
+
+Function UninstallPrevious
+
+    ; Check for uninstaller.
+    ReadRegStr $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Subloader" "UninstallString"
+
+    ${If} $R0 == ""
+        Goto Done
+    ${EndIf}
+
+    DetailPrint "Removing previous installation."    
+
+    ; Run the uninstaller silently.
+    ExecWait '"$R0 /S"'
+
+    Done:
+
+FunctionEnd
