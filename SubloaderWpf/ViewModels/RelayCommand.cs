@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Input;
 
 namespace SubloaderWpf.ViewModels
@@ -7,10 +7,7 @@ namespace SubloaderWpf.ViewModels
     {
         private readonly Action action;
 
-        public RelayCommand(Action action)
-        {
-            this.action = action;
-        }
+        public RelayCommand(Action action) => this.action = action;
 
         public event EventHandler CanExecuteChanged
         {
@@ -18,14 +15,8 @@ namespace SubloaderWpf.ViewModels
             remove { }
         }
 
-        public void Execute(object parameter)
-        {
-            this.action();
-        }
+        public void Execute(object parameter) => action();
 
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
+        public bool CanExecute(object parameter) => true;
     }
 }

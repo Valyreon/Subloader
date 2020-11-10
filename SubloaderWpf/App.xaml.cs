@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -28,17 +22,19 @@ namespace SubloaderWpf
                 new RoutedEventHandler(SelectAllText));
             if (e.Args.Length > 0)
             {
-                this.PathArg = e.Args[0];
+                PathArg = e.Args[0];
             }
             base.OnStartup(e);
         }
 
-        void SelectivelyIgnoreMouseButton(object sender, MouseButtonEventArgs e)
+        private void SelectivelyIgnoreMouseButton(object sender, MouseButtonEventArgs e)
         {
             // Find the TextBox
             DependencyObject parent = e.OriginalSource as UIElement;
             while (parent != null && !(parent is TextBox))
+            {
                 parent = VisualTreeHelper.GetParent(parent);
+            }
 
             if (parent != null)
             {
@@ -47,16 +43,18 @@ namespace SubloaderWpf
                 {
                     // If the text box is not yet focused, give it the focus and
                     // stop further processing of this click event.
-                    textBox.Focus();
+                    _ = textBox.Focus();
                     e.Handled = true;
                 }
             }
         }
 
-        void SelectAllText(object sender, RoutedEventArgs e)
+        private void SelectAllText(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource is TextBox textBox)
+            {
                 textBox.SelectAll();
+            }
         }
     }
 }

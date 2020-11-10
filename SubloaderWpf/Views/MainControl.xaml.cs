@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 
 namespace SubloaderWpf.Views
 {
@@ -7,9 +7,6 @@ namespace SubloaderWpf.Views
     /// </summary>
     public partial class MainControl : UserControl
     {
-        public MainControl()
-        {
-            InitializeComponent();
-        }
+        public MainControl() => InitializeComponent();
     }
 }

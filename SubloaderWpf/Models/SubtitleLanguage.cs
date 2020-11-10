@@ -1,8 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SubloaderWpf.Models
 {
@@ -11,7 +7,7 @@ namespace SubloaderWpf.Models
         public string Name { get; }
         public string Code { get; }
 
-        private static readonly List<SubtitleLanguage> allLanguages = new List<SubtitleLanguage>()
+        public static IEnumerable<SubtitleLanguage> AllLanguages { get; } = new List<SubtitleLanguage>()
         {
             new SubtitleLanguage("Afar", "aar"),
             new SubtitleLanguage("Abkhazian", "abk"),
@@ -489,12 +485,10 @@ namespace SubloaderWpf.Models
             new SubtitleLanguage("Extremaduran", "ext"),
         };
 
-        public static IEnumerable<SubtitleLanguage> AllLanguages { get => allLanguages.AsEnumerable(); }
-
         public SubtitleLanguage(string name, string code)
         {
-            this.Name = name;
-            this.Code = code;
+            Name = name;
+            Code = code;
         }
     }
 }

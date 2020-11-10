@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +16,7 @@ namespace SuppliersLibrary.OpenSubtitles
 
         public async Task<IList<ISubtitleResultItem>> SearchAsync(string path, object[] parameters = null)
         {
-            using HttpClient client = new HttpClient { Timeout = new TimeSpan(0, 0, 0, 0, -1) };
+            using var client = new HttpClient { Timeout = new TimeSpan(0, 0, 0, 0, -1) };
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Add("X-User-Agent", userAgentId);
 
@@ -36,13 +36,13 @@ namespace SuppliersLibrary.OpenSubtitles
                 throw new ArgumentException("Parameters should either be null or 2 provided.");
             }
 
-            List<ISubtitleResultItem> results = new List<ISubtitleResultItem>();
+            var results = new List<ISubtitleResultItem>();
 
             if(byHash)
             {
-                var responseHash = await client.PostAsync(this.FormHashSearchUrl(path), null);
+                var responseHash = await client.PostAsync(FormHashSearchUrl(path), null);
                 CheckStatus(responseHash);
-                string responseHashBody = await responseHash.Content.ReadAsStringAsync(); // this is json string
+                var responseHashBody = await responseHash.Content.ReadAsStringAsync(); // this is json string
                 var resultHash = JsonConvert.DeserializeObject<IList<OSItem>>(responseHashBody).ToList();
 
                 results.AddRange(ConvertList(resultHash));
@@ -50,9 +50,9 @@ namespace SuppliersLibrary.OpenSubtitles
 
             if(byName)
             {
-                var responseQuery = await client.PostAsync(this.FormQuerySearchUrl(path), null);
+                var responseQuery = await client.PostAsync(FormQuerySearchUrl(path), null);
                 CheckStatus(responseQuery);
-                string responseQueryBody = await responseQuery.Content.ReadAsStringAsync(); // this is json string
+                var responseQueryBody = await responseQuery.Content.ReadAsStringAsync(); // this is json string
                 var resultQuery = JsonConvert.DeserializeObject<IList<OSItem>>(responseQueryBody).ToList();
 
                 results.AddRange(ConvertList(resultQuery));
@@ -63,7 +63,7 @@ namespace SuppliersLibrary.OpenSubtitles
 
         private List<ISubtitleResultItem> ConvertList(IEnumerable<OSItem> list)
         {
-            List<ISubtitleResultItem> result = new List<ISubtitleResultItem>();
+            var result = new List<ISubtitleResultItem>();
             foreach (var x in list)
             {
                 result.Add(x);
@@ -74,7 +74,7 @@ namespace SuppliersLibrary.OpenSubtitles
         private string FormHashSearchUrl(string path)
         {
             var moviehash = Hasher.ToHexadecimal(Hasher.ComputeMovieHash(path));
-            FileInfo file = new FileInfo(path);
+            var file = new FileInfo(path);
             var movieByteSize = file.Length;
 
             return baseRestUrl
@@ -84,8 +84,8 @@ namespace SuppliersLibrary.OpenSubtitles
 
         private string FormQuerySearchUrl(string path)
         {
-            FileInfo file = new FileInfo(path);
-            string nameString = file.Name.Replace('.', ' ');
+            var file = new FileInfo(path);
+            var nameString = file.Name.Replace('.', ' ');
 
             return baseRestUrl
                 + $"/query-{HttpUtility.UrlEncode(nameString)}";

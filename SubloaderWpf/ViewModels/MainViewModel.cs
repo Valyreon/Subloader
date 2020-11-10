@@ -1,7 +1,3 @@
-﻿using Microsoft.Win32;
-using SubloaderWpf.Models;
-using SuppliersLibrary;
-using SuppliersLibrary.OpenSubtitles;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
+using SubloaderWpf.Models;
+using SuppliersLibrary;
+using SuppliersLibrary.OpenSubtitles;
 
 namespace SubloaderWpf.ViewModels
 {
@@ -41,7 +41,7 @@ namespace SubloaderWpf.ViewModels
 
         public string CurrentPath
         {
-            get { return currentPath; }
+            get => currentPath;
             set
             {
                 currentPath = value;
@@ -54,98 +54,83 @@ namespace SubloaderWpf.ViewModels
 
         public string StatusText
         {
-            get
-            {
-                return statusText;
-            }
+            get => statusText;
 
-            set
-            {
-                Set("StatusText", ref statusText, value);
-            }
+            set => Set("StatusText", ref statusText, value);
         }
 
         public bool SearchByName
         {
-            get
-            {
-                return searchByName;
-            }
+            get => searchByName;
 
-            set
-            {
-                Set("SearchByName", ref searchByName, value);
-            }
+            set => Set("SearchByName", ref searchByName, value);
         }
 
         public bool SearchByHash
         {
-            get
-            {
-                return searchByHash;
-            }
+            get => searchByHash;
 
-            set
-            {
-                Set("SearchByHash", ref searchByHash, value);
-            }
+            set => Set("SearchByHash", ref searchByHash, value);
         }
 
-        public ICommand ChooseFileCommand { get => new RelayCommand(ChooseFile); }
-        public ICommand RefreshCommand { get => new RelayCommand(Refresh); }
-        public ICommand SettingsCommand { get => new RelayCommand(GoToSettings); }
-        public ICommand DownloadCommand { get => new RelayCommand(Download); }
+        public ICommand ChooseFileCommand => new RelayCommand(ChooseFile);
+        public ICommand RefreshCommand => new RelayCommand(Refresh);
+        public ICommand SettingsCommand => new RelayCommand(GoToSettings);
+        public ICommand DownloadCommand => new RelayCommand(Download);
 
         public void ChooseFile()
         {
-            OpenFileDialog fileChooseDialog = new OpenFileDialog
+            var fileChooseDialog = new OpenFileDialog
             {
                 Filter = "Video files |*.wmv; *.3g2; *.3gp; *.3gp2; *.3gpp; *.amv; *.asf;  *.avi; *.bin; *.cue; *.divx; *.dv; *.flv; *.gxf; *.iso; *.m1v; *.m2v; *.m2t; *.m2ts; *.m4v; " +
                           " *.mkv; *.mov; *.mp2; *.mp2v; *.mp4; *.mp4v; *.mpa; *.mpe; *.mpeg; *.mpeg1; *.mpeg2; *.mpeg4; *.mpg; *.mpv2; *.mts; *.nsv; *.nuv; *.ogg; *.ogm; *.ogv; *.ogx; *.ps; *.rec; *.rm; *.rmvb; *.tod; *.ts; *.tts; *.vob; *.vro; *.webm; *.dat; ",
                 CheckFileExists = true,
                 CheckPathExists = true
             };
-            fileChooseDialog.ShowDialog();
+            _ = fileChooseDialog.ShowDialog();
             try
             {
-                FileInfo fileInfo = new FileInfo(fileChooseDialog.FileName);
-                this.SubtitleList.Clear();
+                var fileInfo = new FileInfo(fileChooseDialog.FileName);
+                SubtitleList.Clear();
                 CurrentPath = fileChooseDialog.FileName;
             }
             catch (Exception)
             {
-                this.StatusText = "Open a video file.";
+                StatusText = "Open a video file.";
             }
         }
 
         public void GoToSettings()
         {
-            SettingsViewModel settingsControl = new SettingsViewModel(navigator);
+            var settingsControl = new SettingsViewModel(navigator);
             navigator.GoToControl(settingsControl);
         }
 
         public async void Refresh()
         {
-            if (this.CurrentPath != null)
+            if (CurrentPath != null)
             {
-                await Task.Run(() => this.ProcessFileAsync());
+                await Task.Run(() => ProcessFileAsync());
             }
         }
 
         public void Download()
         {
             if (SelectedItem == null)
+            {
                 return;
+            }
+
             try
             {
-                this.StatusText = "Downloading...";
-                SelectedItem.Model.Download(Path.ChangeExtension(this.CurrentPath, SelectedItem.Model.Format));
-                this.StatusText = "Subtitle downloaded.";
+                StatusText = "Downloading...";
+                SelectedItem.Model.Download(Path.ChangeExtension(CurrentPath, SelectedItem.Model.Format));
+                StatusText = "Subtitle downloaded.";
             }
             catch (Exception)
             {
                 //this.StatusText = ex.Message;//"Error while downloading. Try again.";
-                this.StatusText = "Error while downloading.";
+                StatusText = "Error while downloading.";
             }
         }
 
@@ -154,8 +139,8 @@ namespace SubloaderWpf.ViewModels
             try
             {
                 StatusText = "Searching subtitles...";
-                App.Current.Dispatcher.Invoke(() => this.SubtitleList.Clear());
-                var results = await this.SearchSuppliers();
+                App.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
+                var results = await SearchSuppliers();
                 if (results == null)
                 {
                     StatusText = "Server error. Try refreshing.";
@@ -168,17 +153,17 @@ namespace SubloaderWpf.ViewModels
                 {
                     foreach (var x in results)
                     {
-                        App.Current.Dispatcher.Invoke(() => this.SubtitleList.Add(x));
+                        App.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
                         await Task.Run(() => Thread.Sleep(20));
                     }
 
-                    if (this.SubtitleList.Count > 0)
+                    if (SubtitleList.Count > 0)
                     {
-                        this.StatusText = "Select a subtitle and click Download.";
+                        StatusText = "Select a subtitle and click Download.";
                     }
                     else
                     {
-                        this.StatusText = "No subtitles found.";
+                        StatusText = "No subtitles found.";
                     }
                 }
             }
@@ -190,14 +175,16 @@ namespace SubloaderWpf.ViewModels
 
         private async Task<List<SubtitleEntry>> SearchSuppliers()
         {
-            List<SubtitleEntry> result = new List<SubtitleEntry>();
+            var result = new List<SubtitleEntry>();
             foreach(var supplier in suppliers)
             {
                 var results = await supplier.SearchAsync(currentPath, new object[] { SearchByHash, SearchByName });
                 foreach(var item in results)
                 {
                     var settings = ApplicationSettings.GetInstance();
-                    if (settings.WantedLanguages == null || settings.WantedLanguages.Count == 0 || settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
+                    if (settings.WantedLanguages == null ||
+                        settings.WantedLanguages.Count == 0 ||
+                        settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
                     {
                         result.Add(new SubtitleEntry(item));
                     }

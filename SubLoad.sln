@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SubloaderWpf", "SubloaderWpf\SubloaderWpf.csproj", "{2793A000-A5EE-47FB-8AD3-5952FFFC3C05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuppliersLibrary", "SuppliersLibrary\SuppliersLibrary.csproj", "{71FD54B9-BA12-4557-B1BD-3FC54DF800FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuppliersLibrary", "SuppliersLibrary\SuppliersLibrary.csproj", "{71FD54B9-BA12-4557-B1BD-3FC54DF800FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{63B9A7FC-E701-4B87-896B-C49031E68AD8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,10 +1,8 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
-using System.Text;
 
 namespace SuppliersLibrary.OpenSubtitles
 {
@@ -61,20 +59,20 @@ namespace SuppliersLibrary.OpenSubtitles
         [JsonProperty("SubtitlesLink")]
         public string SubtitlesLink { get; set; }
 
-        public string Language => this.LanguageName;
+        public string Language => LanguageName;
 
-        public string Name => this.SubFileName;
+        public string Name => SubFileName;
 
-        public string Format => this.SubFormat;
+        public string Format => SubFormat;
 
         public void Download(string savePath)
         {
             using var client = new WebClient();
-            using MemoryStream compressedStream = new MemoryStream(client.DownloadData(this.SubDownloadLink));
-            using GZipStream zipStream = new GZipStream(compressedStream, CompressionMode.Decompress);
-            using MemoryStream uncompressed = new MemoryStream();
+            using var compressedStream = new MemoryStream(client.DownloadData(SubDownloadLink));
+            using var zipStream = new GZipStream(compressedStream, CompressionMode.Decompress);
+            using var uncompressed = new MemoryStream();
 
-            zipStream.CopyToAsync(uncompressed);
+            _ = zipStream.CopyToAsync(uncompressed);
 
             File.WriteAllBytes(savePath, uncompressed.ToArray());
         }
@@ -82,7 +80,9 @@ namespace SuppliersLibrary.OpenSubtitles
         public bool Equals(OSItem other)
         {
             if (SubHash == other.SubHash)
+            {
                 return true;
+            }
 
             return false;
         }
