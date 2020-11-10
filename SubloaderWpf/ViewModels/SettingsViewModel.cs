@@ -1,4 +1,5 @@
 using SubloaderWpf.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -100,6 +101,9 @@ namespace SubloaderWpf.ViewModels
         public ICommand AddCommand => new RelayCommand(Add);
         public ICommand DeleteCommand => new RelayCommand(Delete);
         public ICommand SaveCommand => new RelayCommand(SaveAndBack);
+        public ICommand CancelCommand => new RelayCommand(Cancel);
+
+        private void Cancel() => navigator.GoToPreviousControl();
 
         public void Add()
         {
