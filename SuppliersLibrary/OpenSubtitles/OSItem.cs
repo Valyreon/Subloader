@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Text;
 
@@ -67,10 +69,14 @@ namespace SuppliersLibrary.OpenSubtitles
 
         public void Download(string savePath)
         {
-            using (var client = new WebClient())
-            {
-                client.DownloadFileAsync(new Uri(this.SubDownloadLink), savePath);
-            }
+            using var client = new WebClient();
+            using MemoryStream compressedStream = new MemoryStream(client.DownloadData(this.SubDownloadLink));
+            using GZipStream zipStream = new GZipStream(compressedStream, CompressionMode.Decompress);
+            using MemoryStream uncompressed = new MemoryStream();
+
+            zipStream.CopyToAsync(uncompressed);
+
+            File.WriteAllBytes(savePath, uncompressed.ToArray());
         }
 
         public bool Equals(OSItem other)
