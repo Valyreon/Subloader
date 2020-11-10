@@ -93,6 +93,9 @@ Section "Uninstall"
 	;Delete Start Menu Shortcuts
 	Delete "$SMPROGRAMS\Subloader\*.*"
 	RmDir  "$SMPROGRAMS\Subloader"
+  
+  ;Delete stuff from AppData
+  RMDir /r "$APPDATA\*"
 
 	;Delete Uninstaller And Unistall Registry Entries
 	DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Subloader"
