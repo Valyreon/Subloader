@@ -95,7 +95,7 @@ Section "Uninstall"
 	RmDir  "$SMPROGRAMS\Subloader"
   
   ;Delete stuff from AppData
-  RMDir /r "$APPDATA\*"
+  RMDir /r "$APPDATA\SubLoader"
 
 	;Delete Uninstaller And Unistall Registry Entries
 	DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Subloader"

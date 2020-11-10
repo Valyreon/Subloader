@@ -116,7 +116,7 @@ namespace SubloaderWpf.ViewModels
             }
         }
 
-        public void Download()
+        public async void Download()
         {
             if (SelectedItem == null)
             {
@@ -126,12 +126,12 @@ namespace SubloaderWpf.ViewModels
             try
             {
                 StatusText = "Downloading...";
+                await Task.Run(() => Thread.Sleep(20));
                 SelectedItem.Model.Download(Path.ChangeExtension(CurrentPath, SelectedItem.Model.Format));
                 StatusText = "Subtitle downloaded.";
             }
             catch (Exception)
             {
-                //this.StatusText = ex.Message;//"Error while downloading. Try again.";
                 StatusText = "Error while downloading.";
                 SystemSounds.Hand.Play();
             }
@@ -162,7 +162,7 @@ namespace SubloaderWpf.ViewModels
 
                     if (SubtitleList.Count > 0)
                     {
-                        StatusText = "Doubleclick subtitle, or select and click Download.";
+                        StatusText = "Use button or doubleclick to download.";
                     }
                     else
                     {
