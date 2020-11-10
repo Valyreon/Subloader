@@ -1,4 +1,4 @@
-﻿namespace SubloaderWpf.ViewModels
+namespace SubloaderWpf.ViewModels
 {
     public class TheWindowViewModel : ViewModelBase, INavigator
     {
@@ -10,33 +10,24 @@
         /// Initializes a new instance of the <see cref="GeneralViewModel"/>.
         /// </summary>
         /// <param name="thisWindow">Window in which all the UserControls are to be shown in.</param>
-        public TheWindowViewModel()
-        {
-            this.CurrentControl = new MainViewModel(this);
-        }
+        public TheWindowViewModel() => CurrentControl = new MainViewModel(this);
 
         public object CurrentControl
         {
-            get
-            {
-                return this.currentControl;
-            }
+            get => currentControl;
 
             internal set
             {
-                previousControl = this.currentControl;
+                previousControl = currentControl;
                 Set("CurrentControl", ref currentControl, value);
             }
         }
 
-        public void GoToControl(object control)
-        {
-            this.CurrentControl = control;
-        }
+        public void GoToControl(object control) => CurrentControl = control;
 
         public void GoToPreviousControl()
         {
-            this.CurrentControl = previousControl;
+            CurrentControl = previousControl;
             previousControl = null;
         }
     }

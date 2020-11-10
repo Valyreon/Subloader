@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,29 +7,23 @@ namespace SubloaderWpf.Models
 {
     public class ApplicationSettings
     {
-        private static ApplicationSettings _instance;
+        private static ApplicationSettings instance;
 
         public static ApplicationSettings GetInstance()
         {
-            if (_instance == null)
+            if (instance == null)
             {
                 Refresh();
             }
-            return _instance;
+            return instance;
         }
 
-        public static void Refresh()
-        {
-            _instance = LoadApplicationSettings();
-        }
+        public static void Refresh() => instance = LoadApplicationSettings();
 
         private List<SubtitleLanguage> wantedLanguages;
         public List<SubtitleLanguage> WantedLanguages
         {
-            get
-            {
-                return wantedLanguages;
-            }
+            get => wantedLanguages;
             set
             {
                 wantedLanguages = value;
@@ -37,25 +31,22 @@ namespace SubloaderWpf.Models
             }
         }
 
-        private ApplicationSettings(List<SubtitleLanguage> langWant)
-        {
-            wantedLanguages = langWant;
-        }
+        private ApplicationSettings(List<SubtitleLanguage> langWant) => wantedLanguages = langWant;
 
         private static ApplicationSettings LoadApplicationSettings()
         {
             var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.cfg");
+            var pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.cfg");
             return LoadApplicationSettings(pathToDefaultConfig);
         }
 
         private static ApplicationSettings LoadApplicationSettings(string path)
         {
-            List<SubtitleLanguage> langs = new List<SubtitleLanguage>();
+            var langs = new List<SubtitleLanguage>();
 
             if (!File.Exists(path))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.Create(path).Close();
             }
 
@@ -75,20 +66,18 @@ namespace SubloaderWpf.Models
         private static void WriteApplicationSettings()
         {
             var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.cfg");
+            var pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.cfg");
             WriteApplicationSettings(pathToDefaultConfig);
         }
 
         private static void WriteApplicationSettings(string path)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            using (var fileStream = new FileStream(path, FileMode.Create))
-            using (var writer = new StreamWriter(fileStream))
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
+            using var fileStream = new FileStream(path, FileMode.Create);
+            using var writer = new StreamWriter(fileStream);
+            foreach (var x in GetInstance().WantedLanguages)
             {
-                foreach (var x in GetInstance().WantedLanguages)
-                {
-                    writer.WriteLine(x.Code);
-                }
+                writer.WriteLine(x.Code);
             }
         }
     }

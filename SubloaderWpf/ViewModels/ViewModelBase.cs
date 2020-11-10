@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 namespace SubloaderWpf.ViewModels
 {
@@ -12,9 +12,7 @@ namespace SubloaderWpf.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void RaisePropertyChanged(string propertyName)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        protected void RaisePropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

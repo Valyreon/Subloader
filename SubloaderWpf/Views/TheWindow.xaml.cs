@@ -1,4 +1,4 @@
-﻿using SubloaderWpf.ViewModels;
+using SubloaderWpf.ViewModels;
 using System.Windows;
 
 namespace SubloaderWpf.Views
@@ -10,8 +10,8 @@ namespace SubloaderWpf.Views
     {
         public TheWindow()
         {
-            this.InitializeComponent();
-            this.DataContext = new TheWindowViewModel();
+            InitializeComponent();
+            DataContext = new TheWindowViewModel();
         }
     }
 }

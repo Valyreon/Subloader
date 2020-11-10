@@ -1,4 +1,5 @@
-﻿using SubloaderWpf.Models;
+using SubloaderWpf.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -14,15 +15,15 @@ namespace SubloaderWpf.ViewModels
         private SubtitleLanguage selectedWantedLanguage;
         public SubtitleLanguage SelectedWantedLanguage
         {
-            get
-            {
-                return selectedWantedLanguage;
-            }
+            get => selectedWantedLanguage;
 
             set
             {
                 if (value != null && SelectedLanguage != null)
+                {
                     Set("SelectedLanguage", ref selectedLanguage, null);
+                }
+
                 Set("SelectedWantedLanguage", ref selectedWantedLanguage, value);
                 RaisePropertyChanged("IsWantedLanguageSelected");
             }
@@ -31,15 +32,15 @@ namespace SubloaderWpf.ViewModels
         private SubtitleLanguage selectedLanguage;
         public SubtitleLanguage SelectedLanguage
         {
-            get
-            {
-                return selectedLanguage;
-            }
+            get => selectedLanguage;
 
             set
             {
                 if (value != null && SelectedWantedLanguage != null)
+                {
                     Set("SelectedWantedLanguage", ref selectedWantedLanguage, null);
+                }
+
                 Set("SelectedLanguage", ref selectedLanguage, value);
                 RaisePropertyChanged("IsLanguageSelected");
             }
@@ -60,18 +61,15 @@ namespace SubloaderWpf.ViewModels
         private string searchText;
         public string SearchText
         {
-            get
-            {
-                return searchText;
-            }
+            get => searchText;
 
             set
             {
                 searchText = value;
                 LanguageList.Clear();
-                foreach(var x in SubtitleLanguage.AllLanguages)
+                foreach (var x in SubtitleLanguage.AllLanguages)
                 {
-                    if(x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Contains(x))
+                    if (x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Contains(x))
                     {
                         LanguageList.Add(x);
                     }
@@ -100,16 +98,19 @@ namespace SubloaderWpf.ViewModels
             SelectedWantedLanguage = null;
         }
 
-        public ICommand AddCommand { get => new RelayCommand(Add); }
-        public ICommand DeleteCommand { get => new RelayCommand(Delete); }
-        public ICommand SaveCommand { get => new RelayCommand(SaveAndBack); }
+        public ICommand AddCommand => new RelayCommand(Add);
+        public ICommand DeleteCommand => new RelayCommand(Delete);
+        public ICommand SaveCommand => new RelayCommand(SaveAndBack);
+        public ICommand CancelCommand => new RelayCommand(Cancel);
+
+        private void Cancel() => navigator.GoToPreviousControl();
 
         public void Add()
         {
             if (SelectedLanguage != null)
             {
                 var selected = SelectedLanguage;
-                LanguageList.Remove(selected);
+                _ = LanguageList.Remove(selected);
                 WantedLanguageList.Add(selected);
             }
         }
@@ -119,7 +120,7 @@ namespace SubloaderWpf.ViewModels
             if (SelectedWantedLanguage != null)
             {
                 var selected = SelectedWantedLanguage;
-                WantedLanguageList.Remove(selected);
+                _ = WantedLanguageList.Remove(selected);
                 LanguageList.Add(selected);
                 SearchText = SearchText;
                 SelectedWantedLanguage = WantedLanguageList.Count == 0 ? null : WantedLanguageList[0];
@@ -128,7 +129,7 @@ namespace SubloaderWpf.ViewModels
 
         public void SaveAndBack()
         {
-            List<SubtitleLanguage> wanted = new List<SubtitleLanguage>();
+            var wanted = new List<SubtitleLanguage>();
             foreach(var x in WantedLanguageList)
             {
                 wanted.Add(x);
