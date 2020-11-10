@@ -5,7 +5,7 @@
 ![](https://img.shields.io/badge/License-MIT-blue.svg)
 ![](https://img.shields.io/badge/Release-1.2.0-blue.svg)
 
-**Subloader** is a simple and minimalistic software written in **C#** and **.NET Core 3.0** that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using REST API for searching and downloading subtitles.
+**Subloader** is a simple and minimalistic software written in **C#** and **.NET Core 3.1** that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using REST API for searching and downloading subtitles.
 
 Subloader searches subtitles by using a special file hash. This enables the user to get the best possible search results for their video file. **Installer** will also add an entry to **right click context menu** of **.avi**, **.mkv** and **.mp4** files for easy access. **Note:** This feature might not work on Windows 7.
 
@@ -13,7 +13,7 @@ Search and download is provided by **[Opensubtitles](http://www.opensubtitles.or
 
 ### Installation
 
-Subloader requires **[.NET Framework 4.6.1](https://www.microsoft.com/net/download/thank-you/net461)** to run. It was developed in Visual Studio Community 2017.
+Subloader requires **[.NET Core 3.1 Runtime](https://dotnet.microsoft.com/download)** to run. It was developed in Visual Studio Community 2019.
 
 Download the **[latest version of Subloader](https://github.com/Valyreon/Subloader/releases)**, run the setup and that's it. You can now right click your video file and get your subtitles in a matter of seconds. Enjoy!
 
@@ -25,7 +25,7 @@ After the search is complete, you can select a subtitle from the list and click 
 
 When you click 'Download' Subloader will download subtitle in the same directory where video file is, under the same name and appropriate extension. If there is an existing subtitle with the same name, it will overwrite it.
 
-Depending on the time of day, opensubtitles server will sometimes be busy and you will get a 'Server error'. In that case, just click 'Refresh' until it responds.
+Depending on the time of day, Opensubtitles server will sometimes be busy and you will get a 'Server error'. In that case, just click 'Refresh' until it responds.
 
 Installer will also add 'Find subtitles' menu in right click context menu of .avi, .mkv and .mp4 files for easy access.
 
@@ -48,6 +48,8 @@ Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Fla
   ~~Refactor and restructure Subloader so it uses Model-View-ViewModel design.~~
   
 - **Interfacing with more subtitle databases**
+
+- **Migrate to .NET 5**
   
 License
 ----
