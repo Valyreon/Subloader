@@ -107,7 +107,7 @@ namespace SubloaderWpf.ViewModels
 
         public void Add()
         {
-            if (SelectedLanguage != null)
+            while (SelectedLanguage != null)
             {
                 var selected = SelectedLanguage;
                 _ = LanguageList.Remove(selected);
@@ -117,13 +117,12 @@ namespace SubloaderWpf.ViewModels
 
         public void Delete()
         {
-            if (SelectedWantedLanguage != null)
+            while (SelectedWantedLanguage != null)
             {
                 var selected = SelectedWantedLanguage;
                 _ = WantedLanguageList.Remove(selected);
                 LanguageList.Add(selected);
                 SearchText = SearchText;
-                SelectedWantedLanguage = WantedLanguageList.Count == 0 ? null : WantedLanguageList[0];
             }
         }
 
