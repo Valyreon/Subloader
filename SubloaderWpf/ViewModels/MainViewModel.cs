@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -97,6 +98,7 @@ namespace SubloaderWpf.ViewModels
             catch (Exception)
             {
                 StatusText = "Open a video file.";
+                SystemSounds.Hand.Play();
             }
         }
 
@@ -131,6 +133,7 @@ namespace SubloaderWpf.ViewModels
             {
                 //this.StatusText = ex.Message;//"Error while downloading. Try again.";
                 StatusText = "Error while downloading.";
+                SystemSounds.Hand.Play();
             }
         }
 
@@ -159,7 +162,7 @@ namespace SubloaderWpf.ViewModels
 
                     if (SubtitleList.Count > 0)
                     {
-                        StatusText = "Select a subtitle and click Download.";
+                        StatusText = "Doubleclick subtitle, or select and click Download.";
                     }
                     else
                     {
@@ -170,6 +173,7 @@ namespace SubloaderWpf.ViewModels
             catch (Exception ex)
             {
                 StatusText = ex.Message;
+                SystemSounds.Hand.Play();
             }
         }
 
