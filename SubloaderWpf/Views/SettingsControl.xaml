@@ -5,15 +5,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:SubloaderWpf.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Width="502"
-    Height="473"
+    Width="500"
+    Height="493"
     Background="#e8e8e8"
     FontFamily="Segoe UI Semibold"
     RenderOptions.BitmapScalingMode="HighQuality"
     UseLayoutRounding="True"
     mc:Ignorable="d">
     <StackPanel Margin="10">
-        <Grid Height="416">
+        <Grid Height="436">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="6" />
@@ -99,7 +99,7 @@
                 Orientation="Horizontal">
                 <Label>Search:</Label>
                 <TextBox
-                    Width="166"
+                    Width="165"
                     Height="30"
                     VerticalAlignment="Top"
                     VerticalContentAlignment="Center"

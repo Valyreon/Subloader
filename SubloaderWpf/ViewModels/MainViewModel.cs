@@ -97,8 +97,7 @@ namespace SubloaderWpf.ViewModels
             }
             catch (Exception)
             {
-                StatusText = "Open a video file.";
-                SystemSounds.Hand.Play();
+
             }
         }
 
@@ -180,10 +179,10 @@ namespace SubloaderWpf.ViewModels
         private async Task<List<SubtitleEntry>> SearchSuppliers()
         {
             var result = new List<SubtitleEntry>();
-            foreach(var supplier in suppliers)
+            foreach (var supplier in suppliers)
             {
                 var results = await supplier.SearchAsync(currentPath, new object[] { SearchByHash, SearchByName });
-                foreach(var item in results)
+                foreach (var item in results)
                 {
                     var settings = ApplicationSettings.GetInstance();
                     if (settings.WantedLanguages == null ||
