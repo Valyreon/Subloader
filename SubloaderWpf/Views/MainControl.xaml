@@ -24,7 +24,6 @@
     <StackPanel Margin="0">
         <DataGrid
             Height="400"
-            AlternatingRowBackground="#f9f9f9"
             AutoGenerateColumns="False"
             Background="#f5f5f5"
             BorderBrush="#bbbbbb"
