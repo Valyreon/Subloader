@@ -18,7 +18,7 @@
     </UserControl.InputBindings>
     <UserControl.Resources>
         <ResourceDictionary>
-            <Converters:ColorToLighterColorConverter x:Key="ColorConverter" />
+            <Converters:ColorBrightnessConverter x:Key="ColorConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel Margin="0">

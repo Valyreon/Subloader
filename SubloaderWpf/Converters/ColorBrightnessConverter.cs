@@ -5,13 +5,19 @@ using System.Windows.Media;
 
 namespace SubloaderWpf.Converters
 {
-    public class ColorToLighterColorConverter : IValueConverter
+    public class ColorBrightnessConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Color color)
+            if (parameter is null || !(parameter is string))
             {
-                return ChangeColorBrightness(color, 0.8F);
+                parameter = "0";
+            }
+
+            if (value is Color color && parameter is string rateStr)
+            {
+                var success = float.TryParse(rateStr, out var rate);
+                return success ? ChangeColorBrightness(color, rate) : value;
             }
 
             return null;
@@ -19,7 +25,19 @@ namespace SubloaderWpf.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException();
+            if (parameter is null || !(parameter is string))
+            {
+                parameter = "1";
+            }
+
+            if (value is Color color && parameter is string rateStr)
+            {
+                var success = float.TryParse(rateStr, out var rate);
+                rate = 1 - rate;
+                return success ? ChangeColorBrightness(color, rate) : value;
+            }
+
+            return null;
         }
 
         public static Color ChangeColorBrightness(Color color, float correctionFactor)

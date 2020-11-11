@@ -5,13 +5,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/interactivedesigner/2006"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <Converters:ColorToLighterColorConverter x:Key="ColorConverter" />
+    <Converters:ColorBrightnessConverter x:Key="ColorConverter" />
     <SolidColorBrush x:Key="MainDarkColor" Color="#333" />
     <SolidColorBrush x:Key="AccentColor" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color}" />
-    <SolidColorBrush x:Key="LighterAccentColor" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}}" />
+    <SolidColorBrush x:Key="MediumLightAccentColor" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.2}" />
+    <SolidColorBrush x:Key="LighterAccentColor" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.8}" />
 
-    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color}" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.15}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
 
     <Style x:Key="Body_Content_DataGrid_Centering" TargetType="{x:Type DataGridCell}">
@@ -29,7 +30,139 @@
         <Setter Property="Padding" Value="3,0,0,0" />
     </Style>
 
+    <!--#region CHECKBOX-->
+    <!--  This was all necessary to change a couple of checkbox colors -.-'  -->
+    <Style x:Key="FocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle
+                        Margin="2"
+                        SnapsToDevicePixels="true"
+                        Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                        StrokeDashArray="1 2"
+                        StrokeThickness="1" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="OptionMarkFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle
+                        Margin="14,0,0,0"
+                        SnapsToDevicePixels="true"
+                        Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                        StrokeDashArray="1 2"
+                        StrokeThickness="1" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <SolidColorBrush x:Key="OptionMark.Static.Background" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="OptionMark.Static.Border" Color="#FF707070" />
+    <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="#FF212121" />
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Background" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.8}" />
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Border" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.2}" />
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph" Color="#FF212121" />
+    <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="#FFD9ECFF" />
+    <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.2}" />
+    <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="#FF212121" />
+    <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="#FFE6E6E6" />
+    <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="#FFBCBCBC" />
+    <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="#FF707070" />
+    <Style TargetType="{x:Type CheckBox}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
+        <Setter Property="Background" Value="{StaticResource OptionMark.Static.Background}" />
+        <Setter Property="BorderBrush" Value="{StaticResource OptionMark.Static.Border}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Grid
+                        x:Name="templateRoot"
+                        Background="Transparent"
+                        SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="checkBoxBorder"
+                            Margin="1"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid x:Name="markGrid">
+                                <Path
+                                    x:Name="optionMark"
+                                    Margin="1"
+                                    Data="F1 M 9.97498,1.22334L 4.6983,9.09834L 4.52164,9.09834L 0,5.19331L 1.27664,3.52165L 4.255,6.08833L 8.33331,1.52588e-005L 9.97498,1.22334 Z "
+                                    Fill="{StaticResource OptionMark.Static.Glyph}"
+                                    Opacity="0"
+                                    Stretch="None" />
+                                <Rectangle
+                                    x:Name="indeterminateMark"
+                                    Margin="2"
+                                    Fill="{StaticResource OptionMark.Static.Glyph}"
+                                    Opacity="0" />
+                            </Grid>
+                        </Border>
+                        <ContentPresenter
+                            x:Name="contentPresenter"
+                            Grid.Column="1"
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Focusable="False"
+                            RecognizesAccessKey="True"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasContent" Value="true">
+                            <Setter Property="FocusVisualStyle" Value="{StaticResource OptionMarkFocusVisual}" />
+                            <Setter Property="Padding" Value="4,-1,0,0" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="checkBoxBorder" Property="Background" Value="{StaticResource OptionMark.MouseOver.Background}" />
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="{StaticResource OptionMark.MouseOver.Border}" />
+                            <Setter TargetName="optionMark" Property="Fill" Value="{StaticResource OptionMark.MouseOver.Glyph}" />
+                            <Setter TargetName="indeterminateMark" Property="Fill" Value="{StaticResource OptionMark.MouseOver.Glyph}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="checkBoxBorder" Property="Background" Value="{StaticResource OptionMark.Disabled.Background}" />
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="{StaticResource OptionMark.Disabled.Border}" />
+                            <Setter TargetName="optionMark" Property="Fill" Value="{StaticResource OptionMark.Disabled.Glyph}" />
+                            <Setter TargetName="indeterminateMark" Property="Fill" Value="{StaticResource OptionMark.Disabled.Glyph}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="checkBoxBorder" Property="Background" Value="{StaticResource OptionMark.Pressed.Background}" />
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="{StaticResource OptionMark.Pressed.Border}" />
+                            <Setter TargetName="optionMark" Property="Fill" Value="{StaticResource OptionMark.Pressed.Glyph}" />
+                            <Setter TargetName="indeterminateMark" Property="Fill" Value="{StaticResource OptionMark.Pressed.Glyph}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="optionMark" Property="Opacity" Value="1" />
+                            <Setter TargetName="indeterminateMark" Property="Opacity" Value="0" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="{x:Null}">
+                            <Setter TargetName="optionMark" Property="Opacity" Value="0" />
+                            <Setter TargetName="indeterminateMark" Property="Opacity" Value="1" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--#endregion-->
+
     <Style x:Key="DatagridStyle" TargetType="DataGrid">
+        <Setter Property="AlternationCount" Value="2" />
         <Style.Resources>
             <Style x:Key="ScrollBarThumbVertical" TargetType="{x:Type Thumb}">
                 <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -56,6 +189,39 @@
                 </Setter>
             </Style>
 
+            <Style x:Key="repeatButtonStyle" TargetType="{x:Type RepeatButton}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Border
+                                x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="{DynamicResource LighterAccentColor}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type DataGridRow}">
+                <Setter Property="Background" Value="White" />
+                <Style.Triggers>
+                    <Trigger Property="AlternationIndex" Value="1">
+                        <Setter Property="Background" Value="#f9f9f9" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource LighterAccentColor}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
             <Style TargetType="{x:Type ScrollBar}">
                 <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
                 <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
@@ -79,12 +245,6 @@
                                     Background="Transparent"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="0" />
-                                <RepeatButton
-                                    x:Name="PART_LineUpButton"
-                                    Width="0"
-                                    Height="0"
-                                    Command="{x:Static ScrollBar.LineUpCommand}"
-                                    IsEnabled="{TemplateBinding IsMouseOver}" />
                                 <Track
                                     x:Name="PART_Track"
                                     Grid.Row="1"
@@ -95,26 +255,21 @@
                                             Background="Transparent"
                                             BorderBrush="Transparent"
                                             BorderThickness="0"
-                                            Command="{x:Static ScrollBar.PageUpCommand}" />
+                                            Command="{x:Static ScrollBar.PageUpCommand}"
+                                            Style="{StaticResource repeatButtonStyle}" />
                                     </Track.DecreaseRepeatButton>
                                     <Track.IncreaseRepeatButton>
                                         <RepeatButton
                                             Background="Transparent"
                                             BorderBrush="Transparent"
                                             BorderThickness="0"
-                                            Command="{x:Static ScrollBar.PageDownCommand}" />
+                                            Command="{x:Static ScrollBar.PageDownCommand}"
+                                            Style="{StaticResource repeatButtonStyle}" />
                                     </Track.IncreaseRepeatButton>
                                     <Track.Thumb>
                                         <Thumb Style="{StaticResource ScrollBarThumbVertical}" />
                                     </Track.Thumb>
                                 </Track>
-                                <RepeatButton
-                                    x:Name="PART_LineDownButton"
-                                    Grid.Row="2"
-                                    Width="0"
-                                    Height="0"
-                                    Command="{x:Static ScrollBar.LineDownCommand}"
-                                    IsEnabled="{TemplateBinding IsMouseOver}" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
@@ -159,8 +314,8 @@
     </Style>
 
     <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
+        <Setter Property="Foreground" Value="{DynamicResource LighterAccentColor}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
-
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -188,11 +343,46 @@
                         <Trigger Property="IsPressed" Value="true">
                             <Setter TargetName="borderTemplate" Property="Border.BorderThickness" Value="2" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="borderTemplate" Property="BorderBrush" Value="#909090" />
+                            <Setter TargetName="borderTemplate" Property="TextBlock.Foreground" Value="#909090" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-
-        <Setter Property="Foreground" Value="{DynamicResource LighterAccentColor}" />
     </Style>
+
+    <Style TargetType="{x:Type TextBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border
+                        x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        SnapsToDevicePixels="True">
+                        <ScrollViewer
+                            x:Name="PART_ContentHost"
+                            Focusable="false"
+                            HorizontalScrollBarVisibility="Hidden"
+                            VerticalScrollBarVisibility="Hidden" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="border" Property="Opacity" Value="0.56" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource MediumLightAccentColor}" />
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="true">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
