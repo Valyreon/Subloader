@@ -56,7 +56,11 @@ namespace SubloaderWpf.Models
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    langs.Add(SubtitleLanguage.AllLanguages.Where(s => s.Code == line).First());
+                    var lang = SubtitleLanguage.AllLanguages.Where(s => s.Code == line).SingleOrDefault();
+                    if (lang != null)
+                    {
+                        langs.Add(lang);
+                    }
                 }
             }
 
