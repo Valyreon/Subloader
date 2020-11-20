@@ -31,8 +31,10 @@ namespace SubloaderWpf.ViewModels
             // Must first add suppliers before processing.
             suppliers.Add(new OpenSubtitles());
 
+            searchByHash = ApplicationSettings.GetInstance().IsByHashChecked;
+            searchByName = ApplicationSettings.GetInstance().IsByNameChecked;
+
             StatusText = "Open a video file.";
-            SearchByHash = true;
             CurrentPath = (Application.Current as App).PathArg;
         }
 
@@ -64,14 +66,23 @@ namespace SubloaderWpf.ViewModels
         {
             get => searchByName;
 
-            set => Set("SearchByName", ref searchByName, value);
+            set
+            {
+                Set("SearchByName", ref searchByName, value);
+                ApplicationSettings.GetInstance().IsByNameChecked = value;
+            }
         }
 
         public bool SearchByHash
         {
             get => searchByHash;
 
-            set => Set("SearchByHash", ref searchByHash, value);
+            set
+            {
+                Set("SearchByHash", ref searchByHash, value);
+                ApplicationSettings.GetInstance().IsByHashChecked = value;
+
+            }
         }
 
         public ICommand ChooseFileCommand => new RelayCommand(ChooseFile);

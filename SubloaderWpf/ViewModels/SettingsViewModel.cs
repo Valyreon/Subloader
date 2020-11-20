@@ -1,12 +1,12 @@
-using SubloaderWpf.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
+using SubloaderWpf.Models;
 
 namespace SubloaderWpf.ViewModels
 {
-    public class SettingsViewModel: ViewModelBase
+    public class SettingsViewModel : ViewModelBase
     {
         private readonly INavigator navigator;
         public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
@@ -69,7 +69,7 @@ namespace SubloaderWpf.ViewModels
                 LanguageList.Clear();
                 foreach (var x in SubtitleLanguage.AllLanguages)
                 {
-                    if (x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Contains(x))
+                    if (x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Any(w => w.Code == x.Code))
                     {
                         LanguageList.Add(x);
                     }
@@ -129,11 +129,12 @@ namespace SubloaderWpf.ViewModels
         public void SaveAndBack()
         {
             var wanted = new List<SubtitleLanguage>();
-            foreach(var x in WantedLanguageList)
+            foreach (var x in WantedLanguageList)
             {
                 wanted.Add(x);
             }
             ApplicationSettings.GetInstance().WantedLanguages = wanted;
+            ApplicationSettings.GetInstance().Save();
             navigator.GoToPreviousControl();
         }
     }

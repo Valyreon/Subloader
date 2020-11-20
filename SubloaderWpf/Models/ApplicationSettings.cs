@@ -1,13 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using Newtonsoft.Json;
 
 namespace SubloaderWpf.Models
 {
     public class ApplicationSettings
     {
         private static ApplicationSettings instance;
+
+        private bool isByNameChecked;
+        private bool isByHashChecked = true;
+
+        private ApplicationSettings(List<SubtitleLanguage> langWant) => WantedLanguages = langWant;
+
+        [JsonConstructor]
+        public ApplicationSettings()
+        {
+
+        }
 
         public static ApplicationSettings GetInstance()
         {
@@ -20,57 +31,76 @@ namespace SubloaderWpf.Models
 
         public static void Refresh() => instance = LoadApplicationSettings();
 
-        private List<SubtitleLanguage> wantedLanguages;
-        public List<SubtitleLanguage> WantedLanguages
+        public List<SubtitleLanguage> WantedLanguages { get; set; }
+
+        public bool IsDirty { get; private set; }
+
+        public bool IsByNameChecked
         {
-            get => wantedLanguages;
+            get => isByNameChecked;
+
             set
             {
-                wantedLanguages = value;
-                WriteApplicationSettings();
+                isByNameChecked = value;
+                IsDirty = true;
             }
         }
 
-        private ApplicationSettings(List<SubtitleLanguage> langWant) => wantedLanguages = langWant;
+        public bool IsByHashChecked
+        {
+            get => isByHashChecked;
+
+            set
+            {
+                isByHashChecked = value;
+                IsDirty = true;
+            }
+        }
 
         private static ApplicationSettings LoadApplicationSettings()
         {
             var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.cfg");
+            var pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.json");
             return LoadApplicationSettings(pathToDefaultConfig);
         }
 
         private static ApplicationSettings LoadApplicationSettings(string path)
         {
-            var langs = new List<SubtitleLanguage>();
-
             if (!File.Exists(path))
             {
                 _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.Create(path).Close();
             }
 
-            using (var fileStream = new FileStream(path, FileMode.Open))
-            using (var reader = new StreamReader(fileStream))
+            using var fileStream = new FileStream(path, FileMode.Open);
+            using var reader = new StreamReader(fileStream);
+
+            try
             {
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                var x = JsonConvert.DeserializeObject<ApplicationSettings>(reader.ReadToEnd());
+
+                if (x != null)
                 {
-                    var lang = SubtitleLanguage.AllLanguages.Where(s => s.Code == line).SingleOrDefault();
-                    if (lang != null)
-                    {
-                        langs.Add(lang);
-                    }
+                    x.IsDirty = false;
+                    return x;
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
-            return new ApplicationSettings(langs);
+            var ret = new ApplicationSettings(new List<SubtitleLanguage>())
+            {
+                IsDirty = true
+            };
+            return ret;
         }
 
         private static void WriteApplicationSettings()
         {
             var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.cfg");
+            var pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.json");
             WriteApplicationSettings(pathToDefaultConfig);
         }
 
@@ -79,10 +109,12 @@ namespace SubloaderWpf.Models
             _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
             using var fileStream = new FileStream(path, FileMode.Create);
             using var writer = new StreamWriter(fileStream);
-            foreach (var x in GetInstance().WantedLanguages)
-            {
-                writer.WriteLine(x.Code);
-            }
+            var settings = GetInstance();
+            var json = JsonConvert.SerializeObject(settings, Formatting.Indented);
+            settings.IsDirty = false;
+            writer.Write(json);
         }
+
+        public void Save() => WriteApplicationSettings();
     }
 }

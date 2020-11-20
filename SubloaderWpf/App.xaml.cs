@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using SubloaderWpf.Models;
 
 namespace SubloaderWpf
 {
@@ -54,6 +55,15 @@ namespace SubloaderWpf
             if (e.OriginalSource is TextBox textBox)
             {
                 textBox.SelectAll();
+            }
+        }
+
+        private void ApplicationExit(object sender, ExitEventArgs e)
+        {
+            var applicationSettings = ApplicationSettings.GetInstance();
+            if (applicationSettings.IsDirty)
+            {
+                applicationSettings.Save();
             }
         }
     }

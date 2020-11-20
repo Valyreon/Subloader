@@ -1,11 +1,13 @@
-﻿<Application x:Class="SubloaderWpf.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="Views/TheWindow.xaml">
+<Application
+    x:Class="SubloaderWpf.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Exit="ApplicationExit"
+    StartupUri="Views/TheWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="SimpleStyles.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="SimpleStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
