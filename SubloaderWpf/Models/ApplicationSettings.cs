@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -9,9 +9,27 @@ namespace SubloaderWpf.Models
     public class ApplicationSettings
     {
         private static ApplicationSettings instance;
-
         private bool isByNameChecked;
         private bool isByHashChecked = true;
+
+        public ApplicationSettings()
+        {
+        }
+
+        private ApplicationSettings(List<SubtitleLanguage> langWant) => WantedLanguages = langWant;
+
+        public static ApplicationSettings Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    Load();
+                }
+
+                return instance;
+            }
+        }
 
         public bool IsByNameChecked
         {
@@ -40,23 +58,17 @@ namespace SubloaderWpf.Models
 
         public IList<SubtitleLanguage> WantedLanguages { get; set; }
 
-        private ApplicationSettings(List<SubtitleLanguage> langWant) => WantedLanguages = langWant;
+        public static void Load() => instance = LoadApplicationSettings();
 
-        public ApplicationSettings() { }
+        public void Save() => WriteApplicationSettings();
 
-        public static ApplicationSettings Instance
+        public void SaveIfDirty()
         {
-            get
+            if (Instance.IsDirty)
             {
-                if (instance == null)
-                {
-                    Load();
-                }
-                return instance;
+                Save();
             }
         }
-
-        public static void Load() => instance = LoadApplicationSettings();
 
         private static ApplicationSettings LoadApplicationSettings()
         {
@@ -88,12 +100,11 @@ namespace SubloaderWpf.Models
             }
             catch (Exception)
             {
-
             }
 
             var ret = new ApplicationSettings(new List<SubtitleLanguage>())
             {
-                IsDirty = true
+                IsDirty = true,
             };
             return ret;
         }
@@ -116,16 +127,6 @@ namespace SubloaderWpf.Models
             var json = JsonSerializer.Serialize(Instance);
             Instance.IsDirty = false;
             writer.Write(json);
-        }
-
-        public void Save() => WriteApplicationSettings();
-
-        public void SaveIfDirty()
-        {
-            if (Instance.IsDirty)
-            {
-                Save();
-            }
         }
     }
 }

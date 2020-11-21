@@ -9,10 +9,35 @@ namespace SubloaderWpf.ViewModels
     public class SettingsViewModel : ViewModelBase
     {
         private readonly INavigator navigator;
+        private SubtitleLanguage selectedWantedLanguage;
+        private SubtitleLanguage selectedLanguage;
+        private string searchText;
+
+        public SettingsViewModel(INavigator navigator)
+        {
+            this.navigator = navigator;
+            var wantLangs = ApplicationSettings.Instance.WantedLanguages;
+            foreach (var x in SubtitleLanguage.AllLanguages)
+            {
+                LanguageList.Add(x);
+            }
+
+            if (wantLangs != null)
+            {
+                foreach (var x in wantLangs)
+                {
+                    WantedLanguageList.Add(x);
+                }
+            }
+
+            SelectedLanguage = null;
+            SelectedWantedLanguage = null;
+        }
+
         public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
+
         public ObservableCollection<SubtitleLanguage> WantedLanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
 
-        private SubtitleLanguage selectedWantedLanguage;
         public SubtitleLanguage SelectedWantedLanguage
         {
             get => selectedWantedLanguage;
@@ -29,7 +54,6 @@ namespace SubloaderWpf.ViewModels
             }
         }
 
-        private SubtitleLanguage selectedLanguage;
         public SubtitleLanguage SelectedLanguage
         {
             get => selectedLanguage;
@@ -58,7 +82,6 @@ namespace SubloaderWpf.ViewModels
             set { }
         }
 
-        private string searchText;
         public string SearchText
         {
             get => searchText;
@@ -74,38 +97,22 @@ namespace SubloaderWpf.ViewModels
                         LanguageList.Add(x);
                     }
                 }
+
                 Set("SearchText", ref searchText, value);
             }
         }
 
-        public SettingsViewModel(INavigator navigator)
-        {
-            this.navigator = navigator;
-            var wantLangs = ApplicationSettings.Instance.WantedLanguages;
-            foreach (var x in SubtitleLanguage.AllLanguages)
-            {
-                LanguageList.Add(x);
-            }
-
-            if (wantLangs != null)
-            {
-                foreach (var x in wantLangs)
-                {
-                    WantedLanguageList.Add(x);
-                }
-            }
-            SelectedLanguage = null;
-            SelectedWantedLanguage = null;
-        }
-
         public ICommand AddCommand => new RelayCommand(Add);
+
         public ICommand DeleteCommand => new RelayCommand(Delete);
+
         public ICommand SaveCommand => new RelayCommand(SaveAndBack);
+
         public ICommand CancelCommand => new RelayCommand(Cancel);
 
         private void Cancel() => navigator.GoToPreviousControl();
 
-        public void Add()
+        private void Add()
         {
             while (SelectedLanguage != null)
             {
@@ -115,7 +122,7 @@ namespace SubloaderWpf.ViewModels
             }
         }
 
-        public void Delete()
+        private void Delete()
         {
             while (SelectedWantedLanguage != null)
             {
@@ -126,13 +133,14 @@ namespace SubloaderWpf.ViewModels
             }
         }
 
-        public void SaveAndBack()
+        private void SaveAndBack()
         {
             var wanted = new List<SubtitleLanguage>();
             foreach (var x in WantedLanguageList)
             {
                 wanted.Add(x);
             }
+
             ApplicationSettings.Instance.WantedLanguages = wanted;
             ApplicationSettings.Instance.Save();
             navigator.GoToPreviousControl();

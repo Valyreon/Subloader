@@ -6,25 +6,30 @@ using SubloaderWpf.Models;
 
 namespace SubloaderWpf
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         public string PathArg { get; set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            EventManager.RegisterClassHandler(typeof(TextBox), TextBox.PreviewMouseLeftButtonDownEvent,
+            EventManager.RegisterClassHandler(
+                typeof(TextBox),
+                TextBox.PreviewMouseLeftButtonDownEvent,
                 new MouseButtonEventHandler(SelectivelyIgnoreMouseButton));
-            EventManager.RegisterClassHandler(typeof(TextBox), TextBox.GotKeyboardFocusEvent,
+            EventManager.RegisterClassHandler(
+                typeof(TextBox),
+                TextBox.GotKeyboardFocusEvent,
                 new RoutedEventHandler(SelectAllText));
-            EventManager.RegisterClassHandler(typeof(TextBox), TextBox.MouseDoubleClickEvent,
+            EventManager.RegisterClassHandler(
+                typeof(TextBox),
+                TextBox.MouseDoubleClickEvent,
                 new RoutedEventHandler(SelectAllText));
+
             if (e.Args.Length > 0)
             {
                 PathArg = e.Args[0];
             }
+
             base.OnStartup(e);
         }
 

@@ -2,16 +2,13 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
-using System.Text.Json.Serialization;
 
 namespace SuppliersLibrary.OpenSubtitles
 {
     public class OSItem : ISubtitleResultItem, IEquatable<OSItem>
     {
-        [JsonPropertyName("IDSubMovieFile")]
         public string IDSubMovieFile { get; set; }
 
-        [JsonPropertyName("MovieHash")]
         public string MovieHash { get; set; }
 
         public string MovieByteSize { get; set; }

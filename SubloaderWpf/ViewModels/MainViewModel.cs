@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -17,17 +17,17 @@ namespace SubloaderWpf.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        private readonly List<ISubtitleSupplier> suppliers = new List<ISubtitleSupplier>();
         private readonly INavigator navigator;
         private string statusText;
         private string currentPath;
         private bool searchByName;
         private bool searchByHash;
 
-        private readonly List<ISubtitleSupplier> suppliers = new List<ISubtitleSupplier>();
-
         public MainViewModel(INavigator navigator)
         {
             this.navigator = navigator;
+
             // Must first add suppliers before processing.
             suppliers.Add(new OpenSubtitles());
 
@@ -81,13 +81,15 @@ namespace SubloaderWpf.ViewModels
             {
                 Set("SearchByHash", ref searchByHash, value);
                 ApplicationSettings.Instance.IsByHashChecked = value;
-
             }
         }
 
         public ICommand ChooseFileCommand => new RelayCommand(ChooseFile);
+
         public ICommand RefreshCommand => new RelayCommand(Refresh);
+
         public ICommand SettingsCommand => new RelayCommand(GoToSettings);
+
         public ICommand DownloadCommand => new RelayCommand(Download);
 
         public void ChooseFile()
@@ -97,7 +99,7 @@ namespace SubloaderWpf.ViewModels
                 Filter = "Video files |*.wmv; *.3g2; *.3gp; *.3gp2; *.3gpp; *.amv; *.asf;  *.avi; *.bin; *.cue; *.divx; *.dv; *.flv; *.gxf; *.iso; *.m1v; *.m2v; *.m2t; *.m2ts; *.m4v; " +
                           " *.mkv; *.mov; *.mp2; *.mp2v; *.mp4; *.mp4v; *.mpa; *.mpe; *.mpeg; *.mpeg1; *.mpeg2; *.mpeg4; *.mpg; *.mpv2; *.mts; *.nsv; *.nuv; *.ogg; *.ogm; *.ogv; *.ogx; *.ps; *.rec; *.rm; *.rmvb; *.tod; *.ts; *.tts; *.vob; *.vro; *.webm; *.dat; ",
                 CheckFileExists = true,
-                CheckPathExists = true
+                CheckPathExists = true,
             };
             _ = fileChooseDialog.ShowDialog();
             try
@@ -108,7 +110,6 @@ namespace SubloaderWpf.ViewModels
             }
             catch (Exception)
             {
-
             }
         }
 
@@ -169,6 +170,7 @@ namespace SubloaderWpf.ViewModels
                         App.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
                         await Task.Run(() => Thread.Sleep(20));
                     }
+
                     StatusText = "Use button or doubleclick to download.";
                 }
             }
@@ -196,6 +198,7 @@ namespace SubloaderWpf.ViewModels
                     }
                 }
             }
+
             return result;
         }
     }

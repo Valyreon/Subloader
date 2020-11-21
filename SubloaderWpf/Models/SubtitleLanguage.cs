@@ -4,8 +4,15 @@ namespace SubloaderWpf.Models
 {
     public class SubtitleLanguage
     {
-        public string Name { get; set; }
-        public string Code { get; set; }
+        public SubtitleLanguage(string name, string code)
+        {
+            Name = name;
+            Code = code;
+        }
+
+        public SubtitleLanguage()
+        {
+        }
 
         public static IEnumerable<SubtitleLanguage> AllLanguages { get; } = new List<SubtitleLanguage>()
         {
@@ -481,18 +488,11 @@ namespace SubloaderWpf.Models
             new SubtitleLanguage("Zenaga", "zen"),
             new SubtitleLanguage("Zhuang", "zha"),
             new SubtitleLanguage("Zulu", "zul"),
-            new SubtitleLanguage("Zuni", "zun")
+            new SubtitleLanguage("Zuni", "zun"),
         };
 
-        public SubtitleLanguage(string name, string code)
-        {
-            Name = name;
-            Code = code;
-        }
+        public string Name { get; set; }
 
-        public SubtitleLanguage()
-        {
-
-        }
+        public string Code { get; set; }
     }
 }

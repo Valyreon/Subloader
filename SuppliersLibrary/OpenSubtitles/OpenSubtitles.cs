@@ -68,6 +68,7 @@ namespace SuppliersLibrary.OpenSubtitles
             {
                 result.Add(x);
             }
+
             return result;
         }
 
