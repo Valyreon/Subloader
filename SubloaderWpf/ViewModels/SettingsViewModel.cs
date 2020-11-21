@@ -81,7 +81,7 @@ namespace SubloaderWpf.ViewModels
         public SettingsViewModel(INavigator navigator)
         {
             this.navigator = navigator;
-            var wantLangs = ApplicationSettings.GetInstance().WantedLanguages;
+            var wantLangs = ApplicationSettings.Instance.WantedLanguages;
             foreach (var x in SubtitleLanguage.AllLanguages)
             {
                 LanguageList.Add(x);
@@ -133,8 +133,8 @@ namespace SubloaderWpf.ViewModels
             {
                 wanted.Add(x);
             }
-            ApplicationSettings.GetInstance().WantedLanguages = wanted;
-            ApplicationSettings.GetInstance().Save();
+            ApplicationSettings.Instance.WantedLanguages = wanted;
+            ApplicationSettings.Instance.Save();
             navigator.GoToPreviousControl();
         }
     }

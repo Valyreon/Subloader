@@ -58,13 +58,6 @@ namespace SubloaderWpf
             }
         }
 
-        private void ApplicationExit(object sender, ExitEventArgs e)
-        {
-            var applicationSettings = ApplicationSettings.GetInstance();
-            if (applicationSettings.IsDirty)
-            {
-                applicationSettings.Save();
-            }
-        }
+        private void ApplicationExit(object sender, ExitEventArgs e) => ApplicationSettings.Instance.SaveIfDirty();
     }
 }

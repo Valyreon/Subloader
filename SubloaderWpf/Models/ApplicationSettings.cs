@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SubloaderWpf.Models
 {
@@ -11,29 +12,6 @@ namespace SubloaderWpf.Models
 
         private bool isByNameChecked;
         private bool isByHashChecked = true;
-
-        private ApplicationSettings(List<SubtitleLanguage> langWant) => WantedLanguages = langWant;
-
-        [JsonConstructor]
-        public ApplicationSettings()
-        {
-
-        }
-
-        public static ApplicationSettings GetInstance()
-        {
-            if (instance == null)
-            {
-                Refresh();
-            }
-            return instance;
-        }
-
-        public static void Refresh() => instance = LoadApplicationSettings();
-
-        public List<SubtitleLanguage> WantedLanguages { get; set; }
-
-        public bool IsDirty { get; private set; }
 
         public bool IsByNameChecked
         {
@@ -57,6 +35,29 @@ namespace SubloaderWpf.Models
             }
         }
 
+        [JsonIgnore]
+        public bool IsDirty { get; set; }
+
+        public IList<SubtitleLanguage> WantedLanguages { get; set; }
+
+        private ApplicationSettings(List<SubtitleLanguage> langWant) => WantedLanguages = langWant;
+
+        public ApplicationSettings() { }
+
+        public static ApplicationSettings Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    Load();
+                }
+                return instance;
+            }
+        }
+
+        public static void Load() => instance = LoadApplicationSettings();
+
         private static ApplicationSettings LoadApplicationSettings()
         {
             var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -77,7 +78,7 @@ namespace SubloaderWpf.Models
 
             try
             {
-                var x = JsonConvert.DeserializeObject<ApplicationSettings>(reader.ReadToEnd());
+                var x = JsonSerializer.Deserialize<ApplicationSettings>(reader.ReadToEnd());
 
                 if (x != null)
                 {
@@ -85,9 +86,9 @@ namespace SubloaderWpf.Models
                     return x;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex.Message);
+
             }
 
             var ret = new ApplicationSettings(new List<SubtitleLanguage>())
@@ -101,20 +102,30 @@ namespace SubloaderWpf.Models
         {
             var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.json");
+
             WriteApplicationSettings(pathToDefaultConfig);
         }
 
         private static void WriteApplicationSettings(string path)
         {
             _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
+
             using var fileStream = new FileStream(path, FileMode.Create);
             using var writer = new StreamWriter(fileStream);
-            var settings = GetInstance();
-            var json = JsonConvert.SerializeObject(settings, Formatting.Indented);
-            settings.IsDirty = false;
+
+            var json = JsonSerializer.Serialize(Instance);
+            Instance.IsDirty = false;
             writer.Write(json);
         }
 
         public void Save() => WriteApplicationSettings();
+
+        public void SaveIfDirty()
+        {
+            if (Instance.IsDirty)
+            {
+                Save();
+            }
+        }
     }
 }

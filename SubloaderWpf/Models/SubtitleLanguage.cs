@@ -4,8 +4,8 @@ namespace SubloaderWpf.Models
 {
     public class SubtitleLanguage
     {
-        public string Name { get; }
-        public string Code { get; }
+        public string Name { get; set; }
+        public string Code { get; set; }
 
         public static IEnumerable<SubtitleLanguage> AllLanguages { get; } = new List<SubtitleLanguage>()
         {
@@ -488,6 +488,11 @@ namespace SubloaderWpf.Models
         {
             Name = name;
             Code = code;
+        }
+
+        public SubtitleLanguage()
+        {
+
         }
     }
 }

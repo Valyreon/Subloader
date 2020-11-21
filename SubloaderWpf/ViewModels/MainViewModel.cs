@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -31,8 +31,8 @@ namespace SubloaderWpf.ViewModels
             // Must first add suppliers before processing.
             suppliers.Add(new OpenSubtitles());
 
-            searchByHash = ApplicationSettings.GetInstance().IsByHashChecked;
-            searchByName = ApplicationSettings.GetInstance().IsByNameChecked;
+            searchByHash = ApplicationSettings.Instance.IsByHashChecked;
+            searchByName = ApplicationSettings.Instance.IsByNameChecked;
 
             StatusText = "Open a video file.";
             CurrentPath = (Application.Current as App).PathArg;
@@ -69,7 +69,7 @@ namespace SubloaderWpf.ViewModels
             set
             {
                 Set("SearchByName", ref searchByName, value);
-                ApplicationSettings.GetInstance().IsByNameChecked = value;
+                ApplicationSettings.Instance.IsByNameChecked = value;
             }
         }
 
@@ -80,7 +80,7 @@ namespace SubloaderWpf.ViewModels
             set
             {
                 Set("SearchByHash", ref searchByHash, value);
-                ApplicationSettings.GetInstance().IsByHashChecked = value;
+                ApplicationSettings.Instance.IsByHashChecked = value;
 
             }
         }
@@ -187,7 +187,7 @@ namespace SubloaderWpf.ViewModels
                 var results = await supplier.SearchAsync(currentPath, new object[] { SearchByHash, SearchByName });
                 foreach (var item in results)
                 {
-                    var settings = ApplicationSettings.GetInstance();
+                    var settings = ApplicationSettings.Instance;
                     if (settings.WantedLanguages == null ||
                         settings.WantedLanguages.Count == 0 ||
                         settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
