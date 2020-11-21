@@ -169,25 +169,17 @@ namespace SubloaderWpf.ViewModels
                         App.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
                         await Task.Run(() => Thread.Sleep(20));
                     }
-
-                    if (SubtitleList.Count > 0)
-                    {
-                        StatusText = "Use button or doubleclick to download.";
-                    }
-                    else
-                    {
-                        StatusText = "No subtitles found.";
-                    }
+                    StatusText = "Use button or doubleclick to download.";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                StatusText = ex.Message;
+                StatusText = "Server error. Wait a bit and try refreshing.";
                 SystemSounds.Hand.Play();
             }
         }
 
-        private async Task<List<SubtitleEntry>> SearchSuppliers()
+        private async Task<IList<SubtitleEntry>> SearchSuppliers()
         {
             var result = new List<SubtitleEntry>();
             foreach (var supplier in suppliers)
