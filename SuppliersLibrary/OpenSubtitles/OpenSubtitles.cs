@@ -1,9 +1,9 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -22,7 +22,7 @@ namespace SuppliersLibrary.OpenSubtitles
 
             bool byHash = false, byName = false;
 
-            if(parameters == null)
+            if (parameters == null)
             {
                 byHash = true;
             }
@@ -38,22 +38,22 @@ namespace SuppliersLibrary.OpenSubtitles
 
             var results = new List<ISubtitleResultItem>();
 
-            if(byHash)
+            if (byHash)
             {
                 var responseHash = await client.PostAsync(FormHashSearchUrl(path), null);
                 CheckStatus(responseHash);
                 var responseHashBody = await responseHash.Content.ReadAsStringAsync(); // this is json string
-                var resultHash = JsonConvert.DeserializeObject<IList<OSItem>>(responseHashBody).ToList();
+                var resultHash = JsonSerializer.Deserialize<IList<OSItem>>(responseHashBody).ToList();
 
                 results.AddRange(ConvertList(resultHash));
             }
 
-            if(byName)
+            if (byName)
             {
                 var responseQuery = await client.PostAsync(FormQuerySearchUrl(path), null);
                 CheckStatus(responseQuery);
                 var responseQueryBody = await responseQuery.Content.ReadAsStringAsync(); // this is json string
-                var resultQuery = JsonConvert.DeserializeObject<IList<OSItem>>(responseQueryBody).ToList();
+                var resultQuery = JsonSerializer.Deserialize<IList<OSItem>>(responseQueryBody).ToList();
 
                 results.AddRange(ConvertList(resultQuery));
             }
@@ -68,6 +68,7 @@ namespace SuppliersLibrary.OpenSubtitles
             {
                 result.Add(x);
             }
+
             return result;
         }
 
@@ -93,7 +94,7 @@ namespace SuppliersLibrary.OpenSubtitles
 
         private void CheckStatus(HttpResponseMessage msg)
         {
-            if(msg.IsSuccessStatusCode == false)
+            if (msg.IsSuccessStatusCode == false)
             {
                 throw new ApplicationException(msg.ReasonPhrase);
             }

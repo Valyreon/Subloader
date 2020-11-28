@@ -13,7 +13,19 @@ namespace SuppliersLibrary.OpenSubtitles
             {
                 result = ComputeMovieHash(input);
             }
+
             return result;
+        }
+
+        public static string ToHexadecimal(byte[] bytes)
+        {
+            var hexBuilder = new StringBuilder();
+            for (var i = 0; i < bytes.Length; i++)
+            {
+                _ = hexBuilder.Append(bytes[i].ToString("x2"));
+            }
+
+            return hexBuilder.ToString();
         }
 
         private static byte[] ComputeMovieHash(Stream input)
@@ -37,20 +49,11 @@ namespace SuppliersLibrary.OpenSubtitles
                 i++;
                 lhash += BitConverter.ToInt64(buffer, 0);
             }
+
             input.Close();
             var result = BitConverter.GetBytes(lhash);
             Array.Reverse(result);
             return result;
-        }
-
-        public static string ToHexadecimal(byte[] bytes)
-        {
-            var hexBuilder = new StringBuilder();
-            for (var i = 0; i < bytes.Length; i++)
-            {
-                _ = hexBuilder.Append(bytes[i].ToString("x2"));
-            }
-            return hexBuilder.ToString();
         }
     }
 }

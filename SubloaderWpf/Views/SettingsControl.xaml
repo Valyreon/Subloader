@@ -50,6 +50,9 @@
                 SelectedItem="{Binding SelectedWantedLanguage}"
                 Style="{StaticResource DatagridStyle}"
                 VerticalGridLinesBrush="#EDEDED">
+                <DataGrid.InputBindings>
+                    <MouseBinding Command="{Binding DeleteCommand}" MouseAction="LeftDoubleClick" />
+                </DataGrid.InputBindings>
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="15*"
@@ -128,6 +131,9 @@
                 SelectedItem="{Binding SelectedLanguage}"
                 Style="{StaticResource DatagridStyle}"
                 VerticalGridLinesBrush="#EDEDED">
+                <DataGrid.InputBindings>
+                    <MouseBinding Command="{Binding AddCommand}" MouseAction="LeftDoubleClick" />
+                </DataGrid.InputBindings>
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="15*"

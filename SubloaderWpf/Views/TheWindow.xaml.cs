@@ -1,11 +1,8 @@
-using SubloaderWpf.ViewModels;
 using System.Windows;
+using SubloaderWpf.ViewModels;
 
 namespace SubloaderWpf.Views
 {
-    /// <summary>
-    /// Interaction logic for GeneralWindow.xaml
-    /// </summary>
     public partial class TheWindow : Window
     {
         public TheWindow()

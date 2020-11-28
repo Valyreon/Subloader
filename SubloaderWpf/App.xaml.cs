@@ -9,9 +9,6 @@ using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         private static Mutex mutex;
@@ -25,7 +22,9 @@ namespace SubloaderWpf
             new MouseButtonEventHandler(SelectivelyIgnoreMouseButton));
             EventManager.RegisterClassHandler(typeof(TextBox), TextBox.GotKeyboardFocusEvent,
                 new RoutedEventHandler(SelectAllText));
-            EventManager.RegisterClassHandler(typeof(TextBox), TextBox.MouseDoubleClickEvent,
+            EventManager.RegisterClassHandler(
+                typeof(TextBox),
+                TextBox.MouseDoubleClickEvent,
                 new RoutedEventHandler(SelectAllText));
 
             if (e.Args.Length > 0)
@@ -80,12 +79,7 @@ namespace SubloaderWpf
 
         private void ApplicationExit(object sender, ExitEventArgs e)
         {
-            var applicationSettings = ApplicationSettings.GetInstance();
-            if (applicationSettings.IsDirty)
-            {
-                applicationSettings.Save();
-            }
-
+            ApplicationSettings.Instance.SaveIfDirty();
             Cleanup();
         }
 

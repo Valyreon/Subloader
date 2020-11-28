@@ -17,22 +17,22 @@ namespace SubloaderWpf.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        private readonly List<ISubtitleSupplier> suppliers = new List<ISubtitleSupplier>();
         private readonly INavigator navigator;
         private string statusText;
         private string currentPath;
         private bool searchByName;
         private bool searchByHash;
 
-        private readonly List<ISubtitleSupplier> suppliers = new List<ISubtitleSupplier>();
-
         public MainViewModel(INavigator navigator)
         {
             this.navigator = navigator;
+
             // Must first add suppliers before processing.
             suppliers.Add(new OpenSubtitles());
 
-            searchByHash = ApplicationSettings.GetInstance().IsByHashChecked;
-            searchByName = ApplicationSettings.GetInstance().IsByNameChecked;
+            searchByHash = ApplicationSettings.Instance.IsByHashChecked;
+            searchByName = ApplicationSettings.Instance.IsByNameChecked;
 
             StatusText = "Open a video file.";
             CurrentPath = (Application.Current as App).PathArg;
@@ -71,7 +71,7 @@ namespace SubloaderWpf.ViewModels
             set
             {
                 Set("SearchByName", ref searchByName, value);
-                ApplicationSettings.GetInstance().IsByNameChecked = value;
+                ApplicationSettings.Instance.IsByNameChecked = value;
             }
         }
 
@@ -82,14 +82,16 @@ namespace SubloaderWpf.ViewModels
             set
             {
                 Set("SearchByHash", ref searchByHash, value);
-                ApplicationSettings.GetInstance().IsByHashChecked = value;
-
+                ApplicationSettings.Instance.IsByHashChecked = value;
             }
         }
 
         public ICommand ChooseFileCommand => new RelayCommand(ChooseFile);
+
         public ICommand RefreshCommand => new RelayCommand(Refresh);
+
         public ICommand SettingsCommand => new RelayCommand(GoToSettings);
+
         public ICommand DownloadCommand => new RelayCommand(Download);
 
         public void ChooseFile()
@@ -99,7 +101,7 @@ namespace SubloaderWpf.ViewModels
                 Filter = "Video files |*.wmv; *.3g2; *.3gp; *.3gp2; *.3gpp; *.amv; *.asf;  *.avi; *.bin; *.cue; *.divx; *.dv; *.flv; *.gxf; *.iso; *.m1v; *.m2v; *.m2t; *.m2ts; *.m4v; " +
                           " *.mkv; *.mov; *.mp2; *.mp2v; *.mp4; *.mp4v; *.mpa; *.mpe; *.mpeg; *.mpeg1; *.mpeg2; *.mpeg4; *.mpg; *.mpv2; *.mts; *.nsv; *.nuv; *.ogg; *.ogm; *.ogv; *.ogx; *.ps; *.rec; *.rm; *.rmvb; *.tod; *.ts; *.tts; *.vob; *.vro; *.webm; *.dat; ",
                 CheckFileExists = true,
-                CheckPathExists = true
+                CheckPathExists = true,
             };
             _ = fileChooseDialog.ShowDialog();
             try
@@ -110,7 +112,6 @@ namespace SubloaderWpf.ViewModels
             }
             catch (Exception)
             {
-
             }
         }
 
@@ -175,24 +176,17 @@ namespace SubloaderWpf.ViewModels
                         await Task.Run(() => Thread.Sleep(20));
                     }
 
-                    if (SubtitleList.Count > 0)
-                    {
-                        StatusText = "Use button or doubleclick to download.";
-                    }
-                    else
-                    {
-                        StatusText = "No subtitles found.";
-                    }
+                    StatusText = "Use button or doubleclick to download.";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                StatusText = ex.Message;
+                StatusText = "Server error. Wait a bit and try refreshing.";
                 SystemSounds.Hand.Play();
             }
         }
 
-        private async Task<List<SubtitleEntry>> SearchSuppliers()
+        private async Task<IList<SubtitleEntry>> SearchSuppliers()
         {
             var result = new List<SubtitleEntry>();
             foreach (var supplier in suppliers)
@@ -200,7 +194,7 @@ namespace SubloaderWpf.ViewModels
                 var results = await supplier.SearchAsync(currentPath, new object[] { SearchByHash, SearchByName });
                 foreach (var item in results)
                 {
-                    var settings = ApplicationSettings.GetInstance();
+                    var settings = ApplicationSettings.Instance;
                     if (settings.WantedLanguages == null ||
                         settings.WantedLanguages.Count == 0 ||
                         settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
@@ -209,6 +203,7 @@ namespace SubloaderWpf.ViewModels
                     }
                 }
             }
+
             return result;
         }
     }
