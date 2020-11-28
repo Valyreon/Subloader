@@ -11,6 +11,7 @@ using System.Windows.Input;
 using Microsoft.Win32;
 using SubloaderWpf.Models;
 using SuppliersLibrary;
+using SuppliersLibrary.Exceptions;
 using SuppliersLibrary.OpenSubtitles;
 
 namespace SubloaderWpf.ViewModels
@@ -179,10 +180,14 @@ namespace SubloaderWpf.ViewModels
                     StatusText = "Use button or doubleclick to download.";
                 }
             }
-            catch (Exception)
+            catch (ServerFailException ex)
             {
-                StatusText = "Server error. Wait a bit and try refreshing.";
+                StatusText = $"{ex.Message} Try refreshing.";
                 SystemSounds.Hand.Play();
+            }
+            catch (BadFileException ex)
+            {
+                StatusText = ex.Message;
             }
         }
 

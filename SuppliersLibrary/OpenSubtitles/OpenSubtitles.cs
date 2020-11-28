@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
+using SuppliersLibrary.Exceptions;
 
 namespace SuppliersLibrary.OpenSubtitles
 {
@@ -20,13 +22,9 @@ namespace SuppliersLibrary.OpenSubtitles
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Add("X-User-Agent", userAgentId);
 
-            bool byHash = false, byName = false;
+            bool byHash = true, byName = false;
 
-            if (parameters == null)
-            {
-                byHash = true;
-            }
-            else if (parameters.Length == 2)
+            if (parameters != null && parameters.Length == 2)
             {
                 byHash = (bool)parameters[0];
                 byName = (bool)parameters[1];
@@ -36,11 +34,17 @@ namespace SuppliersLibrary.OpenSubtitles
                 throw new ArgumentException("Parameters should either be null or 2 provided.");
             }
 
+            if (!File.Exists(path))
+            {
+                throw new BadFileException("Input file does not exist.");
+            }
+
             var results = new List<ISubtitleResultItem>();
 
             if (byHash)
             {
                 var responseHash = await client.PostAsync(FormHashSearchUrl(path), null);
+                var x = await responseHash.Content.ReadAsStringAsync();
                 CheckStatus(responseHash);
                 var responseHashBody = await responseHash.Content.ReadAsStringAsync(); // this is json string
                 var resultHash = JsonSerializer.Deserialize<IList<OSItem>>(responseHashBody).ToList();
@@ -78,6 +82,11 @@ namespace SuppliersLibrary.OpenSubtitles
             var file = new FileInfo(path);
             var movieByteSize = file.Length;
 
+            if (movieByteSize <= 0)
+            {
+                throw new BadFileException("Selected file is empty.");
+            }
+
             return baseRestUrl
                 + $"/moviebytesize-{movieByteSize}"
                 + $"/moviehash-{moviehash}";
@@ -94,9 +103,13 @@ namespace SuppliersLibrary.OpenSubtitles
 
         private void CheckStatus(HttpResponseMessage msg)
         {
-            if (msg.IsSuccessStatusCode == false)
+            if (!msg.IsSuccessStatusCode)
             {
-                throw new ApplicationException(msg.ReasonPhrase);
+                throw msg.StatusCode switch
+                {
+                    HttpStatusCode.BadRequest => new BadFileException("Something is wrong with the input file."),
+                    _ => new ServerFailException("Unknown error.")
+                };
             }
         }
     }
