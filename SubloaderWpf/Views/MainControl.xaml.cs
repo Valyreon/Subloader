@@ -1,12 +1,35 @@
+using System.IO;
+using System.Windows;
 using System.Windows.Controls;
+using SubloaderWpf.ViewModels;
 
 namespace SubloaderWpf.Views
 {
-    /// <summary>
-    /// Interaction logic for MainControl.xaml
-    /// </summary>
     public partial class MainControl : UserControl
     {
         public MainControl() => InitializeComponent();
+
+        private void OnDropFile(object sender, DragEventArgs e)
+        {
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            ((MainViewModel)DataContext).CurrentPath = files[0];
+        }
+
+        private void OnDragOverFile(object sender, DragEventArgs e)
+        {
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            if (files.Length == 1 && File.Exists(files[0]))
+            {
+                e.Effects = DragDropEffects.Link;
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+            }
+
+            e.Handled = true;
+        }
     }
 }

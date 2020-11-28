@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="SubloaderWpf.Views.MainControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,7 +9,10 @@
     x:Name="TheControl"
     Width="500"
     Height="493"
+    AllowDrop="True"
     Background="#e8e8e8"
+    DragDrop.DragOver="OnDragOverFile"
+    DragDrop.Drop="OnDropFile"
     FontFamily="Segoe UI Semibold"
     RenderOptions.BitmapScalingMode="HighQuality"
     UseLayoutRounding="True"

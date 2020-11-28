@@ -36,6 +36,7 @@ namespace SubloaderWpf
             }
             catch
             {
+                Cleanup();
             }
 
             base.OnStartup(e);
@@ -50,8 +51,8 @@ namespace SubloaderWpf
         private void Cleanup()
         {
             InstanceMediator?.StopListening();
-            mutex.ReleaseMutex();
-            mutex.Dispose();
+            mutex?.ReleaseMutex();
+            mutex?.Dispose();
         }
     }
 }
