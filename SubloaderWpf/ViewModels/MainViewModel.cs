@@ -36,6 +36,8 @@ namespace SubloaderWpf.ViewModels
 
             StatusText = "Open a video file.";
             CurrentPath = (Application.Current as App).PathArg;
+
+            App.InstanceMediator.ReceivedArgument += arg => CurrentPath = arg;
         }
 
         public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
@@ -152,6 +154,9 @@ namespace SubloaderWpf.ViewModels
         {
             try
             {
+                // focus window
+                _ = App.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
+
                 StatusText = "Searching subtitles...";
                 App.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
                 var results = await SearchSuppliers();
