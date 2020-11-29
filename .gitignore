@@ -3,6 +3,7 @@
 
 # MY IGNORES
 *.exe
+launchSettings.json
 
 # User-specific files
 *.suo
