@@ -108,7 +108,8 @@ namespace SuppliersLibrary.OpenSubtitles
                 throw msg.StatusCode switch
                 {
                     HttpStatusCode.BadRequest => new BadFileException("Something is wrong with the input file."),
-                    _ => new ServerFailException("Unknown error.")
+                    HttpStatusCode.ServiceUnavailable => new ServerFailException("Server is temporarily unavailable."),
+                    _ => new ServerFailException("Unknown error. Try refreshing.")
                 };
             }
         }

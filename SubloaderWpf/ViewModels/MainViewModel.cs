@@ -182,12 +182,13 @@ namespace SubloaderWpf.ViewModels
             }
             catch (ServerFailException ex)
             {
-                StatusText = $"{ex.Message} Try refreshing.";
+                StatusText = ex.Message;
                 SystemSounds.Hand.Play();
             }
             catch (BadFileException ex)
             {
                 StatusText = ex.Message;
+                SystemSounds.Hand.Play();
             }
         }
 
