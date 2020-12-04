@@ -1,130 +1,132 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SubloaderWpf.Models
 {
-	public class ApplicationSettings
-	{
-		private static ApplicationSettings instance;
-		private bool isByNameChecked;
-		private bool isByHashChecked = true;
+    public class ApplicationSettings
+    {
+        private static ApplicationSettings instance;
+        private bool isByNameChecked;
+        private bool isByHashChecked = true;
 
-		public ApplicationSettings()
-		{
-		}
+        public ApplicationSettings()
+        {
+        }
 
-		private ApplicationSettings(List<SubtitleLanguage> langWant) => WantedLanguages = langWant;
+        private ApplicationSettings(List<SubtitleLanguage> langWant) => WantedLanguages = langWant;
 
-		public static ApplicationSettings Instance
-		{
-			get
-			{
-				if(instance == null)
-				{
-					Load();
-				}
+        public static ApplicationSettings Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    Load();
+                }
 
-				return instance;
-			}
-		}
+                return instance;
+            }
+        }
 
-		public bool IsByNameChecked
-		{
-			get => isByNameChecked;
+        public bool IsByNameChecked
+        {
+            get => isByNameChecked;
 
-			set
-			{
-				isByNameChecked = value;
-				IsDirty = true;
-			}
-		}
+            set
+            {
+                isByNameChecked = value;
+                IsDirty = true;
+            }
+        }
 
-		public bool IsByHashChecked
-		{
-			get => isByHashChecked;
+        public bool IsByHashChecked
+        {
+            get => isByHashChecked;
 
-			set
-			{
-				isByHashChecked = value;
-				IsDirty = true;
-			}
-		}
+            set
+            {
+                isByHashChecked = value;
+                IsDirty = true;
+            }
+        }
 
-		[JsonIgnore]
-		public bool IsDirty { get; set; }
+        [JsonIgnore]
+        public bool IsDirty { get; set; }
 
-		public IList<SubtitleLanguage> WantedLanguages { get; set; }
+        public IList<SubtitleLanguage> WantedLanguages { get; set; }
 
-		public static void Load() => instance = LoadApplicationSettings();
+        public static void Load() => instance = LoadApplicationSettings();
 
-		public void Save() => WriteApplicationSettings();
+        public void Save() => WriteApplicationSettings();
 
-		public void SaveIfDirty()
-		{
-			if(Instance.IsDirty)
-			{
-				Save();
-			}
-		}
+        public void SaveIfDirty()
+        {
+            if (Instance.IsDirty)
+            {
+                Save();
+            }
+        }
 
-		private static ApplicationSettings LoadApplicationSettings()
-		{
-			var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			var pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.json");
-			return LoadApplicationSettings(pathToDefaultConfig);
-		}
+        private static ApplicationSettings LoadApplicationSettings()
+        {
+            var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.json");
+            return LoadApplicationSettings(pathToDefaultConfig);
+        }
 
-		private static ApplicationSettings LoadApplicationSettings(string path)
-		{
-			if(!File.Exists(path))
-			{
-				_ = Directory.CreateDirectory(Path.GetDirectoryName(path));
-				File.Create(path).Close();
-			}
+        private static ApplicationSettings LoadApplicationSettings(string path)
+        {
+            if (!File.Exists(path))
+            {
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
+                File.Create(path).Close();
+            }
 
-			using var fileStream = new FileStream(path, FileMode.Open);
-			using var reader = new StreamReader(fileStream);
+            using var fileStream = new FileStream(path, FileMode.Open);
+            using var reader = new StreamReader(fileStream);
 
-			try
-			{
-				var x = JsonSerializer.Deserialize<ApplicationSettings>(reader.ReadToEnd());
+            try
+            {
+                var x = JsonSerializer.Deserialize<ApplicationSettings>(reader.ReadToEnd());
 
-				if(x != null)
-				{
-					x.IsDirty = false;
-					return x;
-				}
-			}
-			catch(Exception)
-			{
-			}
+                if (x != null)
+                {
+                    x.IsDirty = false;
+                    return x;
+                }
+            }
+            catch (Exception)
+            {
+            }
 
-			var ret = new ApplicationSettings(new List<SubtitleLanguage>())
-			{
-				IsDirty = true,
-			};
-			return ret;
-		}
+            var ret = new ApplicationSettings(new List<SubtitleLanguage>())
+            {
+                IsDirty = true,
+            };
+            return ret;
+        }
 
-		private static void WriteApplicationSettings()
-		{
-			var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			var pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.json");
+        private static void WriteApplicationSettings()
+        {
+            var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var pathToDefaultConfig = Path.Combine(appDataFolder, @"SubLoader\config.json");
 
-			WriteApplicationSettings(pathToDefaultConfig);
-		}
+            WriteApplicationSettings(pathToDefaultConfig);
+        }
 
-		private static void WriteApplicationSettings(string path)
-		{
-			_ = Directory.CreateDirectory(Path.GetDirectoryName(path));
+        private static void WriteApplicationSettings(string path)
+        {
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
 
-			using var fileStream = new FileStream(path, FileMode.Create);
-			using var writer = new StreamWriter(fileStream);
+            using var fileStream = new FileStream(path, FileMode.Create);
+            using var writer = new StreamWriter(fileStream);
 
-			var json = JsonSerializer.Serialize(Instance);
-			Instance.IsDirty = false;
-			writer.Write(json);
-		}
-	}
+            var json = JsonSerializer.Serialize(Instance);
+            Instance.IsDirty = false;
+            writer.Write(json);
+        }
+    }
 }
