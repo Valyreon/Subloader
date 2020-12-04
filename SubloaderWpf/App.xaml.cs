@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Windows;
 using SubloaderWpf.Models;
@@ -23,9 +23,12 @@ namespace SubloaderWpf
             try
             {
                 mutex = new Mutex(true, "valyreon.subloader", out var isOnlyInstance);
-                if (!isOnlyInstance && !string.IsNullOrWhiteSpace(PathArg))
+                if (!isOnlyInstance)
                 {
-                    InstanceMediator.SendArgumentToRunningInstance(PathArg);
+                    if (!string.IsNullOrWhiteSpace(PathArg))
+                    {
+                        InstanceMediator.SendArgumentToRunningInstance(PathArg);
+                    }
 
                     Cleanup();
                     Environment.Exit(0);
