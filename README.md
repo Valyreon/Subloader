@@ -7,7 +7,7 @@
 
 **Subloader** is a simple and minimalistic software written in **C#** and **.NET Core 3.1** that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using REST API for searching and downloading subtitles.
 
-Subloader searches subtitles by using a special file hash. This enables the user to get the best possible search results for their video file. **Installer** will also add an entry to **right click context menu** of **.avi**, **.mkv** and **.mp4** files for easy access. **Note:** This feature might not work on Windows 7.
+Subloader searches subtitles by using a special file hash. This enables the user to get the best possible search results for their video file. **Installer** will also add an entry to **right click context menu** of **.avi**, **.mkv** and **.mp4** files for easy access. It will also follow Windows 10 accent color for UI main color.
 
 Search and download is provided by **[Opensubtitles](http://www.opensubtitles.org/)**. Big thanks to their team for this great project. Please consider showing your appreciation by **[supporting them](https://www.opensubtitles.org/en/support)**.
 
@@ -21,11 +21,11 @@ Download the **[latest version of Subloader](https://github.com/Valyreon/Subload
 
 Subloader can be opened from Start Menu, and then using the 'Open' button you can choose a video file. Search will begin immediately. 
 
-After the search is complete, you can select a subtitle from the list and click 'Download'. 
+After the search is complete, you can select a subtitle from the list and click 'Download' or doubleclick the subtitle. 
 
 When you click 'Download' Subloader will download subtitle in the same directory where video file is, under the same name and appropriate extension. If there is an existing subtitle with the same name, it will overwrite it.
 
-Depending on the time of day, Opensubtitles server will sometimes be busy and you will get a 'Server error'. In that case, just click 'Refresh' until it responds.
+Depending on the time of day, Opensubtitles server will sometimes be busy and you will get a 'Service temporarily unavailable'. In that case, try clicking 'Refresh' a few times.
 
 Installer will also add 'Find subtitles' menu in right click context menu of .avi, .mkv and .mp4 files for easy access.
 
@@ -36,8 +36,10 @@ SubLoader now has a working UI for configuring wanted subtitle languages. You ca
 Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Flaticon](https://www.flaticon.com )**.
 
 ### Screenshots
-![](https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot.png)
-![](https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot2.png)
+| | | |
+|:-------------------------:|:-------------------------:|:-------------------------:|
+|<img width="1604" alt="screenshot 1" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot.png">  |  <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot2.png">|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot3.png">|
+
 ### To do
 - ~~**Language settings window**~~
   
