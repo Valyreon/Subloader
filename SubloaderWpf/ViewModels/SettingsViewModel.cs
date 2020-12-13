@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
 
 namespace SubloaderWpf.ViewModels
@@ -12,6 +13,7 @@ namespace SubloaderWpf.ViewModels
         private SubtitleLanguage selectedWantedLanguage;
         private SubtitleLanguage selectedLanguage;
         private string searchText;
+        private bool alwaysOnTop;
 
         public SettingsViewModel(INavigator navigator)
         {
@@ -32,6 +34,7 @@ namespace SubloaderWpf.ViewModels
 
             SelectedLanguage = null;
             SelectedWantedLanguage = null;
+            AlwaysOnTop = ApplicationSettings.Instance.KeepWindowOnTop;
         }
 
         public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
@@ -82,6 +85,12 @@ namespace SubloaderWpf.ViewModels
             set { }
         }
 
+        public bool AlwaysOnTop
+        {
+            get => alwaysOnTop;
+            set => Set("AlwaysOnTop", ref alwaysOnTop, value);
+        }
+
         public string SearchText
         {
             get => searchText;
@@ -110,14 +119,17 @@ namespace SubloaderWpf.ViewModels
 
         public ICommand CancelCommand => new RelayCommand(Cancel);
 
-        private void Cancel() => navigator.GoToPreviousControl();
+        private void Cancel()
+        {
+            navigator.GoToPreviousControl();
+        }
 
         private void Add()
         {
             while (SelectedLanguage != null)
             {
                 var selected = SelectedLanguage;
-                _ = LanguageList.Remove(selected);
+                LanguageList.Remove(selected);
                 WantedLanguageList.Add(selected);
             }
         }
@@ -127,7 +139,7 @@ namespace SubloaderWpf.ViewModels
             while (SelectedWantedLanguage != null)
             {
                 var selected = SelectedWantedLanguage;
-                _ = WantedLanguageList.Remove(selected);
+                WantedLanguageList.Remove(selected);
                 LanguageList.Add(selected);
                 SearchText = SearchText;
             }
@@ -141,6 +153,7 @@ namespace SubloaderWpf.ViewModels
                 wanted.Add(x);
             }
 
+            ApplicationSettings.Instance.KeepWindowOnTop = alwaysOnTop;
             ApplicationSettings.Instance.WantedLanguages = wanted;
             ApplicationSettings.Instance.Save();
             navigator.GoToPreviousControl();

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
+using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
 using SuppliersLibrary;
 using SuppliersLibrary.Exceptions;
@@ -104,7 +105,9 @@ namespace SubloaderWpf.ViewModels
                 CheckFileExists = true,
                 CheckPathExists = true,
             };
-            _ = fileChooseDialog.ShowDialog();
+
+            fileChooseDialog.ShowDialog();
+
             try
             {
                 var fileInfo = new FileInfo(fileChooseDialog.FileName);
@@ -155,11 +158,11 @@ namespace SubloaderWpf.ViewModels
         {
             try
             {
-                // focus window
-                _ = App.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
+                // try to focus window
+                Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
 
                 StatusText = "Searching subtitles...";
-                App.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
+                Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
                 var results = await SearchSuppliers();
                 if (results == null)
                 {
@@ -173,7 +176,7 @@ namespace SubloaderWpf.ViewModels
                 {
                     foreach (var x in results)
                     {
-                        App.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
+                        Application.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
                         await Task.Run(() => Thread.Sleep(20));
                     }
 
@@ -202,7 +205,7 @@ namespace SubloaderWpf.ViewModels
                 {
                     var settings = ApplicationSettings.Instance;
                     if (settings.WantedLanguages == null ||
-                        settings.WantedLanguages.Count == 0 ||
+                        settings.WantedLanguages.Count() == 0 ||
                         settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
                     {
                         result.Add(new SubtitleEntry(item));

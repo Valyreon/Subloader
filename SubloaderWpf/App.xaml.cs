@@ -47,7 +47,7 @@ namespace SubloaderWpf
 
         private void ApplicationExit(object sender, ExitEventArgs e)
         {
-            ApplicationSettings.Instance.SaveIfDirty();
+            ApplicationSettings.Instance.Save();
             Cleanup();
         }
 

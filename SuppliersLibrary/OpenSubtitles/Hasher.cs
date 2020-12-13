@@ -22,7 +22,7 @@ namespace SuppliersLibrary.OpenSubtitles
             var hexBuilder = new StringBuilder();
             for (var i = 0; i < bytes.Length; i++)
             {
-                _ = hexBuilder.Append(bytes[i].ToString("x2"));
+                hexBuilder.Append(bytes[i].ToString("x2"));
             }
 
             return hexBuilder.ToString();

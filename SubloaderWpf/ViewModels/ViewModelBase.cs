@@ -12,7 +12,9 @@ namespace SubloaderWpf.ViewModels
             RaisePropertyChanged(propertyName);
         }
 
-        protected void RaisePropertyChanged(string propertyName) =>
+        protected void RaisePropertyChanged(string propertyName)
+        {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

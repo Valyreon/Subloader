@@ -54,19 +54,14 @@ namespace SuppliersLibrary.OpenSubtitles
             using var zipStream = new GZipStream(compressedStream, CompressionMode.Decompress);
             using var uncompressed = new MemoryStream();
 
-            _ = zipStream.CopyToAsync(uncompressed);
+            zipStream.CopyToAsync(uncompressed);
 
             File.WriteAllBytes(savePath, uncompressed.ToArray());
         }
 
         public bool Equals(OSItem other)
         {
-            if (SubHash == other.SubHash)
-            {
-                return true;
-            }
-
-            return false;
+            return SubHash == other.SubHash;
         }
     }
 }

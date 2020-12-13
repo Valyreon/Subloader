@@ -15,6 +15,8 @@
             <RowDefinition Height="10" />
             <RowDefinition Height="*" />
             <RowDefinition Height="10" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="5" />
             <RowDefinition Height="30" />
             <RowDefinition Height="10" />
         </Grid.RowDefinitions>
@@ -167,6 +169,12 @@
             </DataGrid>
         </Grid>
         <Grid Grid.Row="3" Grid.Column="1">
+            <CheckBox
+                HorizontalAlignment="Center"
+                Content="Always on top"
+                IsChecked="{Binding AlwaysOnTop, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
+        <Grid Grid.Row="5" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="8" />

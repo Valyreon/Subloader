@@ -3,22 +3,27 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using SubloaderWpf.Interfaces;
 
 namespace SubloaderWpf.Models
 {
-    public class ApplicationSettings
+    public class ApplicationSettings : ISettings
     {
         private static ApplicationSettings instance;
         private bool isByNameChecked;
         private bool isByHashChecked = true;
+        private bool keepWindowOnTop;
 
         public ApplicationSettings()
         {
         }
 
-        private ApplicationSettings(List<SubtitleLanguage> langWant) => WantedLanguages = langWant;
+        private ApplicationSettings(List<SubtitleLanguage> langWant)
+        {
+            WantedLanguages = langWant;
+        }
 
-        public static ApplicationSettings Instance
+        public static ISettings Instance
         {
             get
             {
@@ -54,19 +59,32 @@ namespace SubloaderWpf.Models
         }
 
         [JsonIgnore]
-        public bool IsDirty { get; set; }
+        private bool IsDirty { get; set; }
 
-        public IList<SubtitleLanguage> WantedLanguages { get; set; }
+        public IEnumerable<SubtitleLanguage> WantedLanguages { get; set; }
 
-        public static void Load() => instance = LoadApplicationSettings();
-
-        public void Save() => WriteApplicationSettings();
-
-        public void SaveIfDirty()
+        public bool KeepWindowOnTop
         {
-            if (Instance.IsDirty)
+            get => keepWindowOnTop;
+
+            set
             {
-                Save();
+                keepWindowOnTop = value;
+                IsDirty = true;
+            }
+        }
+
+        private static void Load()
+        {
+            instance = LoadApplicationSettings();
+        }
+
+        public void Save()
+        {
+            if (instance.IsDirty)
+            {
+                WriteApplicationSettings();
+                SettingsChanged?.Invoke();
             }
         }
 
@@ -81,7 +99,7 @@ namespace SubloaderWpf.Models
         {
             if (!File.Exists(path))
             {
-                _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
                 File.Create(path).Close();
             }
 
@@ -119,14 +137,16 @@ namespace SubloaderWpf.Models
 
         private static void WriteApplicationSettings(string path)
         {
-            _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
 
             using var fileStream = new FileStream(path, FileMode.Create);
             using var writer = new StreamWriter(fileStream);
 
             var json = JsonSerializer.Serialize(Instance);
-            Instance.IsDirty = false;
+            instance.IsDirty = false;
             writer.Write(json);
         }
+
+        public static event Action SettingsChanged;
     }
 }

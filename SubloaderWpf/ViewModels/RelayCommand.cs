@@ -7,7 +7,10 @@ namespace SubloaderWpf.ViewModels
     {
         private readonly Action action;
 
-        public RelayCommand(Action action) => this.action = action;
+        public RelayCommand(Action action)
+        {
+            this.action = action;
+        }
 
         public event EventHandler CanExecuteChanged
         {
@@ -15,8 +18,14 @@ namespace SubloaderWpf.ViewModels
             remove { }
         }
 
-        public void Execute(object parameter) => action();
+        public void Execute(object parameter)
+        {
+            action();
+        }
 
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
     }
 }
