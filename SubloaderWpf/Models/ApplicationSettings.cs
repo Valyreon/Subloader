@@ -25,6 +25,8 @@ namespace SubloaderWpf.Models
             WantedLanguages = langWant;
         }
 
+        public static event Action Changed;
+
         public static ISettings Instance
         {
             get
@@ -37,6 +39,8 @@ namespace SubloaderWpf.Models
                 return instance;
             }
         }
+
+        public IEnumerable<SubtitleLanguage> WantedLanguages { get; set; }
 
         public bool IsByNameChecked
         {
@@ -59,11 +63,6 @@ namespace SubloaderWpf.Models
                 IsDirty = true;
             }
         }
-
-        [JsonIgnore]
-        private bool IsDirty { get; set; }
-
-        public IEnumerable<SubtitleLanguage> WantedLanguages { get; set; }
 
         public bool KeepWindowOnTop
         {
@@ -98,10 +97,8 @@ namespace SubloaderWpf.Models
             }
         }
 
-        private static void Load()
-        {
-            instance = LoadApplicationSettings();
-        }
+        [JsonIgnore]
+        private bool IsDirty { get; set; }
 
         public void Save()
         {
@@ -110,6 +107,11 @@ namespace SubloaderWpf.Models
                 WriteApplicationSettings();
                 Changed?.Invoke();
             }
+        }
+
+        private static void Load()
+        {
+            instance = LoadApplicationSettings();
         }
 
         private static ApplicationSettings LoadApplicationSettings()
@@ -170,7 +172,5 @@ namespace SubloaderWpf.Models
             instance.IsDirty = false;
             writer.Write(json);
         }
-
-        public static event Action Changed;
     }
 }

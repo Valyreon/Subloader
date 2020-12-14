@@ -29,6 +29,12 @@ namespace SubloaderWpf.ViewModels
             }
         }
 
+        public bool AlwaysOnTop
+        {
+            get => alwaysOnTop;
+            set => Set("AlwaysOnTop", ref alwaysOnTop, value);
+        }
+
         public void GoToControl(object control)
         {
             CurrentControl = control;
@@ -38,12 +44,6 @@ namespace SubloaderWpf.ViewModels
         {
             CurrentControl = previousControl;
             previousControl = null;
-        }
-
-        public bool AlwaysOnTop
-        {
-            get => alwaysOnTop;
-            set => Set("AlwaysOnTop", ref alwaysOnTop, value);
         }
     }
 }
