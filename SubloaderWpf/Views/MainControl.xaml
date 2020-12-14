@@ -26,9 +26,9 @@
     <Grid Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="23" />
-            <RowDefinition Height="27" />
-            <RowDefinition Height="48" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <DataGrid
             AutoGenerateColumns="False"
@@ -88,23 +88,24 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <StatusBar
+        <Border
             Grid.Row="1"
             HorizontalAlignment="Stretch"
             Background="#e8e8e8"
             BorderBrush="#bbbbbb"
-            BorderThickness="0,0,0,1"
-            FontFamily="Segoe UI Semibold">
-            <StatusBarItem HorizontalAlignment="Center">
+            BorderThickness="0,0,0,1">
+            <Grid>
                 <TextBlock
-                    Height="25"
-                    MinHeight="25"
+                    Grid.Row="1"
+                    Margin="0,5"
                     HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontFamily="Segoe UI Semibold"
                     FontStyle="Italic"
                     Text="{Binding StatusText, UpdateSourceTrigger=PropertyChanged}"
                     TextAlignment="Center" />
-            </StatusBarItem>
-        </StatusBar>
+            </Grid>
+        </Border>
         <Grid
             Grid.Row="2"
             HorizontalAlignment="Center"
@@ -116,11 +117,18 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="5" />
+            </Grid.RowDefinitions>
             <CheckBox
+                Grid.Row="1"
                 Grid.Column="1"
                 Content="Search by name"
                 IsChecked="{Binding SearchByName, UpdateSourceTrigger=PropertyChanged}" />
             <CheckBox
+                Grid.Row="1"
                 Grid.Column="3"
                 Content="Search by hash"
                 IsChecked="{Binding SearchByHash, UpdateSourceTrigger=PropertyChanged}" />
@@ -138,9 +146,9 @@
                 <ColumnDefinition Width="10" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="5" />
                 <RowDefinition Height="30" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="10" />
             </Grid.RowDefinitions>
             <Button
                 Grid.Row="1"

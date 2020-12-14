@@ -74,6 +74,7 @@ namespace SubloaderWpf.ViewModels
             {
                 Set("SearchByName", ref searchByName, value);
                 App.Settings.IsByNameChecked = value;
+                SettingsParser.Save(App.Settings);
             }
         }
 
@@ -85,6 +86,7 @@ namespace SubloaderWpf.ViewModels
             {
                 Set("SearchByHash", ref searchByHash, value);
                 App.Settings.IsByHashChecked = value;
+                SettingsParser.Save(App.Settings);
             }
         }
 
