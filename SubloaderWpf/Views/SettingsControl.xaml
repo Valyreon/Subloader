@@ -15,8 +15,8 @@
             <RowDefinition Height="10" />
             <RowDefinition Height="*" />
             <RowDefinition Height="10" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="5" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="10" />
             <RowDefinition Height="30" />
             <RowDefinition Height="10" />
         </Grid.RowDefinitions>
@@ -169,7 +169,35 @@
             </DataGrid>
         </Grid>
         <Grid Grid.Row="3" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="10" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
             <CheckBox
+                Grid.Row="0"
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                Content="Allow multiple downloads"
+                IsChecked="{Binding AllowMultipleDownloads, UpdateSourceTrigger=PropertyChanged}" />
+            <CheckBox
+                Grid.Row="0"
+                Grid.Column="3"
+                HorizontalAlignment="Center"
+                Content="Download to Subs folder"
+                IsChecked="{Binding DownloadToSubsFolder, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding AllowMultipleDownloads}" />
+            <CheckBox
+                Grid.Row="2"
+                Grid.Column="1"
+                Grid.ColumnSpan="3"
                 HorizontalAlignment="Center"
                 Content="Always on top"
                 IsChecked="{Binding AlwaysOnTop, UpdateSourceTrigger=PropertyChanged}" />

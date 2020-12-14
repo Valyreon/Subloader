@@ -8,6 +8,8 @@ namespace SubloaderWpf.Interfaces
         bool IsByNameChecked { get; set; }
         bool IsByHashChecked { get; set; }
         bool KeepWindowOnTop { get; set; }
+        bool DownloadToSubsFolder { get; set; }
+        bool AllowMultipleDownloads { get; set; }
         public IEnumerable<SubtitleLanguage> WantedLanguages { get; set; }
         void Save();
     }

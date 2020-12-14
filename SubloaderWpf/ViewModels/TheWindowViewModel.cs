@@ -15,7 +15,7 @@ namespace SubloaderWpf.ViewModels
             CurrentControl = new MainViewModel(this);
             AlwaysOnTop = ApplicationSettings.Instance.KeepWindowOnTop;
 
-            ApplicationSettings.SettingsChanged += () => AlwaysOnTop = ApplicationSettings.Instance.KeepWindowOnTop;
+            ApplicationSettings.Changed += () => AlwaysOnTop = ApplicationSettings.Instance.KeepWindowOnTop;
         }
 
         public object CurrentControl

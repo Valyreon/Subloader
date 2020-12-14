@@ -8,6 +8,8 @@ namespace SuppliersLibrary
 
         string Format { get; }
 
+        string LanguageID { get; }
+
         void Download(string path);
     }
 }

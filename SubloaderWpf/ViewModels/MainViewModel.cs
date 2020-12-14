@@ -144,7 +144,7 @@ namespace SubloaderWpf.ViewModels
             {
                 StatusText = "Downloading...";
                 await Task.Run(() => Thread.Sleep(20));
-                SelectedItem.Model.Download(Path.ChangeExtension(CurrentPath, SelectedItem.Model.Format));
+                SelectedItem.Model.Download(GetDestinationPath());
                 StatusText = "Subtitle downloaded.";
             }
             catch (Exception)
@@ -214,6 +214,35 @@ namespace SubloaderWpf.ViewModels
             }
 
             return result;
+        }
+
+        private string GetDestinationPath()
+        {
+            var directoryPath = ApplicationSettings.Instance.DownloadToSubsFolder
+                ? Path.Combine(Path.GetDirectoryName(CurrentPath), "Subs")
+                : Path.GetDirectoryName(CurrentPath);
+
+            Directory.CreateDirectory(directoryPath);
+
+            if (ApplicationSettings.Instance.AllowMultipleDownloads)
+            {
+                var fileNameWithoutPathOrExtension = Path.GetFileNameWithoutExtension(CurrentPath);
+                var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}");
+
+                if (File.Exists(path))
+                {
+                    var counter = 1;
+                    while (File.Exists(
+                        path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.({counter}).{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}")))
+                    {
+                        counter++;
+                    }
+                }
+
+                return path;
+            }
+
+            return Path.ChangeExtension(CurrentPath, SelectedItem.Model.Format);
         }
     }
 }

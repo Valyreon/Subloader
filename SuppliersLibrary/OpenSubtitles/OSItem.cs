@@ -47,6 +47,8 @@ namespace SuppliersLibrary.OpenSubtitles
 
         public string Format => SubFormat;
 
+        public string LanguageID => SubLanguageID;
+
         public void Download(string savePath)
         {
             using var client = new WebClient();

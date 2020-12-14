@@ -14,6 +14,8 @@ namespace SubloaderWpf.ViewModels
         private SubtitleLanguage selectedLanguage;
         private string searchText;
         private bool alwaysOnTop;
+        private bool downloadToSubsFolder;
+        private bool allowMultipleDownloads;
 
         public SettingsViewModel(INavigator navigator)
         {
@@ -35,6 +37,8 @@ namespace SubloaderWpf.ViewModels
             SelectedLanguage = null;
             SelectedWantedLanguage = null;
             AlwaysOnTop = ApplicationSettings.Instance.KeepWindowOnTop;
+            DownloadToSubsFolder = ApplicationSettings.Instance.DownloadToSubsFolder;
+            AllowMultipleDownloads = ApplicationSettings.Instance.AllowMultipleDownloads;
         }
 
         public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
@@ -73,16 +77,26 @@ namespace SubloaderWpf.ViewModels
             }
         }
 
-        public bool IsLanguageSelected
+        public bool IsLanguageSelected => SelectedLanguage != null;
+
+        public bool IsWantedLanguageSelected => SelectedWantedLanguage != null;
+
+        public bool DownloadToSubsFolder
         {
-            get => SelectedLanguage != null;
-            set { }
+            get => downloadToSubsFolder;
+
+            set => Set("DownloadToSubsFolder", ref downloadToSubsFolder, value);
         }
 
-        public bool IsWantedLanguageSelected
+        public bool AllowMultipleDownloads
         {
-            get => SelectedWantedLanguage != null;
-            set { }
+            get => allowMultipleDownloads;
+
+            set
+            {
+                Set("AllowMultipleDownloads", ref allowMultipleDownloads, value);
+                Set("DownloadToSubsFolder", ref downloadToSubsFolder, false);
+            }
         }
 
         public bool AlwaysOnTop
@@ -154,6 +168,8 @@ namespace SubloaderWpf.ViewModels
             }
 
             ApplicationSettings.Instance.KeepWindowOnTop = alwaysOnTop;
+            ApplicationSettings.Instance.AllowMultipleDownloads = allowMultipleDownloads;
+            ApplicationSettings.Instance.DownloadToSubsFolder = downloadToSubsFolder;
             ApplicationSettings.Instance.WantedLanguages = wanted;
             ApplicationSettings.Instance.Save();
             navigator.GoToPreviousControl();

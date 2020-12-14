@@ -13,6 +13,8 @@ namespace SubloaderWpf.Models
         private bool isByNameChecked;
         private bool isByHashChecked = true;
         private bool keepWindowOnTop;
+        private bool downloadToSubsFolder;
+        private bool allowMultipleDownloads;
 
         public ApplicationSettings()
         {
@@ -74,6 +76,28 @@ namespace SubloaderWpf.Models
             }
         }
 
+        public bool DownloadToSubsFolder
+        {
+            get => downloadToSubsFolder;
+
+            set
+            {
+                downloadToSubsFolder = value;
+                IsDirty = true;
+            }
+        }
+
+        public bool AllowMultipleDownloads
+        {
+            get => allowMultipleDownloads;
+
+            set
+            {
+                allowMultipleDownloads = value;
+                IsDirty = true;
+            }
+        }
+
         private static void Load()
         {
             instance = LoadApplicationSettings();
@@ -84,7 +108,7 @@ namespace SubloaderWpf.Models
             if (instance.IsDirty)
             {
                 WriteApplicationSettings();
-                SettingsChanged?.Invoke();
+                Changed?.Invoke();
             }
         }
 
@@ -147,6 +171,6 @@ namespace SubloaderWpf.Models
             writer.Write(json);
         }
 
-        public static event Action SettingsChanged;
+        public static event Action Changed;
     }
 }
