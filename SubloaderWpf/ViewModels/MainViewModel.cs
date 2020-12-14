@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
 using SubloaderWpf.Interfaces;
-using SubloaderWpf.Models;
+using SubloaderWpf.Utilities;
 using SuppliersLibrary;
 using SuppliersLibrary.Exceptions;
 using SuppliersLibrary.OpenSubtitles;

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 
-namespace SubloaderWpf.Models
+namespace SubloaderWpf.Utilities
 {
     public static class SettingsParser
     {

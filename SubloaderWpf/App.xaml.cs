@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Windows;
-using SubloaderWpf.Models;
 using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf

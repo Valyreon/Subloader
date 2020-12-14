@@ -1,5 +1,5 @@
 using SubloaderWpf.Interfaces;
-using SubloaderWpf.Models;
+using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf.ViewModels
 {

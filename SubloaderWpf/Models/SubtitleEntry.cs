@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using SuppliersLibrary;
 
-namespace SubloaderWpf.Models
+namespace SubloaderWpf.Utilities
 {
     public class SubtitleEntry : INotifyPropertyChanged
     {

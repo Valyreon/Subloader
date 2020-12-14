@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SubloaderWpf.Models
+namespace SubloaderWpf.Utilities
 {
     public class Settings
     {
