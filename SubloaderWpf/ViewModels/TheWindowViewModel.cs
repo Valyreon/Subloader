@@ -8,15 +8,14 @@ namespace SubloaderWpf.ViewModels
         private object previousControl = null;
 
         private object currentControl;
-        private bool alwaysOnTop;
 
         public TheWindowViewModel()
         {
             CurrentControl = new MainViewModel(this);
-            AlwaysOnTop = ApplicationSettings.Instance.KeepWindowOnTop;
-
-            ApplicationSettings.Changed += () => AlwaysOnTop = ApplicationSettings.Instance.KeepWindowOnTop;
+            SettingsParser.Saved += () => RaisePropertyChanged("AlwaysOnTop");
         }
+
+        public bool AlwaysOnTop => App.Settings.KeepWindowOnTop;
 
         public object CurrentControl
         {
@@ -27,12 +26,6 @@ namespace SubloaderWpf.ViewModels
                 previousControl = currentControl;
                 Set("CurrentControl", ref currentControl, value);
             }
-        }
-
-        public bool AlwaysOnTop
-        {
-            get => alwaysOnTop;
-            set => Set("AlwaysOnTop", ref alwaysOnTop, value);
         }
 
         public void GoToControl(object control)

@@ -20,7 +20,7 @@ namespace SubloaderWpf.ViewModels
         public SettingsViewModel(INavigator navigator)
         {
             this.navigator = navigator;
-            var wantLangs = ApplicationSettings.Instance.WantedLanguages;
+            var wantLangs = App.Settings.WantedLanguages;
             foreach (var x in SubtitleLanguage.AllLanguages)
             {
                 LanguageList.Add(x);
@@ -34,11 +34,11 @@ namespace SubloaderWpf.ViewModels
                 }
             }
 
-            SelectedLanguage = null;
-            SelectedWantedLanguage = null;
-            AlwaysOnTop = ApplicationSettings.Instance.KeepWindowOnTop;
-            DownloadToSubsFolder = ApplicationSettings.Instance.DownloadToSubsFolder;
-            AllowMultipleDownloads = ApplicationSettings.Instance.AllowMultipleDownloads;
+            selectedLanguage = null;
+            selectedWantedLanguage = null;
+            alwaysOnTop = App.Settings.KeepWindowOnTop;
+            downloadToSubsFolder = App.Settings.DownloadToSubsFolder;
+            allowMultipleDownloads = App.Settings.AllowMultipleDownloads;
         }
 
         public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
@@ -167,11 +167,11 @@ namespace SubloaderWpf.ViewModels
                 wanted.Add(x);
             }
 
-            ApplicationSettings.Instance.KeepWindowOnTop = alwaysOnTop;
-            ApplicationSettings.Instance.AllowMultipleDownloads = allowMultipleDownloads;
-            ApplicationSettings.Instance.DownloadToSubsFolder = downloadToSubsFolder;
-            ApplicationSettings.Instance.WantedLanguages = wanted;
-            ApplicationSettings.Instance.Save();
+            App.Settings.KeepWindowOnTop = alwaysOnTop;
+            App.Settings.AllowMultipleDownloads = allowMultipleDownloads;
+            App.Settings.DownloadToSubsFolder = downloadToSubsFolder;
+            App.Settings.WantedLanguages = wanted;
+            SettingsParser.Save(App.Settings);
             navigator.GoToPreviousControl();
         }
     }

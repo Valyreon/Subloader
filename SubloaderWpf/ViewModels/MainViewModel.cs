@@ -33,8 +33,8 @@ namespace SubloaderWpf.ViewModels
             // Must first add suppliers before processing.
             suppliers.Add(new OpenSubtitles());
 
-            searchByHash = ApplicationSettings.Instance.IsByHashChecked;
-            searchByName = ApplicationSettings.Instance.IsByNameChecked;
+            searchByHash = App.Settings.IsByHashChecked;
+            searchByName = App.Settings.IsByNameChecked;
 
             StatusText = "Open a video file.";
             CurrentPath = (Application.Current as App).PathArg;
@@ -73,7 +73,7 @@ namespace SubloaderWpf.ViewModels
             set
             {
                 Set("SearchByName", ref searchByName, value);
-                ApplicationSettings.Instance.IsByNameChecked = value;
+                App.Settings.IsByNameChecked = value;
             }
         }
 
@@ -84,7 +84,7 @@ namespace SubloaderWpf.ViewModels
             set
             {
                 Set("SearchByHash", ref searchByHash, value);
-                ApplicationSettings.Instance.IsByHashChecked = value;
+                App.Settings.IsByHashChecked = value;
             }
         }
 
@@ -203,7 +203,7 @@ namespace SubloaderWpf.ViewModels
                 var results = await supplier.SearchAsync(currentPath, new object[] { SearchByHash, SearchByName });
                 foreach (var item in results)
                 {
-                    var settings = ApplicationSettings.Instance;
+                    var settings = App.Settings;
                     if (settings.WantedLanguages == null ||
                         settings.WantedLanguages.Count() == 0 ||
                         settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
@@ -218,13 +218,13 @@ namespace SubloaderWpf.ViewModels
 
         private string GetDestinationPath()
         {
-            var directoryPath = ApplicationSettings.Instance.DownloadToSubsFolder
+            var directoryPath = App.Settings.DownloadToSubsFolder
                 ? Path.Combine(Path.GetDirectoryName(CurrentPath), "Subs")
                 : Path.GetDirectoryName(CurrentPath);
 
             Directory.CreateDirectory(directoryPath);
 
-            if (ApplicationSettings.Instance.AllowMultipleDownloads)
+            if (App.Settings.AllowMultipleDownloads)
             {
                 var fileNameWithoutPathOrExtension = Path.GetFileNameWithoutExtension(CurrentPath);
                 var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}");

@@ -13,6 +13,8 @@ namespace SubloaderWpf
 
         public string PathArg { get; set; }
 
+        public static Settings Settings { get; } = SettingsParser.Load();
+
         protected override void OnStartup(StartupEventArgs e)
         {
             if (e.Args.Length > 0)
@@ -47,7 +49,6 @@ namespace SubloaderWpf
 
         private void ApplicationExit(object sender, ExitEventArgs e)
         {
-            ApplicationSettings.Instance.Save();
             Cleanup();
         }
 
