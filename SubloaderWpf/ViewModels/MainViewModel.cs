@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -145,8 +145,12 @@ namespace SubloaderWpf.ViewModels
             try
             {
                 StatusText = "Downloading...";
-                await Task.Run(() => Thread.Sleep(20));
-                SelectedItem.Model.Download(GetDestinationPath());
+                await Task.Run(() =>
+                {
+                    Thread.Sleep(20);
+                    SelectedItem.Model.Download(GetDestinationPath());
+                });
+
                 StatusText = "Subtitle downloaded.";
             }
             catch (Exception)
@@ -179,7 +183,7 @@ namespace SubloaderWpf.ViewModels
                     foreach (var x in results)
                     {
                         Application.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
-                        await Task.Run(() => Thread.Sleep(20));
+                        await Task.Delay(20);
                     }
 
                     StatusText = "Use button or doubleclick to download.";
