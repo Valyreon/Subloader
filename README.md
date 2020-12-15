@@ -49,9 +49,9 @@ In **Settings** you can configure wanted **subtitle languages** as well as other
 Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Flaticon](https://www.flaticon.com )**.
 
 ### Screenshots
-| | | |
-|:-------------------------:|:-------------------------:|:-------------------------:|
-|<img width="1604" alt="screenshot 1" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot.png">  |  <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot2.png">|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot3.png">|
+| | |
+|:-------------------------:|:-------------------------:|
+|  <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot3.png">|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot2.png">|
 
 ### To do
 - ~~**Language settings window**~~
