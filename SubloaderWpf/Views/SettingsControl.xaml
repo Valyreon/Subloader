@@ -184,23 +184,29 @@
             <CheckBox
                 Grid.Row="0"
                 Grid.Column="1"
-                HorizontalAlignment="Center"
-                Content="Allow multiple downloads"
-                IsChecked="{Binding AllowMultipleDownloads, UpdateSourceTrigger=PropertyChanged}" />
+                HorizontalAlignment="Left"
+                Content="Always on top"
+                IsChecked="{Binding AlwaysOnTop, UpdateSourceTrigger=PropertyChanged}" />
             <CheckBox
-                Grid.Row="0"
-                Grid.Column="3"
-                HorizontalAlignment="Center"
+                Grid.Row="2"
+                Grid.Column="1"
+                HorizontalAlignment="Left"
                 Content="Download to Subs folder"
                 IsChecked="{Binding DownloadToSubsFolder, UpdateSourceTrigger=PropertyChanged}"
                 IsEnabled="{Binding AllowMultipleDownloads}" />
             <CheckBox
+                Grid.Row="0"
+                Grid.Column="3"
+                HorizontalAlignment="Left"
+                Content="Allow multiple downloads"
+                IsChecked="{Binding AllowMultipleDownloads, UpdateSourceTrigger=PropertyChanged}" />
+            <CheckBox
                 Grid.Row="2"
-                Grid.Column="1"
-                Grid.ColumnSpan="3"
-                HorizontalAlignment="Center"
-                Content="Always on top"
-                IsChecked="{Binding AlwaysOnTop, UpdateSourceTrigger=PropertyChanged}" />
+                Grid.Column="3"
+                HorizontalAlignment="Left"
+                Content="Overwrite same language files"
+                IsChecked="{Binding OverwriteSameLanguageSubs, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding AllowMultipleDownloads}" />
         </Grid>
         <Grid Grid.Row="5" Grid.Column="1">
             <Grid.ColumnDefinitions>

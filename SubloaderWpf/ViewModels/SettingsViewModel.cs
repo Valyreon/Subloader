@@ -16,6 +16,7 @@ namespace SubloaderWpf.ViewModels
         private bool alwaysOnTop;
         private bool downloadToSubsFolder;
         private bool allowMultipleDownloads;
+        private bool overwriteSameLanguageSubs;
 
         public SettingsViewModel(INavigator navigator)
         {
@@ -39,6 +40,7 @@ namespace SubloaderWpf.ViewModels
             alwaysOnTop = App.Settings.KeepWindowOnTop;
             downloadToSubsFolder = App.Settings.DownloadToSubsFolder;
             allowMultipleDownloads = App.Settings.AllowMultipleDownloads;
+            overwriteSameLanguageSubs = App.Settings.OverwriteSameLanguageSub;
         }
 
         public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
@@ -88,6 +90,13 @@ namespace SubloaderWpf.ViewModels
             set => Set("DownloadToSubsFolder", ref downloadToSubsFolder, value);
         }
 
+        public bool OverwriteSameLanguageSubs
+        {
+            get => overwriteSameLanguageSubs;
+
+            set => Set("OverwriteSameLanguageSubs", ref overwriteSameLanguageSubs, value);
+        }
+
         public bool AllowMultipleDownloads
         {
             get => allowMultipleDownloads;
@@ -96,6 +105,7 @@ namespace SubloaderWpf.ViewModels
             {
                 Set("AllowMultipleDownloads", ref allowMultipleDownloads, value);
                 Set("DownloadToSubsFolder", ref downloadToSubsFolder, false);
+                Set("OverwriteSameLanguageSubs", ref overwriteSameLanguageSubs, false);
             }
         }
 
@@ -170,6 +180,7 @@ namespace SubloaderWpf.ViewModels
             App.Settings.KeepWindowOnTop = alwaysOnTop;
             App.Settings.AllowMultipleDownloads = allowMultipleDownloads;
             App.Settings.DownloadToSubsFolder = downloadToSubsFolder;
+            App.Settings.OverwriteSameLanguageSub = overwriteSameLanguageSubs;
             App.Settings.WantedLanguages = wanted;
             SettingsParser.Save(App.Settings);
             navigator.GoToPreviousControl();

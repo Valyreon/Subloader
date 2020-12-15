@@ -14,6 +14,8 @@ namespace SubloaderWpf.Utilities
 
         public bool AllowMultipleDownloads { get; set; } = false;
 
+        public bool OverwriteSameLanguageSub { get; set; } = false;
+
         public IEnumerable<SubtitleLanguage> WantedLanguages { get; set; } = new List<SubtitleLanguage>();
     }
 }

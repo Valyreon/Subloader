@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -235,7 +235,7 @@ namespace SubloaderWpf.ViewModels
                 var fileNameWithoutPathOrExtension = Path.GetFileNameWithoutExtension(CurrentPath);
                 var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}");
 
-                if (File.Exists(path))
+                if (!App.Settings.OverwriteSameLanguageSub && File.Exists(path))
                 {
                     var counter = 1;
                     while (File.Exists(
