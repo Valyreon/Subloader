@@ -1,11 +1,14 @@
 using System.ComponentModel;
 using SuppliersLibrary;
 
-namespace SubloaderWpf.Models
+namespace SubloaderWpf.Utilities
 {
     public class SubtitleEntry : INotifyPropertyChanged
     {
-        public SubtitleEntry(ISubtitleResultItem item) => Model = item;
+        public SubtitleEntry(ISubtitleResultItem item)
+        {
+            Model = item;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -15,7 +18,9 @@ namespace SubloaderWpf.Models
 
         public ISubtitleResultItem Model { get; }
 
-        protected void OnPropertyChanged(string name) =>
+        protected void OnPropertyChanged(string name)
+        {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
     }
 }

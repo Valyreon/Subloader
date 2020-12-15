@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Windows;
-using SubloaderWpf.Models;
 using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf
@@ -12,6 +11,8 @@ namespace SubloaderWpf
         public static InstanceMediator InstanceMediator { get; private set; }
 
         public string PathArg { get; set; }
+
+        public static Settings Settings { get; } = SettingsParser.Load();
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -47,7 +48,6 @@ namespace SubloaderWpf
 
         private void ApplicationExit(object sender, ExitEventArgs e)
         {
-            ApplicationSettings.Instance.SaveIfDirty();
             Cleanup();
         }
 

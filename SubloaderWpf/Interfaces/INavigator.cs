@@ -1,4 +1,4 @@
-namespace SubloaderWpf.ViewModels
+namespace SubloaderWpf.Interfaces
 {
     public interface INavigator
     {

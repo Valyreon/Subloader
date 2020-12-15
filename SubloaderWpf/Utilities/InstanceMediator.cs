@@ -15,11 +15,11 @@ namespace SubloaderWpf.Utilities
 
         public void StartListening()
         {
-            var x = Task.Run(() =>
+            Task.Run(() =>
             {
                 while (true)
                 {
-                    using var server = new NamedPipeServerStream(NamedPipeName as string);
+                    using var server = new NamedPipeServerStream(NamedPipeName);
                     server.WaitForConnection();
 
                     using var reader = new StreamReader(server);
@@ -30,7 +30,10 @@ namespace SubloaderWpf.Utilities
             }, tokenSource.Token);
         }
 
-        public void StopListening() => tokenSource.Cancel();
+        public void StopListening()
+        {
+            tokenSource.Cancel();
+        }
 
         public static void SendArgumentToRunningInstance(string arg)
         {

@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
-using SubloaderWpf.Models;
+using SubloaderWpf.Interfaces;
+using SubloaderWpf.Utilities;
 using SuppliersLibrary;
 using SuppliersLibrary.Exceptions;
 using SuppliersLibrary.OpenSubtitles;
@@ -32,8 +33,8 @@ namespace SubloaderWpf.ViewModels
             // Must first add suppliers before processing.
             suppliers.Add(new OpenSubtitles());
 
-            searchByHash = ApplicationSettings.Instance.IsByHashChecked;
-            searchByName = ApplicationSettings.Instance.IsByNameChecked;
+            searchByHash = App.Settings.IsByHashChecked;
+            searchByName = App.Settings.IsByNameChecked;
 
             StatusText = "Open a video file.";
             CurrentPath = (Application.Current as App).PathArg;
@@ -72,7 +73,8 @@ namespace SubloaderWpf.ViewModels
             set
             {
                 Set("SearchByName", ref searchByName, value);
-                ApplicationSettings.Instance.IsByNameChecked = value;
+                App.Settings.IsByNameChecked = value;
+                SettingsParser.Save(App.Settings);
             }
         }
 
@@ -83,7 +85,8 @@ namespace SubloaderWpf.ViewModels
             set
             {
                 Set("SearchByHash", ref searchByHash, value);
-                ApplicationSettings.Instance.IsByHashChecked = value;
+                App.Settings.IsByHashChecked = value;
+                SettingsParser.Save(App.Settings);
             }
         }
 
@@ -104,7 +107,9 @@ namespace SubloaderWpf.ViewModels
                 CheckFileExists = true,
                 CheckPathExists = true,
             };
-            _ = fileChooseDialog.ShowDialog();
+
+            fileChooseDialog.ShowDialog();
+
             try
             {
                 var fileInfo = new FileInfo(fileChooseDialog.FileName);
@@ -140,8 +145,12 @@ namespace SubloaderWpf.ViewModels
             try
             {
                 StatusText = "Downloading...";
-                await Task.Run(() => Thread.Sleep(20));
-                SelectedItem.Model.Download(Path.ChangeExtension(CurrentPath, SelectedItem.Model.Format));
+                await Task.Run(() =>
+                {
+                    Thread.Sleep(20);
+                    SelectedItem.Model.Download(GetDestinationPath());
+                });
+
                 StatusText = "Subtitle downloaded.";
             }
             catch (Exception)
@@ -155,11 +164,11 @@ namespace SubloaderWpf.ViewModels
         {
             try
             {
-                // focus window
-                _ = App.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
+                // try to focus window
+                Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
 
                 StatusText = "Searching subtitles...";
-                App.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
+                Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
                 var results = await SearchSuppliers();
                 if (results == null)
                 {
@@ -173,8 +182,8 @@ namespace SubloaderWpf.ViewModels
                 {
                     foreach (var x in results)
                     {
-                        App.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
-                        await Task.Run(() => Thread.Sleep(20));
+                        Application.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
+                        await Task.Delay(20);
                     }
 
                     StatusText = "Use button or doubleclick to download.";
@@ -200,9 +209,9 @@ namespace SubloaderWpf.ViewModels
                 var results = await supplier.SearchAsync(currentPath, new object[] { SearchByHash, SearchByName });
                 foreach (var item in results)
                 {
-                    var settings = ApplicationSettings.Instance;
+                    var settings = App.Settings;
                     if (settings.WantedLanguages == null ||
-                        settings.WantedLanguages.Count == 0 ||
+                        settings.WantedLanguages.Count() == 0 ||
                         settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
                     {
                         result.Add(new SubtitleEntry(item));
@@ -211,6 +220,35 @@ namespace SubloaderWpf.ViewModels
             }
 
             return result;
+        }
+
+        private string GetDestinationPath()
+        {
+            var directoryPath = App.Settings.DownloadToSubsFolder
+                ? Path.Combine(Path.GetDirectoryName(CurrentPath), "Subs")
+                : Path.GetDirectoryName(CurrentPath);
+
+            Directory.CreateDirectory(directoryPath);
+
+            if (App.Settings.AllowMultipleDownloads)
+            {
+                var fileNameWithoutPathOrExtension = Path.GetFileNameWithoutExtension(CurrentPath);
+                var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}");
+
+                if (!App.Settings.OverwriteSameLanguageSub && File.Exists(path))
+                {
+                    var counter = 1;
+                    while (File.Exists(
+                        path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.({counter}).{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}")))
+                    {
+                        counter++;
+                    }
+                }
+
+                return path;
+            }
+
+            return Path.ChangeExtension(CurrentPath, SelectedItem.Model.Format);
         }
     }
 }

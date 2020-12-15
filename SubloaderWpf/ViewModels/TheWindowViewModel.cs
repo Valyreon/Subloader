@@ -1,3 +1,6 @@
+using SubloaderWpf.Interfaces;
+using SubloaderWpf.Utilities;
+
 namespace SubloaderWpf.ViewModels
 {
     public class TheWindowViewModel : ViewModelBase, INavigator
@@ -6,24 +9,29 @@ namespace SubloaderWpf.ViewModels
 
         private object currentControl;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GeneralViewModel"/>.
-        /// </summary>
-        /// <param name="thisWindow">Window in which all the UserControls are to be shown in.</param>
-        public TheWindowViewModel() => CurrentControl = new MainViewModel(this);
+        public TheWindowViewModel()
+        {
+            CurrentControl = new MainViewModel(this);
+            SettingsParser.Saved += () => RaisePropertyChanged("AlwaysOnTop");
+        }
+
+        public bool AlwaysOnTop => App.Settings.KeepWindowOnTop;
 
         public object CurrentControl
         {
             get => currentControl;
 
-            internal set
+            private set
             {
                 previousControl = currentControl;
                 Set("CurrentControl", ref currentControl, value);
             }
         }
 
-        public void GoToControl(object control) => CurrentControl = control;
+        public void GoToControl(object control)
+        {
+            CurrentControl = control;
+        }
 
         public void GoToPreviousControl()
         {

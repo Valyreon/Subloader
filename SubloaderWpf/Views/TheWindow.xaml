@@ -17,7 +17,10 @@
     FontFamily="Segoe UI Semibold"
     RenderOptions.BitmapScalingMode="HighQuality"
     ResizeMode="CanMinimize"
-    Topmost="true"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextHintingMode="Auto"
+    TextOptions.TextRenderingMode="ClearType"
+    Topmost="{Binding AlwaysOnTop}"
     UseLayoutRounding="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">

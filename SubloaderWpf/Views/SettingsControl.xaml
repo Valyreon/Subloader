@@ -15,6 +15,8 @@
             <RowDefinition Height="10" />
             <RowDefinition Height="*" />
             <RowDefinition Height="10" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="10" />
             <RowDefinition Height="30" />
             <RowDefinition Height="10" />
         </Grid.RowDefinitions>
@@ -167,6 +169,46 @@
             </DataGrid>
         </Grid>
         <Grid Grid.Row="3" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="10" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <CheckBox
+                Grid.Row="0"
+                Grid.Column="1"
+                HorizontalAlignment="Left"
+                Content="Always on top"
+                IsChecked="{Binding AlwaysOnTop, UpdateSourceTrigger=PropertyChanged}" />
+            <CheckBox
+                Grid.Row="2"
+                Grid.Column="1"
+                HorizontalAlignment="Left"
+                Content="Download to Subs folder"
+                IsChecked="{Binding DownloadToSubsFolder, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding AllowMultipleDownloads}" />
+            <CheckBox
+                Grid.Row="0"
+                Grid.Column="3"
+                HorizontalAlignment="Left"
+                Content="Allow multiple downloads"
+                IsChecked="{Binding AllowMultipleDownloads, UpdateSourceTrigger=PropertyChanged}" />
+            <CheckBox
+                Grid.Row="2"
+                Grid.Column="3"
+                HorizontalAlignment="Left"
+                Content="Overwrite same language files"
+                IsChecked="{Binding OverwriteSameLanguageSubs, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding AllowMultipleDownloads}" />
+        </Grid>
+        <Grid Grid.Row="5" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="8" />

@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using SubloaderWpf.Models;
+using SubloaderWpf.Interfaces;
+using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf.ViewModels
 {
@@ -12,11 +13,15 @@ namespace SubloaderWpf.ViewModels
         private SubtitleLanguage selectedWantedLanguage;
         private SubtitleLanguage selectedLanguage;
         private string searchText;
+        private bool alwaysOnTop;
+        private bool downloadToSubsFolder;
+        private bool allowMultipleDownloads;
+        private bool overwriteSameLanguageSubs;
 
         public SettingsViewModel(INavigator navigator)
         {
             this.navigator = navigator;
-            var wantLangs = ApplicationSettings.Instance.WantedLanguages;
+            var wantLangs = App.Settings.WantedLanguages;
             foreach (var x in SubtitleLanguage.AllLanguages)
             {
                 LanguageList.Add(x);
@@ -30,8 +35,12 @@ namespace SubloaderWpf.ViewModels
                 }
             }
 
-            SelectedLanguage = null;
-            SelectedWantedLanguage = null;
+            selectedLanguage = null;
+            selectedWantedLanguage = null;
+            alwaysOnTop = App.Settings.KeepWindowOnTop;
+            downloadToSubsFolder = App.Settings.DownloadToSubsFolder;
+            allowMultipleDownloads = App.Settings.AllowMultipleDownloads;
+            overwriteSameLanguageSubs = App.Settings.OverwriteSameLanguageSub;
         }
 
         public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
@@ -70,16 +79,40 @@ namespace SubloaderWpf.ViewModels
             }
         }
 
-        public bool IsLanguageSelected
+        public bool IsLanguageSelected => SelectedLanguage != null;
+
+        public bool IsWantedLanguageSelected => SelectedWantedLanguage != null;
+
+        public bool DownloadToSubsFolder
         {
-            get => SelectedLanguage != null;
-            set { }
+            get => downloadToSubsFolder;
+
+            set => Set("DownloadToSubsFolder", ref downloadToSubsFolder, value);
         }
 
-        public bool IsWantedLanguageSelected
+        public bool OverwriteSameLanguageSubs
         {
-            get => SelectedWantedLanguage != null;
-            set { }
+            get => overwriteSameLanguageSubs;
+
+            set => Set("OverwriteSameLanguageSubs", ref overwriteSameLanguageSubs, value);
+        }
+
+        public bool AllowMultipleDownloads
+        {
+            get => allowMultipleDownloads;
+
+            set
+            {
+                Set("AllowMultipleDownloads", ref allowMultipleDownloads, value);
+                Set("DownloadToSubsFolder", ref downloadToSubsFolder, false);
+                Set("OverwriteSameLanguageSubs", ref overwriteSameLanguageSubs, false);
+            }
+        }
+
+        public bool AlwaysOnTop
+        {
+            get => alwaysOnTop;
+            set => Set("AlwaysOnTop", ref alwaysOnTop, value);
         }
 
         public string SearchText
@@ -110,14 +143,17 @@ namespace SubloaderWpf.ViewModels
 
         public ICommand CancelCommand => new RelayCommand(Cancel);
 
-        private void Cancel() => navigator.GoToPreviousControl();
+        private void Cancel()
+        {
+            navigator.GoToPreviousControl();
+        }
 
         private void Add()
         {
             while (SelectedLanguage != null)
             {
                 var selected = SelectedLanguage;
-                _ = LanguageList.Remove(selected);
+                LanguageList.Remove(selected);
                 WantedLanguageList.Add(selected);
             }
         }
@@ -127,7 +163,7 @@ namespace SubloaderWpf.ViewModels
             while (SelectedWantedLanguage != null)
             {
                 var selected = SelectedWantedLanguage;
-                _ = WantedLanguageList.Remove(selected);
+                WantedLanguageList.Remove(selected);
                 LanguageList.Add(selected);
                 SearchText = SearchText;
             }
@@ -141,8 +177,12 @@ namespace SubloaderWpf.ViewModels
                 wanted.Add(x);
             }
 
-            ApplicationSettings.Instance.WantedLanguages = wanted;
-            ApplicationSettings.Instance.Save();
+            App.Settings.KeepWindowOnTop = alwaysOnTop;
+            App.Settings.AllowMultipleDownloads = allowMultipleDownloads;
+            App.Settings.DownloadToSubsFolder = downloadToSubsFolder;
+            App.Settings.OverwriteSameLanguageSub = overwriteSameLanguageSubs;
+            App.Settings.WantedLanguages = wanted;
+            SettingsParser.Save(App.Settings);
             navigator.GoToPreviousControl();
         }
     }
