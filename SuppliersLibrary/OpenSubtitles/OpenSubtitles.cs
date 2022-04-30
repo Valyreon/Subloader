@@ -16,7 +16,7 @@ namespace SuppliersLibrary.OpenSubtitles
         private readonly string baseRestUrl = "https://rest.opensubtitles.org/search";
         private readonly string userAgentId = "SubLoad v1";
 
-        public async Task<IList<ISubtitleResultItem>> SearchAsync(string path, object[] parameters = null)
+        public async Task<IReadOnlyList<ISubtitleResultItem>> SearchAsync(string path, object[] parameters = null)
         {
             using var client = new HttpClient { Timeout = new TimeSpan(0, 0, 0, 0, -1) };
             client.DefaultRequestHeaders.Accept.Clear();
@@ -39,41 +39,39 @@ namespace SuppliersLibrary.OpenSubtitles
                 throw new BadFileException("Input file does not exist.");
             }
 
-            var results = new List<ISubtitleResultItem>();
+            var results = new List<OSItem>();
 
-            if (byHash)
+            try
             {
-                var responseHash = await client.PostAsync(FormHashSearchUrl(path), null);
-                var x = await responseHash.Content.ReadAsStringAsync();
-                CheckStatus(responseHash);
-                var responseHashBody = await responseHash.Content.ReadAsStringAsync(); // this is json string
-                var resultHash = JsonSerializer.Deserialize<IList<OSItem>>(responseHashBody).ToList();
+                if (byHash)
+                {
+                    var responseHash = await client.PostAsync(FormHashSearchUrl(path), null);
+                    var x = await responseHash.Content.ReadAsStringAsync();
+                    CheckStatus(responseHash);
+                    var responseHashBody = await responseHash.Content.ReadAsStringAsync(); // this is json string
+                    var resultHash = JsonSerializer.Deserialize<IList<OSItem>>(responseHashBody).ToList();
 
-                results.AddRange(ConvertList(resultHash));
+                    results.AddRange(resultHash);
+                }
+
+                if (byName)
+                {
+                    var responseQuery = await client.PostAsync(FormQuerySearchUrl(path), null);
+                    CheckStatus(responseQuery);
+                    var responseQueryBody = await responseQuery.Content.ReadAsStringAsync(); // this is json string
+                    var resultQuery = JsonSerializer.Deserialize<IList<OSItem>>(responseQueryBody).ToList();
+
+                    results.AddRange(resultQuery);
+                }
+            }
+            catch (Exception)
+            {
+                throw new ServerFailException("Something wrong with server. Try later.");
             }
 
-            if (byName)
-            {
-                var responseQuery = await client.PostAsync(FormQuerySearchUrl(path), null);
-                CheckStatus(responseQuery);
-                var responseQueryBody = await responseQuery.Content.ReadAsStringAsync(); // this is json string
-                var resultQuery = JsonSerializer.Deserialize<IList<OSItem>>(responseQueryBody).ToList();
-
-                results.AddRange(ConvertList(resultQuery));
-            }
-
-            return results;
-        }
-
-        private List<ISubtitleResultItem> ConvertList(IEnumerable<OSItem> list)
-        {
-            var result = new List<ISubtitleResultItem>();
-            foreach (var x in list)
-            {
-                result.Add(x);
-            }
-
-            return result;
+            return results.DistinctBy(s => s.SubHash)
+                          .Cast<ISubtitleResultItem>()
+                          .ToList();
         }
 
         private string FormHashSearchUrl(string path)
@@ -101,7 +99,7 @@ namespace SuppliersLibrary.OpenSubtitles
                 + $"/query-{HttpUtility.UrlEncode(nameString)}";
         }
 
-        private void CheckStatus(HttpResponseMessage msg)
+        private static void CheckStatus(HttpResponseMessage msg)
         {
             if (!msg.IsSuccessStatusCode)
             {

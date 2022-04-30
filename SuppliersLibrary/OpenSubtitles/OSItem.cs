@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Net;
+using System.Net.Http;
 
 namespace SuppliersLibrary.OpenSubtitles
 {
@@ -49,14 +49,14 @@ namespace SuppliersLibrary.OpenSubtitles
 
         public string LanguageID => SubLanguageID;
 
-        public void Download(string savePath)
+        public async void Download(string savePath)
         {
-            using var client = new WebClient();
-            using var compressedStream = new MemoryStream(client.DownloadData(SubDownloadLink));
+            using var client = new HttpClient();
+            using var compressedStream = await client.GetStreamAsync(SubDownloadLink);
             using var zipStream = new GZipStream(compressedStream, CompressionMode.Decompress);
             using var uncompressed = new MemoryStream();
 
-            zipStream.CopyToAsync(uncompressed);
+            await zipStream.CopyToAsync(uncompressed);
 
             File.WriteAllBytes(savePath, uncompressed.ToArray());
         }
@@ -64,6 +64,16 @@ namespace SuppliersLibrary.OpenSubtitles
         public bool Equals(OSItem other)
         {
             return SubHash == other.SubHash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as OSItem);
+        }
+
+        public override int GetHashCode()
+        {
+            return SubHash.GetHashCode();
         }
     }
 }

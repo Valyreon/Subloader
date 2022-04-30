@@ -19,7 +19,7 @@ namespace SubloaderWpf.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly List<ISubtitleSupplier> suppliers = new List<ISubtitleSupplier>();
+        private readonly List<ISubtitleSupplier> suppliers = new();
         private readonly INavigator navigator;
         private string statusText;
         private string currentPath;
@@ -63,7 +63,7 @@ namespace SubloaderWpf.ViewModels
         {
             get => statusText;
 
-            set => Set("StatusText", ref statusText, value);
+            set => Set(nameof(StatusText), ref statusText, value);
         }
 
         public bool SearchByName
@@ -72,7 +72,7 @@ namespace SubloaderWpf.ViewModels
 
             set
             {
-                Set("SearchByName", ref searchByName, value);
+                Set(nameof(SearchByName), ref searchByName, value);
                 App.Settings.IsByNameChecked = value;
                 SettingsParser.Save(App.Settings);
             }
@@ -84,7 +84,7 @@ namespace SubloaderWpf.ViewModels
 
             set
             {
-                Set("SearchByHash", ref searchByHash, value);
+                Set(nameof(SearchByHash), ref searchByHash, value);
                 App.Settings.IsByHashChecked = value;
                 SettingsParser.Save(App.Settings);
             }
@@ -102,8 +102,11 @@ namespace SubloaderWpf.ViewModels
         {
             var fileChooseDialog = new OpenFileDialog
             {
-                Filter = "Video files |*.wmv; *.3g2; *.3gp; *.3gp2; *.3gpp; *.amv; *.asf;  *.avi; *.bin; *.cue; *.divx; *.dv; *.flv; *.gxf; *.iso; *.m1v; *.m2v; *.m2t; *.m2ts; *.m4v; " +
-                          " *.mkv; *.mov; *.mp2; *.mp2v; *.mp4; *.mp4v; *.mpa; *.mpe; *.mpeg; *.mpeg1; *.mpeg2; *.mpeg4; *.mpg; *.mpv2; *.mts; *.nsv; *.nuv; *.ogg; *.ogm; *.ogv; *.ogx; *.ps; *.rec; *.rm; *.rmvb; *.tod; *.ts; *.tts; *.vob; *.vro; *.webm; *.dat; ",
+                Filter = "Video files |*.wmv; *.3g2; *.3gp; *.3gp2; *.3gpp; *.amv; *.asf;  *.avi; *.bin; " +
+                          "*.cue; *.divx; *.dv; *.flv; *.gxf; *.iso; *.m1v; *.m2v; *.m2t; *.m2ts; *.m4v; " +
+                          " *.mkv; *.mov; *.mp2; *.mp2v; *.mp4; *.mp4v; *.mpa; *.mpe; *.mpeg; *.mpeg1; " +
+                          "*.mpeg2; *.mpeg4; *.mpg; *.mpv2; *.mts; *.nsv; *.nuv; *.ogg; *.ogm; *.ogv; " +
+                          "*.ogx; *.ps; *.rec; *.rm; *.rmvb; *.tod; *.ts; *.tts; *.vob; *.vro; *.webm; *.dat; ",
                 CheckFileExists = true,
                 CheckPathExists = true,
             };
@@ -211,7 +214,7 @@ namespace SubloaderWpf.ViewModels
                 {
                     var settings = App.Settings;
                     if (settings.WantedLanguages == null ||
-                        settings.WantedLanguages.Count() == 0 ||
+                        !settings.WantedLanguages.Any() ||
                         settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
                     {
                         result.Add(new SubtitleEntry(item));
