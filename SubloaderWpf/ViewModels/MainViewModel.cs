@@ -25,6 +25,9 @@ namespace SubloaderWpf.ViewModels
         private string currentPath;
         private bool searchByName;
         private bool searchByHash;
+        private bool isSearchModalOpen;
+        private string searchModalInputText;
+        private string lastSearchedText;
 
         public MainViewModel(INavigator navigator)
         {
@@ -66,6 +69,20 @@ namespace SubloaderWpf.ViewModels
             set => Set(nameof(StatusText), ref statusText, value);
         }
 
+        public bool IsSearchModalOpen
+        {
+            get => isSearchModalOpen;
+
+            set => Set(nameof(IsSearchModalOpen), ref isSearchModalOpen, value);
+        }
+
+        public string SearchModalInputText
+        {
+            get => searchModalInputText;
+
+            set => Set(nameof(SearchModalInputText), ref searchModalInputText, value);
+        }
+
         public bool SearchByName
         {
             get => searchByName;
@@ -97,6 +114,25 @@ namespace SubloaderWpf.ViewModels
         public ICommand SettingsCommand => new RelayCommand(GoToSettings);
 
         public ICommand DownloadCommand => new RelayCommand(Download);
+
+        public ICommand SearchCommand => new RelayCommand(Search);
+
+        public ICommand OpenSearchModalCommand => new RelayCommand(() => IsSearchModalOpen = true);
+
+        public ICommand CloseSearchModalCommand => new RelayCommand(() => { IsSearchModalOpen = false; SearchModalInputText = lastSearchedText; });
+
+        public async void Search()
+        {
+            IsSearchModalOpen = false;
+            CurrentPath = null;
+            if(string.IsNullOrWhiteSpace(SearchModalInputText))
+            {
+                return;
+            }
+
+            lastSearchedText = SearchModalInputText;
+            await GetResults(false);
+        }
 
         public void ChooseFile()
         {
@@ -136,6 +172,10 @@ namespace SubloaderWpf.ViewModels
             {
                 await Task.Run(() => ProcessFileAsync());
             }
+            else if(!string.IsNullOrWhiteSpace(SearchModalInputText))
+            {
+                Search();
+            }
         }
 
         public async void Download()
@@ -151,7 +191,29 @@ namespace SubloaderWpf.ViewModels
                 await Task.Run(() =>
                 {
                     Thread.Sleep(20);
-                    SelectedItem.Model.Download(GetDestinationPath());
+                    string destination;
+                    if(string.IsNullOrWhiteSpace(CurrentPath))
+                    {
+                        var saveFileDialog = new SaveFileDialog()
+                        {
+                            FileName = SelectedItem.Name
+                        };
+
+                        if (saveFileDialog.ShowDialog() == true)
+                        {
+                            destination = saveFileDialog.FileName;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        destination = GetDestinationPath();
+                    }
+
+                    SelectedItem.Model.Download(destination);
                 });
 
                 StatusText = "Subtitle downloaded.";
@@ -165,6 +227,33 @@ namespace SubloaderWpf.ViewModels
 
         private async void ProcessFileAsync()
         {
+            await GetResults(true);
+        }
+
+        private async Task<IList<SubtitleEntry>> SearchSuppliers(bool forFile = true)
+        {
+            var result = new List<SubtitleEntry>();
+            foreach (var supplier in suppliers)
+            {
+                var results = forFile ? await supplier.SearchForFileAsync(currentPath, new object[] { SearchByHash, SearchByName })
+                                      : await supplier.SearchAsync(SearchModalInputText);
+                foreach (var item in results)
+                {
+                    var settings = App.Settings;
+                    if (settings.WantedLanguages == null ||
+                        !settings.WantedLanguages.Any() ||
+                        settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
+                    {
+                        result.Add(new SubtitleEntry(item));
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private async Task GetResults(bool fileSearch)
+        {
             try
             {
                 // try to focus window
@@ -172,7 +261,7 @@ namespace SubloaderWpf.ViewModels
 
                 StatusText = "Searching subtitles...";
                 Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
-                var results = await SearchSuppliers();
+                var results = await SearchSuppliers(fileSearch);
                 if (results == null)
                 {
                     StatusText = "Server error. Try refreshing.";
@@ -189,7 +278,7 @@ namespace SubloaderWpf.ViewModels
                         await Task.Delay(20);
                     }
 
-                    StatusText = "Use button or doubleclick to download.";
+                    StatusText = "Use double-click to download.";
                 }
             }
             catch (ServerFailException ex)
@@ -202,27 +291,6 @@ namespace SubloaderWpf.ViewModels
                 StatusText = ex.Message;
                 SystemSounds.Hand.Play();
             }
-        }
-
-        private async Task<IList<SubtitleEntry>> SearchSuppliers()
-        {
-            var result = new List<SubtitleEntry>();
-            foreach (var supplier in suppliers)
-            {
-                var results = await supplier.SearchAsync(currentPath, new object[] { SearchByHash, SearchByName });
-                foreach (var item in results)
-                {
-                    var settings = App.Settings;
-                    if (settings.WantedLanguages == null ||
-                        !settings.WantedLanguages.Any() ||
-                        settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
-                    {
-                        result.Add(new SubtitleEntry(item));
-                    }
-                }
-            }
-
-            return result;
         }
 
         private string GetDestinationPath()

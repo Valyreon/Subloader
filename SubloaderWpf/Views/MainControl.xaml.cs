@@ -7,7 +7,10 @@ namespace SubloaderWpf.Views
 {
     public partial class MainControl : UserControl
     {
-        public MainControl() => InitializeComponent();
+        public MainControl()
+        {
+            InitializeComponent();
+        }
 
         private void OnDropFile(object sender, DragEventArgs e)
         {
@@ -30,6 +33,15 @@ namespace SubloaderWpf.Views
             }
 
             e.Handled = true;
+        }
+
+        private void searchModal_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if(e.NewValue is bool visibility && visibility)
+            {
+                searchTextBox.SelectAll();
+                searchTextBox.Focus();
+            }
         }
     }
 }

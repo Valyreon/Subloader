@@ -32,7 +32,7 @@ namespace SubloaderWpf.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (parameter is null || !(parameter is string))
+            if (parameter is null or not string)
             {
                 parameter = "0";
             }
@@ -48,7 +48,7 @@ namespace SubloaderWpf.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (parameter is null || !(parameter is string))
+            if (parameter is null or not string)
             {
                 parameter = "1";
             }

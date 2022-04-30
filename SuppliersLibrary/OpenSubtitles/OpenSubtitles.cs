@@ -13,14 +13,12 @@ namespace SuppliersLibrary.OpenSubtitles
 {
     public class OpenSubtitles : ISubtitleSupplier
     {
-        private readonly string baseRestUrl = "https://rest.opensubtitles.org/search";
-        private readonly string userAgentId = "SubLoad v1";
+        private static readonly string baseRestUrl = "https://rest.opensubtitles.org/search";
+        private static readonly string userAgentId = "SubLoad v1";
 
-        public async Task<IReadOnlyList<ISubtitleResultItem>> SearchAsync(string path, object[] parameters = null)
+        public async Task<IReadOnlyList<ISubtitleResultItem>> SearchForFileAsync(string filePath, object[] parameters = null)
         {
-            using var client = new HttpClient { Timeout = new TimeSpan(0, 0, 0, 0, -1) };
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Add("X-User-Agent", userAgentId);
+            using var client = PrepareClient();
 
             bool byHash = true, byName = false;
 
@@ -34,7 +32,7 @@ namespace SuppliersLibrary.OpenSubtitles
                 throw new ArgumentException("Parameters should either be null or 2 provided.");
             }
 
-            if (!File.Exists(path))
+            if (!File.Exists(filePath))
             {
                 throw new BadFileException("Input file does not exist.");
             }
@@ -45,21 +43,21 @@ namespace SuppliersLibrary.OpenSubtitles
             {
                 if (byHash)
                 {
-                    var responseHash = await client.PostAsync(FormHashSearchUrl(path), null);
+                    var responseHash = await client.PostAsync(FormHashSearchUrl(filePath), null);
                     var x = await responseHash.Content.ReadAsStringAsync();
                     CheckStatus(responseHash);
                     var responseHashBody = await responseHash.Content.ReadAsStringAsync(); // this is json string
-                    var resultHash = JsonSerializer.Deserialize<IList<OSItem>>(responseHashBody).ToList();
+                    var resultHash = JsonSerializer.Deserialize<IList<OSItem>>(responseHashBody);
 
                     results.AddRange(resultHash);
                 }
 
                 if (byName)
                 {
-                    var responseQuery = await client.PostAsync(FormQuerySearchUrl(path), null);
+                    var responseQuery = await client.PostAsync(FormQuerySearchUrl(filePath), null);
                     CheckStatus(responseQuery);
                     var responseQueryBody = await responseQuery.Content.ReadAsStringAsync(); // this is json string
-                    var resultQuery = JsonSerializer.Deserialize<IList<OSItem>>(responseQueryBody).ToList();
+                    var resultQuery = JsonSerializer.Deserialize<IList<OSItem>>(responseQueryBody);
 
                     results.AddRange(resultQuery);
                 }
@@ -72,6 +70,41 @@ namespace SuppliersLibrary.OpenSubtitles
             return results.DistinctBy(s => s.SubHash)
                           .Cast<ISubtitleResultItem>()
                           .ToList();
+        }
+
+        public async Task<IReadOnlyList<ISubtitleResultItem>> SearchAsync(string token)
+        {
+            try
+            {
+                using var client = PrepareClient();
+
+                var queryPostUrl = baseRestUrl + $"/query-{HttpUtility.UrlEncode(token)}";
+
+                var responseQuery = await client.PostAsync(queryPostUrl, null);
+                CheckStatus(responseQuery);
+                var responseQueryBody = await responseQuery.Content.ReadAsStringAsync(); // this is json string
+
+                return JsonSerializer.Deserialize<IList<OSItem>>(responseQueryBody)
+                                     .DistinctBy(s => s.SubHash)
+                                     .ToList();
+            }
+            catch (Exception)
+            {
+                throw new ServerFailException("Something wrong with server. Try later.");
+            }
+        }
+
+        private static HttpClient PrepareClient()
+        {
+            var client = new HttpClient
+            {
+                Timeout = new TimeSpan(0, 0, 0, 0, -1)
+            };
+
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Add("X-User-Agent", userAgentId);
+
+            return client;
         }
 
         private string FormHashSearchUrl(string path)
@@ -111,5 +144,7 @@ namespace SuppliersLibrary.OpenSubtitles
                 };
             }
         }
+
+
     }
 }
