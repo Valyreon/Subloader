@@ -52,21 +52,6 @@ Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Fla
 | | |
 |:-------------------------:|:-------------------------:|
 |  <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot3.png">|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot2.png">|
-
-### To do
-- ~~**Language settings window**~~
-  
-  ~~Subloader now reads from lang.cfg in install directory for languages if lang.cfg exists. Window for configuring the filter from UI is next.~~
-  
-- ~~**Move to MVVM**~~
-  
-  ~~Refactor and restructure Subloader so it uses Model-View-ViewModel design.~~
-  
-- **Interfacing with more subtitle databases**
-
-- ~~**Migrate to .NET 6**~~
-
-- ~~**Add manual search functionality**--
   
 License
 ----
