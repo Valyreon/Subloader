@@ -8,13 +8,8 @@ namespace SuppliersLibrary.OpenSubtitles
     {
         public static byte[] ComputeMovieHash(string filename)
         {
-            byte[] result;
-            using (Stream input = File.OpenRead(filename))
-            {
-                result = ComputeMovieHash(input);
-            }
-
-            return result;
+            using var input = File.OpenRead(filename);
+            return ComputeMovieHash(input);
         }
 
         public static string ToHexadecimal(byte[] bytes)
