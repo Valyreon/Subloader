@@ -31,7 +31,7 @@ This will output the compiled exe file in the current directory. Generated pdb f
 
 Subloader can be opened from Start Menu, and then using the 'Open' button you can choose a video file. Search will begin immediately. Installer will also add 'Find subtitles' menu in right click context menu of .avi, .mkv and .mp4 files for easy access. You can also search manually without file selection, by using the Search button, entering the title and/or relevant info and pressing Enter(or Search button in the modal window).
 
-After the search is complete, you can select a subtitle from the list and double-click it or press Enter to download. 
+After the search is complete, you can select a subtitle from the list and double-click it or press Enter to download.
 
 When you double-click an item in the table Subloader will download the subtitle. The name and location of the file depends on Settings, default (without options below checked) behaviour is to download subtitles into a file that is the same name as the video file with a different extension.
 
@@ -44,6 +44,10 @@ In **Settings** you can configure wanted **subtitle languages** as well as other
 * **Download to Subs folder** - This option allows user to download subtitles into a separate Subs folder in the same directory as the file. This option can be used only if option above is checked as well. The naming of the files is the same as for the option above.
 * **Overwrite same language files** - If checked, when user downloads multiple subtitles of the same language Subloader won't create multiple files named *movie-name.(1).lang-id.format*, *movie-name.(2).lang-id.format* etc. but overwrite the existing *movie-title.lang-id.format* file with the last downloaded subtitle.
 
+### Portable
+
+If you want to use the Subloader as a portable app, there has to be a config file *subLoadConfig.json* in the same folder as the exe file, otherwise it will create the default config in AppData. There is a new release with the zip file including the required exe and config json file.
+
 ### Acknowledgments
 
 Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Flaticon](https://www.flaticon.com )**.
@@ -52,7 +56,7 @@ Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Fla
 | | |
 |:-------------------------:|:-------------------------:|
 |  <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot3.png">|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot2.png">|
-  
+
 License
 ----
 
