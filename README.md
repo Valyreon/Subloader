@@ -3,7 +3,7 @@
 # Subloader
 ![](https://img.shields.io/badge/Price-Free-brightgreen.svg)
 ![](https://img.shields.io/badge/License-MIT-blue.svg)
-![](https://img.shields.io/badge/Release-1.5.0-blue.svg)
+![](https://img.shields.io/badge/Release-1.5.1-blue.svg)
 
 **Subloader** is a simple and minimalistic software written in **C#** and **.NET 6** that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using REST API for searching and downloading subtitles.
 
@@ -13,7 +13,7 @@ Search and download is provided by **[Opensubtitles](http://www.opensubtitles.or
 
 ### Installation
 
-Subloader requires **[.NET 6 Runtime](https://dotnet.microsoft.com/download)** to run. It was developed in Visual Studio Community 2022.
+Subloader requires **[.NET 6 Runtime](https://dotnet.microsoft.com/download)** to run. The runtime will probably be included on your Windows by default. It was developed in Visual Studio Community 2022.
 
 Download the **[latest version of Subloader](https://github.com/Valyreon/Subloader/releases)**, run the setup and that's it. You can now right click your video file and get your subtitles in a matter of seconds. Enjoy!
 
@@ -46,7 +46,7 @@ In **Settings** you can configure wanted **subtitle languages** as well as other
 
 ### Portable
 
-You can now also use Subloader as a portable exe file, included in the latest release. Note that the computer running it will still need .NET 6 Runtime. Making the exe self contained would increase it's size to ~140MG.
+You can now also use Subloader as a portable exe file, included in the latest release. It will use a config file in the same directory.
 
 ### Acknowledgments
 
@@ -55,7 +55,7 @@ Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Fla
 ### Screenshots
 | | |
 |:-------------------------:|:-------------------------:|
-|  <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot3.png">|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot2.png">|
+| ![image](https://github.com/Valyreon/Subloader/assets/18052197/bdb0cc0b-5971-4ff7-a246-31f96a951b03) | ![image](https://github.com/Valyreon/Subloader/assets/18052197/26b4b4e0-5809-458f-9932-520ed00e4fff) |
 
 License
 ----
