@@ -7,6 +7,9 @@ namespace SubloaderWpf.Views
     /// </summary>
     public partial class SettingsControl : UserControl
     {
-        public SettingsControl() => InitializeComponent();
+        public SettingsControl()
+        {
+            InitializeComponent();
+        }
     }
 }

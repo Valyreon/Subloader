@@ -44,6 +44,10 @@ In **Settings** you can configure wanted **subtitle languages** as well as other
 * **Download to Subs folder** - This option allows user to download subtitles into a separate Subs folder in the same directory as the file. This option can be used only if option above is checked as well. The naming of the files is the same as for the option above.
 * **Overwrite same language files** - If checked, when user downloads multiple subtitles of the same language Subloader won't create multiple files named *movie-name.(1).lang-id.format*, *movie-name.(2).lang-id.format* etc. but overwrite the existing *movie-title.lang-id.format* file with the last downloaded subtitle.
 
+### Portable
+
+You can now also use Subloader as a portable exe file, included in the latest release. Note that the computer running it will still need .NET 6 Runtime. Making the exe self contained would increase it's size to ~140MG.
+
 ### Acknowledgments
 
 Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Flaticon](https://www.flaticon.com )**.
@@ -52,7 +56,7 @@ Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Fla
 | | |
 |:-------------------------:|:-------------------------:|
 |  <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot3.png">|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="https://raw.githubusercontent.com/Valyreon/Subloader/master/screenshot2.png">|
-  
+
 License
 ----
 
