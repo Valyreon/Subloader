@@ -7,13 +7,13 @@
     mc:Ignorable="d">
     <Converters:ColorBrightnessConverter x:Key="ColorConverter" />
     <SolidColorBrush x:Key="MainDarkColor" Color="#333" />
-    <SolidColorBrush x:Key="AccentColor" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color}" />
-    <SolidColorBrush x:Key="MediumLightAccentColor" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.2}" />
-    <SolidColorBrush x:Key="LighterAccentColor" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.8}" />
-    <SolidColorBrush x:Key="MediumAccentColor" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
+    <SolidColorBrush x:Key="AccentColor" Color="CornflowerBlue" />
+    <SolidColorBrush x:Key="MediumLightAccentColor" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.2}" />
+    <SolidColorBrush x:Key="LighterAccentColor" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.8}" />
+    <SolidColorBrush x:Key="MediumAccentColor" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
 
-    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.15}" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Source={x:Static SystemParameters.WindowGlassBrush}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.15}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
 
     <Style x:Key="Body_Content_DataGrid_Centering" TargetType="{x:Type DataGridCell}">
