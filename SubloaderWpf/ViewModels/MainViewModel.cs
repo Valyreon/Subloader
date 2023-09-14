@@ -11,7 +11,6 @@ using System.Windows.Input;
 using Microsoft.Win32;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Utilities;
-using SuppliersLibrary;
 using SuppliersLibrary.Exceptions;
 using SuppliersLibrary.OpenSubtitles;
 
@@ -19,22 +18,19 @@ namespace SubloaderWpf.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly List<ISubtitleSupplier> suppliers = new();
+        private readonly OpenSubtitlesClient client = new();
         private readonly INavigator navigator;
-        private string statusText;
         private string currentPath;
-        private bool searchByName;
-        private bool searchByHash;
         private bool isSearchModalOpen;
-        private string searchModalInputText;
         private string lastSearchedText;
+        private bool searchByHash;
+        private bool searchByName;
+        private string searchModalInputText;
+        private string statusText;
 
         public MainViewModel(INavigator navigator)
         {
             this.navigator = navigator;
-
-            // Must first add suppliers before processing.
-            suppliers.Add(new OpenSubtitles());
 
             searchByHash = App.Settings.IsByHashChecked;
             searchByName = App.Settings.IsByNameChecked;
@@ -45,9 +41,8 @@ namespace SubloaderWpf.ViewModels
             App.InstanceMediator.ReceivedArgument += arg => CurrentPath = arg;
         }
 
-        public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
-
-        public SubtitleEntry SelectedItem { get; set; }
+        public ICommand ChooseFileCommand => new RelayCommand(ChooseFile);
+        public ICommand CloseSearchModalCommand => new RelayCommand(() => { IsSearchModalOpen = false; SearchModalInputText = lastSearchedText; });
 
         public string CurrentPath
         {
@@ -62,12 +57,7 @@ namespace SubloaderWpf.ViewModels
             }
         }
 
-        public string StatusText
-        {
-            get => statusText;
-
-            set => Set(nameof(StatusText), ref statusText, value);
-        }
+        public ICommand DownloadCommand => new RelayCommand(Download);
 
         public bool IsSearchModalOpen
         {
@@ -76,11 +66,19 @@ namespace SubloaderWpf.ViewModels
             set => Set(nameof(IsSearchModalOpen), ref isSearchModalOpen, value);
         }
 
-        public string SearchModalInputText
-        {
-            get => searchModalInputText;
+        public ICommand OpenSearchModalCommand => new RelayCommand(() => IsSearchModalOpen = true);
+        public ICommand RefreshCommand => new RelayCommand(Refresh);
 
-            set => Set(nameof(SearchModalInputText), ref searchModalInputText, value);
+        public bool SearchByHash
+        {
+            get => searchByHash;
+
+            set
+            {
+                Set(nameof(SearchByHash), ref searchByHash, value);
+                App.Settings.IsByHashChecked = value;
+                SettingsParser.Save(App.Settings);
+            }
         }
 
         public bool SearchByName
@@ -95,44 +93,26 @@ namespace SubloaderWpf.ViewModels
             }
         }
 
-        public bool SearchByHash
-        {
-            get => searchByHash;
-
-            set
-            {
-                Set(nameof(SearchByHash), ref searchByHash, value);
-                App.Settings.IsByHashChecked = value;
-                SettingsParser.Save(App.Settings);
-            }
-        }
-
-        public ICommand ChooseFileCommand => new RelayCommand(ChooseFile);
-
-        public ICommand RefreshCommand => new RelayCommand(Refresh);
-
-        public ICommand SettingsCommand => new RelayCommand(GoToSettings);
-
-        public ICommand DownloadCommand => new RelayCommand(Download);
-
         public ICommand SearchCommand => new RelayCommand(Search);
 
-        public ICommand OpenSearchModalCommand => new RelayCommand(() => IsSearchModalOpen = true);
-
-        public ICommand CloseSearchModalCommand => new RelayCommand(() => { IsSearchModalOpen = false; SearchModalInputText = lastSearchedText; });
-
-        public async void Search()
+        public string SearchModalInputText
         {
-            IsSearchModalOpen = false;
-            CurrentPath = null;
-            if(string.IsNullOrWhiteSpace(SearchModalInputText))
-            {
-                return;
-            }
+            get => searchModalInputText;
 
-            lastSearchedText = SearchModalInputText;
-            await GetResults(false);
+            set => Set(nameof(SearchModalInputText), ref searchModalInputText, value);
         }
+
+        public SubtitleEntry SelectedItem { get; set; }
+        public ICommand SettingsCommand => new RelayCommand(GoToSettings);
+
+        public string StatusText
+        {
+            get => statusText;
+
+            set => Set(nameof(StatusText), ref statusText, value);
+        }
+
+        public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
 
         public void ChooseFile()
         {
@@ -160,6 +140,52 @@ namespace SubloaderWpf.ViewModels
             }
         }
 
+        public async void Download()
+        {
+            if (SelectedItem == null)
+            {
+                return;
+            }
+
+            StatusText = "Downloading...";
+            await Task.Run(async () =>
+            {
+                string destination;
+                if (string.IsNullOrWhiteSpace(CurrentPath))
+                {
+                    var saveFileDialog = new SaveFileDialog()
+                    {
+                        FileName = SelectedItem.Name
+                    };
+
+                    if (saveFileDialog.ShowDialog() == true)
+                    {
+                        destination = saveFileDialog.FileName;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    destination = GetDestinationPath();
+                }
+
+                try
+                {
+                    await client.Download(SelectedItem.Model, destination);
+                }
+                catch (Exception)
+                {
+                    Application.Current.Dispatcher.Invoke(() => StatusText = "Error while downloading.");
+                    SystemSounds.Hand.Play();
+                }
+
+                Application.Current.Dispatcher.Invoke(() => StatusText = "Subtitle downloaded.");
+            });
+        }
+
         public void GoToSettings()
         {
             var settingsControl = new SettingsViewModel(navigator);
@@ -172,84 +198,52 @@ namespace SubloaderWpf.ViewModels
             {
                 await Task.Run(() => ProcessFileAsync());
             }
-            else if(!string.IsNullOrWhiteSpace(SearchModalInputText))
+            else if (!string.IsNullOrWhiteSpace(SearchModalInputText))
             {
                 Search();
             }
         }
 
-        public async void Download()
+        public async void Search()
         {
-            if (SelectedItem == null)
+            IsSearchModalOpen = false;
+            CurrentPath = null;
+            if (string.IsNullOrWhiteSpace(SearchModalInputText))
             {
                 return;
             }
 
-            try
-            {
-                StatusText = "Downloading...";
-                await Task.Run(() =>
-                {
-                    Thread.Sleep(20);
-                    string destination;
-                    if(string.IsNullOrWhiteSpace(CurrentPath))
-                    {
-                        var saveFileDialog = new SaveFileDialog()
-                        {
-                            FileName = SelectedItem.Name
-                        };
-
-                        if (saveFileDialog.ShowDialog() == true)
-                        {
-                            destination = saveFileDialog.FileName;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        destination = GetDestinationPath();
-                    }
-
-                    SelectedItem.Model.Download(destination);
-                });
-
-                StatusText = "Subtitle downloaded.";
-            }
-            catch (Exception)
-            {
-                StatusText = "Error while downloading.";
-                SystemSounds.Hand.Play();
-            }
+            lastSearchedText = SearchModalInputText;
+            await GetResults(false);
         }
 
-        private async void ProcessFileAsync()
+        private string GetDestinationPath()
         {
-            await GetResults(true);
-        }
+            var directoryPath = App.Settings.DownloadToSubsFolder
+                ? Path.Combine(Path.GetDirectoryName(CurrentPath), "Subs")
+                : Path.GetDirectoryName(CurrentPath);
 
-        private async Task<IList<SubtitleEntry>> SearchSuppliers(bool forFile = true)
-        {
-            var result = new List<SubtitleEntry>();
-            foreach (var supplier in suppliers)
+            Directory.CreateDirectory(directoryPath);
+
+            if (App.Settings.AllowMultipleDownloads)
             {
-                var results = forFile ? await supplier.SearchForFileAsync(currentPath, new object[] { SearchByHash, SearchByName })
-                                      : await supplier.SearchAsync(SearchModalInputText);
-                foreach (var item in results)
+                var fileNameWithoutPathOrExtension = Path.GetFileNameWithoutExtension(CurrentPath);
+                var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}");
+
+                if (!App.Settings.OverwriteSameLanguageSub && File.Exists(path))
                 {
-                    var settings = App.Settings;
-                    if (settings.WantedLanguages == null ||
-                        !settings.WantedLanguages.Any() ||
-                        settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
+                    var counter = 1;
+                    while (File.Exists(
+                        path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.({counter}).{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}")))
                     {
-                        result.Add(new SubtitleEntry(item));
+                        counter++;
                     }
                 }
+
+                return path;
             }
 
-            return result;
+            return Path.ChangeExtension(CurrentPath, SelectedItem.Model.Format);
         }
 
         private async Task GetResults(bool fileSearch)
@@ -281,45 +275,38 @@ namespace SubloaderWpf.ViewModels
                     StatusText = "Use double-click to download.";
                 }
             }
-            catch (ServerFailException ex)
-            {
-                StatusText = ex.Message;
-                SystemSounds.Hand.Play();
-            }
-            catch (BadFileException ex)
+            catch (Exception ex)
             {
                 StatusText = ex.Message;
                 SystemSounds.Hand.Play();
             }
         }
 
-        private string GetDestinationPath()
+        private async void ProcessFileAsync()
         {
-            var directoryPath = App.Settings.DownloadToSubsFolder
-                ? Path.Combine(Path.GetDirectoryName(CurrentPath), "Subs")
-                : Path.GetDirectoryName(CurrentPath);
+            await GetResults(true);
+        }
 
-            Directory.CreateDirectory(directoryPath);
+        private async Task<IReadOnlyList<SubtitleEntry>> SearchSuppliers(bool forFile = true)
+        {
+            var settings = App.Settings;
+            var result = new List<SubtitleEntry>();
 
-            if (App.Settings.AllowMultipleDownloads)
+            var langCode = settings.WantedLanguages?.Count == 1
+                ? settings.WantedLanguages.Single().Code
+                : null;
+
+            var results = forFile ? await client.SearchForFileAsync(currentPath, SearchByHash, SearchByName, langCode)
+                                  : await client.SearchAsync(SearchModalInputText, langCode);
+
+            if (!string.IsNullOrWhiteSpace(langCode) || settings.WantedLanguages?.Any() != true)
             {
-                var fileNameWithoutPathOrExtension = Path.GetFileNameWithoutExtension(CurrentPath);
-                var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}");
-
-                if (!App.Settings.OverwriteSameLanguageSub && File.Exists(path))
-                {
-                    var counter = 1;
-                    while (File.Exists(
-                        path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.({counter}).{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}")))
-                    {
-                        counter++;
-                    }
-                }
-
-                return path;
+                return results.Select(i => new SubtitleEntry(i)).ToList();
             }
 
-            return Path.ChangeExtension(CurrentPath, SelectedItem.Model.Format);
+            return results.Where(item => settings.WantedLanguages.Any(subLang => subLang.Name == item.Language))
+                .Select(i => new SubtitleEntry(i))
+                .ToList();
         }
     }
 }

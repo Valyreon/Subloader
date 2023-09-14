@@ -1,22 +1,20 @@
 using System.ComponentModel;
-using SuppliersLibrary;
+using SuppliersLibrary.OpenSubtitles;
 
 namespace SubloaderWpf.Utilities
 {
     public class SubtitleEntry : INotifyPropertyChanged
     {
-        public SubtitleEntry(ISubtitleResultItem item)
+        public SubtitleEntry(OSItem item)
         {
             Model = item;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string Name => Model.Name;
-
         public string Language => Model.Language;
-
-        public ISubtitleResultItem Model { get; }
+        public OSItem Model { get; }
+        public string Name => Model.Name;
 
         protected void OnPropertyChanged(string name)
         {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SubloaderWpf.Utilities
+namespace SuppliersLibrary
 {
     public class SubtitleLanguage
     {
@@ -491,8 +491,7 @@ namespace SubloaderWpf.Utilities
             new SubtitleLanguage("Zuni", "zun"),
         };
 
-        public string Name { get; set; }
-
         public string Code { get; set; }
+        public string Name { get; set; }
     }
 }

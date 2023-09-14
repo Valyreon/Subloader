@@ -76,7 +76,7 @@
                                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                                 <Setter Property="Background" Value="#e8e8e8" />
                                 <Setter Property="BorderBrush" Value="#bbb" />
-                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="BorderThickness" Value="0,0,0,1" />
                                 <Setter Property="FontFamily" Value="Segoe UI Semibold" />
                                 <Setter Property="Height" Value="25" />
                             </Style>
@@ -95,6 +95,7 @@
                 Content="3"
                 FontFamily="Marlett"
                 FontSize="20"
+                Foreground="{StaticResource MainDarkColor}"
                 IsEnabled="{Binding IsLanguageSelected, UpdateSourceTrigger=PropertyChanged}" />
             <Button
                 Grid.Row="4"
@@ -106,6 +107,7 @@
                 Content="4"
                 FontFamily="Marlett"
                 FontSize="20"
+                Foreground="{StaticResource MainDarkColor}"
                 IsEnabled="{Binding IsWantedLanguageSelected, UpdateSourceTrigger=PropertyChanged}" />
             <Grid Grid.Row="0" Grid.Column="4">
                 <Grid.ColumnDefinitions>
@@ -159,7 +161,7 @@
                                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                                 <Setter Property="Background" Value="#e8e8e8" />
                                 <Setter Property="BorderBrush" Value="#bbb" />
-                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="BorderThickness" Value="0,0,1,1" />
                                 <Setter Property="FontFamily" Value="Segoe UI Semibold" />
                                 <Setter Property="Height" Value="25" />
                             </Style>

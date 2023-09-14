@@ -4,19 +4,20 @@ using System.Linq;
 using System.Windows.Input;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Utilities;
+using SuppliersLibrary;
 
 namespace SubloaderWpf.ViewModels
 {
     public class SettingsViewModel : ViewModelBase
     {
         private readonly INavigator navigator;
-        private SubtitleLanguage selectedWantedLanguage;
-        private SubtitleLanguage selectedLanguage;
-        private string searchText;
+        private bool allowMultipleDownloads;
         private bool alwaysOnTop;
         private bool downloadToSubsFolder;
-        private bool allowMultipleDownloads;
         private bool overwriteSameLanguageSubs;
+        private string searchText;
+        private SubtitleLanguage selectedLanguage;
+        private SubtitleLanguage selectedWantedLanguage;
 
         public SettingsViewModel(INavigator navigator)
         {
@@ -43,59 +44,7 @@ namespace SubloaderWpf.ViewModels
             overwriteSameLanguageSubs = App.Settings.OverwriteSameLanguageSub;
         }
 
-        public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
-
-        public ObservableCollection<SubtitleLanguage> WantedLanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
-
-        public SubtitleLanguage SelectedWantedLanguage
-        {
-            get => selectedWantedLanguage;
-
-            set
-            {
-                if (value != null && SelectedLanguage != null)
-                {
-                    Set("SelectedLanguage", ref selectedLanguage, null);
-                }
-
-                Set("SelectedWantedLanguage", ref selectedWantedLanguage, value);
-                RaisePropertyChanged("IsWantedLanguageSelected");
-            }
-        }
-
-        public SubtitleLanguage SelectedLanguage
-        {
-            get => selectedLanguage;
-
-            set
-            {
-                if (value != null && SelectedWantedLanguage != null)
-                {
-                    Set("SelectedWantedLanguage", ref selectedWantedLanguage, null);
-                }
-
-                Set("SelectedLanguage", ref selectedLanguage, value);
-                RaisePropertyChanged("IsLanguageSelected");
-            }
-        }
-
-        public bool IsLanguageSelected => SelectedLanguage != null;
-
-        public bool IsWantedLanguageSelected => SelectedWantedLanguage != null;
-
-        public bool DownloadToSubsFolder
-        {
-            get => downloadToSubsFolder;
-
-            set => Set("DownloadToSubsFolder", ref downloadToSubsFolder, value);
-        }
-
-        public bool OverwriteSameLanguageSubs
-        {
-            get => overwriteSameLanguageSubs;
-
-            set => Set("OverwriteSameLanguageSubs", ref overwriteSameLanguageSubs, value);
-        }
+        public ICommand AddCommand => new RelayCommand(Add);
 
         public bool AllowMultipleDownloads
         {
@@ -103,17 +52,40 @@ namespace SubloaderWpf.ViewModels
 
             set
             {
-                Set("AllowMultipleDownloads", ref allowMultipleDownloads, value);
-                Set("DownloadToSubsFolder", ref downloadToSubsFolder, false);
-                Set("OverwriteSameLanguageSubs", ref overwriteSameLanguageSubs, false);
+                Set(nameof(AllowMultipleDownloads), ref allowMultipleDownloads, value);
+                Set(nameof(DownloadToSubsFolder), ref downloadToSubsFolder, false);
+                Set(nameof(OverwriteSameLanguageSubs), ref overwriteSameLanguageSubs, false);
             }
         }
 
         public bool AlwaysOnTop
         {
             get => alwaysOnTop;
-            set => Set("AlwaysOnTop", ref alwaysOnTop, value);
+            set => Set(nameof(AlwaysOnTop), ref alwaysOnTop, value);
         }
+
+        public ICommand CancelCommand => new RelayCommand(Cancel);
+        public ICommand DeleteCommand => new RelayCommand(Delete);
+
+        public bool DownloadToSubsFolder
+        {
+            get => downloadToSubsFolder;
+
+            set => Set(nameof(DownloadToSubsFolder), ref downloadToSubsFolder, value);
+        }
+
+        public bool IsLanguageSelected => SelectedLanguage != null;
+        public bool IsWantedLanguageSelected => SelectedWantedLanguage != null;
+        public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
+
+        public bool OverwriteSameLanguageSubs
+        {
+            get => overwriteSameLanguageSubs;
+
+            set => Set(nameof(OverwriteSameLanguageSubs), ref overwriteSameLanguageSubs, value);
+        }
+
+        public ICommand SaveCommand => new RelayCommand(SaveAndBack);
 
         public string SearchText
         {
@@ -131,22 +103,43 @@ namespace SubloaderWpf.ViewModels
                     }
                 }
 
-                Set("SearchText", ref searchText, value);
+                Set(nameof(SearchText), ref searchText, value);
             }
         }
 
-        public ICommand AddCommand => new RelayCommand(Add);
-
-        public ICommand DeleteCommand => new RelayCommand(Delete);
-
-        public ICommand SaveCommand => new RelayCommand(SaveAndBack);
-
-        public ICommand CancelCommand => new RelayCommand(Cancel);
-
-        private void Cancel()
+        public SubtitleLanguage SelectedLanguage
         {
-            navigator.GoToPreviousControl();
+            get => selectedLanguage;
+
+            set
+            {
+                if (value != null && SelectedWantedLanguage != null)
+                {
+                    Set(nameof(SelectedWantedLanguage), ref selectedWantedLanguage, null);
+                }
+
+                Set(nameof(SelectedLanguage), ref selectedLanguage, value);
+                RaisePropertyChanged(nameof(IsLanguageSelected));
+            }
         }
+
+        public SubtitleLanguage SelectedWantedLanguage
+        {
+            get => selectedWantedLanguage;
+
+            set
+            {
+                if (value != null && SelectedLanguage != null)
+                {
+                    Set(nameof(SelectedLanguage), ref selectedLanguage, null);
+                }
+
+                Set(nameof(SelectedWantedLanguage), ref selectedWantedLanguage, value);
+                RaisePropertyChanged(nameof(IsWantedLanguageSelected));
+            }
+        }
+
+        public ObservableCollection<SubtitleLanguage> WantedLanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
 
         private void Add()
         {
@@ -156,6 +149,11 @@ namespace SubloaderWpf.ViewModels
                 LanguageList.Remove(selected);
                 WantedLanguageList.Add(selected);
             }
+        }
+
+        private void Cancel()
+        {
+            navigator.GoToPreviousControl();
         }
 
         private void Delete()
@@ -172,10 +170,7 @@ namespace SubloaderWpf.ViewModels
         private void SaveAndBack()
         {
             var wanted = new List<SubtitleLanguage>();
-            foreach (var x in WantedLanguageList)
-            {
-                wanted.Add(x);
-            }
+            wanted.AddRange(WantedLanguageList);
 
             App.Settings.KeepWindowOnTop = alwaysOnTop;
             App.Settings.AllowMultipleDownloads = allowMultipleDownloads;

@@ -119,7 +119,7 @@
                 FontFamily="Segoe UI"
                 GridLinesVisibility="All"
                 HeadersVisibility="Column"
-                HorizontalGridLinesBrush="#EDEDED"
+                HorizontalGridLinesBrush="#ddd"
                 IsReadOnly="True"
                 ItemsSource="{Binding SubtitleList}"
                 RowHeight="22"
@@ -127,7 +127,7 @@
                 SelectedItem="{Binding SelectedItem}"
                 SelectionMode="Single"
                 Style="{StaticResource DatagridStyle}"
-                VerticalGridLinesBrush="#EDEDED">
+                VerticalGridLinesBrush="#ddd">
                 <DataGrid.InputBindings>
                     <MouseBinding Command="{Binding DownloadCommand}" MouseAction="LeftDoubleClick" />
                     <KeyBinding Key="Return" Command="{Binding DownloadCommand}" />
@@ -143,7 +143,7 @@
                                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                                 <Setter Property="Background" Value="#e8e8e8" />
                                 <Setter Property="BorderBrush" Value="#bbb" />
-                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="BorderThickness" Value="0,0,1,1" />
                                 <Setter Property="FontFamily" Value="Segoe UI Semibold" />
                             </Style>
                         </DataGridTextColumn.HeaderStyle>
@@ -159,7 +159,7 @@
                                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                                 <Setter Property="Background" Value="#e8e8e8" />
                                 <Setter Property="BorderBrush" Value="#bbb" />
-                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="BorderThickness" Value="0,0,0,1" />
                                 <Setter Property="Height" Value="25" />
                                 <Setter Property="FontFamily" Value="Segoe UI Semibold" />
                             </Style>
@@ -181,6 +181,7 @@
                         VerticalAlignment="Center"
                         FontFamily="Segoe UI Semibold"
                         FontStyle="Italic"
+                        Foreground="{StaticResource MainDarkColor}"
                         Text="{Binding StatusText, UpdateSourceTrigger=PropertyChanged}"
                         TextAlignment="Center" />
                 </Grid>
