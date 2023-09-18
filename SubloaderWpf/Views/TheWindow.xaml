@@ -24,16 +24,10 @@
     UseLayoutRounding="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <Window.BorderBrush>
-        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Offset="0" Color="Black" />
-            <GradientStop Offset="1" Color="White" />
-        </LinearGradientBrush>
-    </Window.BorderBrush>
     <Window.Resources>
         <ResourceDictionary Source="DataTemplate.xaml" />
     </Window.Resources>
-    <Grid>
+    <Border Focusable="False">
         <ContentControl Content="{Binding CurrentControl}" />
-    </Grid>
+    </Border>
 </Window>

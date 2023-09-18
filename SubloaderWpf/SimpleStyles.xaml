@@ -6,31 +6,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Converters:ColorBrightnessConverter x:Key="ColorConverter" />
-    <SolidColorBrush x:Key="MainDarkColor" Color="#363636" />
+    <SolidColorBrush x:Key="MainDarkColor" Color="#2a2a2a" />
     <SolidColorBrush x:Key="MainBorderColor" Color="#a6a6a6" />
+    <SolidColorBrush x:Key="LighterBorderColor" Color="#bbb" />
     <SolidColorBrush x:Key="AccentColor" Color="CornflowerBlue" />
     <SolidColorBrush x:Key="MediumLightAccentColor" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.2}" />
-    <SolidColorBrush x:Key="LighterAccentColor" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.8}" />
+    <SolidColorBrush x:Key="LighterAccentColor" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.9}" />
     <SolidColorBrush x:Key="MediumAccentColor" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
 
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.15}" />
     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
-
-    <Style x:Key="Body_Content_DataGrid_Centering" TargetType="{x:Type DataGridCell}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type DataGridCell}">
-                    <Grid Background="{TemplateBinding Background}">
-                        <ContentPresenter VerticalAlignment="Center" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Padding" Value="3,0,0,0" />
-    </Style>
 
     <Style TargetType="{x:Type CheckBox}">
         <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
@@ -89,7 +75,7 @@
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter TargetName="checkBoxBorder" Property="Background" Value="LightGray" />
-                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="Gray" />
+                            <Setter Property="Foreground" Value="#777" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="true">
                             <Setter TargetName="checkBoxBorder" Property="Background" Value="{StaticResource MediumAccentColor}" />
@@ -103,10 +89,21 @@
         </Setter>
     </Style>
 
-    <!--#endregion-->
-
-    <Style x:Key="DatagridStyle" TargetType="DataGrid">
+    <Style TargetType="DataGrid">
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="AlternationCount" Value="2" />
+        <Setter Property="AutoGenerateColumns" Value="False" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="RowHeight" Value="24" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="HorizontalGridLinesBrush" Value="#ddd" />
+        <Setter Property="VerticalGridLinesBrush" Value="#ddd" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="BorderBrush" Value="#bbb" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CanUserResizeColumns" Value="False" />
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="HeadersVisibility" Value="Column" />
         <Style.Resources>
             <Style x:Key="ScrollBarThumbVertical" TargetType="{x:Type Thumb}">
                 <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -156,6 +153,7 @@
 
             <Style TargetType="{x:Type DataGridRow}">
                 <Setter Property="Background" Value="White" />
+                <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
                 <Style.Triggers>
                     <Trigger Property="AlternationIndex" Value="1">
                         <Setter Property="Background" Value="#f5f5f5" />
@@ -250,6 +248,32 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <Style TargetType="{x:Type DataGridColumnHeader}">
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="Padding" Value="5,0" />
+                <Setter Property="Background" Value="#e8e8e8" />
+                <Setter Property="BorderBrush" Value="{StaticResource MainBorderColor}" />
+                <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
+                <Setter Property="BorderThickness" Value="0,0,0,1" />
+                <Setter Property="FontFamily" Value="Segoe UI Semibold" />
+                <Setter Property="Height" Value="25" />
+            </Style>
+
+            <Style TargetType="{x:Type DataGridCell}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridCell}">
+                            <Grid Background="{TemplateBinding Background}">
+                                <ContentPresenter VerticalAlignment="Center" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="Padding" Value="3,0,0,0" />
+            </Style>
         </Style.Resources>
     </Style>
 
@@ -260,6 +284,7 @@
     <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
         <Setter Property="Foreground" Value="{DynamicResource LighterAccentColor}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Height" Value="30" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -288,8 +313,8 @@
                             <Setter TargetName="borderTemplate" Property="Border.BorderThickness" Value="2" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="borderTemplate" Property="BorderBrush" Value="#909090" />
-                            <Setter TargetName="borderTemplate" Property="TextBlock.Foreground" Value="#909090" />
+                            <Setter TargetName="borderTemplate" Property="TextBlock.Foreground" Value="#888" />
+                            <Setter TargetName="borderTemplate" Property="Background" Value="#efefef" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -302,7 +327,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border
-                        x:Name="border"
+                        x:Name="textBoxBorder"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
@@ -315,13 +340,13 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="border" Property="Opacity" Value="0.56" />
+                            <Setter TargetName="textBoxBorder" Property="Opacity" Value="0.56" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource MediumLightAccentColor}" />
+                            <Setter TargetName="textBoxBorder" Property="BorderBrush" Value="{DynamicResource MediumLightAccentColor}" />
                         </Trigger>
                         <Trigger Property="IsFocused" Value="true">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+                            <Setter TargetName="textBoxBorder" Property="BorderBrush" Value="{DynamicResource AccentColor}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

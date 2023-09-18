@@ -36,8 +36,6 @@ namespace SubloaderWpf.ViewModels
                 }
             }
 
-            selectedLanguage = null;
-            selectedWantedLanguage = null;
             alwaysOnTop = App.Settings.KeepWindowOnTop;
             downloadToSubsFolder = App.Settings.DownloadToSubsFolder;
             allowMultipleDownloads = App.Settings.AllowMultipleDownloads;
@@ -115,7 +113,7 @@ namespace SubloaderWpf.ViewModels
             {
                 if (value != null && SelectedWantedLanguage != null)
                 {
-                    Set(nameof(SelectedWantedLanguage), ref selectedWantedLanguage, null);
+                    SelectedWantedLanguage = null;
                 }
 
                 Set(nameof(SelectedLanguage), ref selectedLanguage, value);
@@ -131,7 +129,7 @@ namespace SubloaderWpf.ViewModels
             {
                 if (value != null && SelectedLanguage != null)
                 {
-                    Set(nameof(SelectedLanguage), ref selectedLanguage, null);
+                    SelectedLanguage = null;
                 }
 
                 Set(nameof(SelectedWantedLanguage), ref selectedWantedLanguage, value);
