@@ -14,7 +14,7 @@
         <Grid DockPanel.Dock="Bottom">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="10" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Button
