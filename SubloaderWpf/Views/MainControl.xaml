@@ -149,7 +149,6 @@
                     Content="Search by hash"
                     IsChecked="{Binding SearchByHash, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
-
             <Border
                 Grid.Row="1"
                 HorizontalAlignment="Stretch"
@@ -164,7 +163,6 @@
                     Text="{Binding StatusText, UpdateSourceTrigger=PropertyChanged}"
                     TextAlignment="Center" />
             </Border>
-
             <DataGrid
                 x:Name="resultsDataGrid"
                 BorderThickness="0,0,0,1"
@@ -181,7 +179,7 @@
                         Binding="{Binding Name}"
                         DisplayIndex="0"
                         ElementStyle="{StaticResource ColumnElementStyle}"
-                        Header="Subtitle name" />
+                        Header="Subtitle" />
                     <DataGridTextColumn
                         Width="5*"
                         Binding="{Binding Language}"

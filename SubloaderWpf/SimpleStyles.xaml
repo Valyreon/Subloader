@@ -19,6 +19,7 @@
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
 
     <Style TargetType="{x:Type CheckBox}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
         <Setter Property="Template">
             <Setter.Value>
@@ -278,6 +279,7 @@
     </Style>
 
     <Style x:Key="ColumnElementStyle" TargetType="TextBlock">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Margin" Value="5,0,0,0" />
     </Style>
 
@@ -285,6 +287,7 @@
         <Setter Property="Foreground" Value="{DynamicResource LighterAccentColor}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Height" Value="30" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
