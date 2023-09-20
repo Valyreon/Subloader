@@ -1,15 +1,12 @@
-using System;
-using System.IO;
 using System.Text;
 
-namespace SuppliersLibrary.OpenSubtitles
+namespace OpenSubtitlesSharp
 {
-    public static class Hasher
+    public static class MovieHasher
     {
-        public static byte[] ComputeMovieHash(string filename)
+        public static string ComputeMovieHash(string filename)
         {
-            using var input = File.OpenRead(filename);
-            return ComputeMovieHash(input);
+            return ToHexadecimal(ComputeMovieHashToByte(filename));
         }
 
         private static byte[] ComputeMovieHash(Stream input)
@@ -38,6 +35,12 @@ namespace SuppliersLibrary.OpenSubtitles
             var result = BitConverter.GetBytes(lhash);
             Array.Reverse(result);
             return result;
+        }
+
+        private static byte[] ComputeMovieHashToByte(string filename)
+        {
+            using var input = System.IO.File.OpenRead(filename);
+            return ComputeMovieHash(input);
         }
 
         private static string ToHexadecimal(byte[] bytes)

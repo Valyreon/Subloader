@@ -17,7 +17,11 @@ namespace SubloaderWpf.Utilities
                 using var fileStream = new FileStream(path, FileMode.Create);
                 using var writer = new StreamWriter(fileStream);
 
-                var json = JsonSerializer.Serialize(settings);
+                var json = JsonSerializer.Serialize(settings
+#if DEBUG
+                    ,new JsonSerializerOptions { WriteIndented = true }
+#endif
+                    );
                 writer.Write(json);
                 Saved?.Invoke();
             }

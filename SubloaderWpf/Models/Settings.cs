@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using SuppliersLibrary;
+using OpenSubtitlesSharp;
 
 namespace SubloaderWpf.Utilities
 {
@@ -11,7 +11,12 @@ namespace SubloaderWpf.Utilities
         public bool IsByNameChecked { get; set; } = false;
         public bool KeepWindowOnTop { get; set; } = true;
         public bool OverwriteSameLanguageSub { get; set; } = false;
+        public string LoginToken { get; set; }
+        public string BaseUrl { get; set; }
 
-        public IReadOnlyList<SubtitleLanguage> WantedLanguages { get; set; } = new List<SubtitleLanguage>();
+        public IReadOnlyList<string> WantedLanguages { get; set; } = new List<string>();
+        public IReadOnlyList<string> Formats { get; set; } = new List<string>();
+        public string PreferredFormat { get; set; } = "srt";
+        public IReadOnlyList<SubtitleLanguage> AllLanguages { get; set; } = new List<SubtitleLanguage>();
     }
 }

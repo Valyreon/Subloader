@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Utilities;
-using SuppliersLibrary;
 
 namespace SubloaderWpf.ViewModels
 {
@@ -23,7 +23,7 @@ namespace SubloaderWpf.ViewModels
         {
             this.navigator = navigator;
             var wantLangs = App.Settings.WantedLanguages;
-            foreach (var x in SubtitleLanguage.AllLanguages)
+            foreach (var x in App.Settings.AllLanguages)
             {
                 LanguageList.Add(x);
             }
@@ -32,7 +32,7 @@ namespace SubloaderWpf.ViewModels
             {
                 foreach (var x in wantLangs)
                 {
-                    WantedLanguageList.Add(x);
+                    WantedLanguageList.Add(App.Settings.AllLanguages.Single(c => c.Code == x));
                 }
             }
 
@@ -93,7 +93,7 @@ namespace SubloaderWpf.ViewModels
             {
                 searchText = value;
                 LanguageList.Clear();
-                foreach (var x in SubtitleLanguage.AllLanguages)
+                foreach (var x in App.Settings.AllLanguages)
                 {
                     if (x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Any(w => w.Code == x.Code))
                     {
@@ -174,7 +174,7 @@ namespace SubloaderWpf.ViewModels
             App.Settings.AllowMultipleDownloads = allowMultipleDownloads;
             App.Settings.DownloadToSubsFolder = downloadToSubsFolder;
             App.Settings.OverwriteSameLanguageSub = overwriteSameLanguageSubs;
-            App.Settings.WantedLanguages = wanted;
+            App.Settings.WantedLanguages = wanted.Select(w => w.Code).ToList();
             SettingsParser.Save(App.Settings);
             navigator.GoToPreviousControl();
         }

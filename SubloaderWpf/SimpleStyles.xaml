@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Converters:ColorBrightnessConverter x:Key="ColorConverter" />
-    <SolidColorBrush x:Key="MainDarkColor" Color="#2a2a2a" />
+    <SolidColorBrush x:Key="MainDarkColor" Color="#333" />
     <SolidColorBrush x:Key="MainBorderColor" Color="#a6a6a6" />
     <SolidColorBrush x:Key="LighterBorderColor" Color="#bbb" />
     <SolidColorBrush x:Key="AccentColor" Color="CornflowerBlue" />

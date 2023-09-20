@@ -10,7 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SuppliersLibrary\SuppliersLibrary.csproj" />
+    <PackageReference Include="F23.StringSimilarity" Version="5.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenSubtitlesSharp\OpenSubtitlesSharp.csproj" />
   </ItemGroup>
 
 </Project>

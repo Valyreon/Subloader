@@ -63,7 +63,7 @@ namespace SuppliersLibrary.OpenSubtitles
             }
             catch (Exception)
             {
-                throw new ServerFailException("Something wrong with server. Try later.");
+                throw new ServerFailException("Something is wrong with OS server. Try later.");
             }
         }
 
@@ -124,7 +124,7 @@ namespace SuppliersLibrary.OpenSubtitles
 
         private static string FormHashSearchUrl(string path, string langCode = null)
         {
-            var moviehash = Hasher.ToHexadecimal(Hasher.ComputeMovieHash(path));
+            var moviehash = Hasher.ComputeMovieHash(path);
             var file = new FileInfo(path);
             var movieByteSize = file.Length;
 

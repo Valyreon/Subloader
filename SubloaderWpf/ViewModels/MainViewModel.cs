@@ -4,21 +4,21 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Media;
-using System.Threading;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using F23.StringSimilarity;
 using Microsoft.Win32;
+using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Utilities;
-using SuppliersLibrary.Exceptions;
-using SuppliersLibrary.OpenSubtitles;
 
 namespace SubloaderWpf.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly OpenSubtitlesClient client = new();
+        private readonly Levenshtein levenshtein = new();
         private readonly INavigator navigator;
         private string currentPath;
         private bool isSearchModalOpen;
@@ -150,39 +150,42 @@ namespace SubloaderWpf.ViewModels
             StatusText = "Downloading...";
             await Task.Run(async () =>
             {
-                string destination;
-                if (string.IsNullOrWhiteSpace(CurrentPath))
+                try
                 {
-                    var saveFileDialog = new SaveFileDialog()
-                    {
-                        FileName = SelectedItem.Name
-                    };
+                    using var osClient = new OpenSubtitlesClient(App.APIKey, App.Settings.LoginToken, App.Settings.BaseUrl);
+                    var downloadInfo = await osClient.DownloadAsync(SelectedItem.Model.Information.Files.First().FileId.Value);
+                    var extension = Path.GetExtension(downloadInfo.FileName);
 
-                    if (saveFileDialog.ShowDialog() == true)
+                    string destination;
+                    if (string.IsNullOrWhiteSpace(CurrentPath))
                     {
-                        destination = saveFileDialog.FileName;
+                        var saveFileDialog = new SaveFileDialog()
+                        {
+                            FileName = Path.ChangeExtension(SelectedItem.Name, extension)
+                        };
+
+                        if (saveFileDialog.ShowDialog() == true)
+                        {
+                            destination = saveFileDialog.FileName;
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
                     else
                     {
-                        return;
+                        destination = GetDestinationPath(extension);
                     }
-                }
-                else
-                {
-                    destination = GetDestinationPath();
-                }
 
-                try
-                {
-                    await client.Download(SelectedItem.Model, destination);
+                    File.WriteAllBytes(destination, await DownloadFileAsync(downloadInfo.Link));
+                    Application.Current.Dispatcher.Invoke(() => StatusText = $"Subtitle downloaded. Remaining: " + downloadInfo.Remaining);
                 }
                 catch (Exception)
                 {
                     Application.Current.Dispatcher.Invoke(() => StatusText = "Error while downloading.");
                     SystemSounds.Hand.Play();
                 }
-
-                Application.Current.Dispatcher.Invoke(() => StatusText = "Subtitle downloaded.");
             });
         }
 
@@ -217,8 +220,27 @@ namespace SubloaderWpf.ViewModels
             await GetResults(false);
         }
 
-        private string GetDestinationPath()
+        private static async Task<byte[]> DownloadFileAsync(string url)
         {
+            using var httpClient = new HttpClient();
+            try
+            {
+                var response = await httpClient.GetAsync(url);
+
+                return response.IsSuccessStatusCode
+                    ? await response.Content.ReadAsByteArrayAsync()
+                    : null;
+            }
+            catch (HttpRequestException e)
+            {
+                return null;
+            }
+        }
+
+        private string GetDestinationPath(string format)
+        {
+            format = format.StartsWith(".") ? format[1..] : format;
+
             var directoryPath = App.Settings.DownloadToSubsFolder
                 ? Path.Combine(Path.GetDirectoryName(CurrentPath), "Subs")
                 : Path.GetDirectoryName(CurrentPath);
@@ -228,13 +250,13 @@ namespace SubloaderWpf.ViewModels
             if (App.Settings.AllowMultipleDownloads)
             {
                 var fileNameWithoutPathOrExtension = Path.GetFileNameWithoutExtension(CurrentPath);
-                var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}");
+                var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{SelectedItem.Model.Information.Language}.{format}");
 
                 if (!App.Settings.OverwriteSameLanguageSub && File.Exists(path))
                 {
                     var counter = 1;
                     while (File.Exists(
-                        path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.({counter}).{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}")))
+                        path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.({counter}).{SelectedItem.Model.Information.Language}.{format}")))
                     {
                         counter++;
                     }
@@ -243,7 +265,7 @@ namespace SubloaderWpf.ViewModels
                 return path;
             }
 
-            return Path.ChangeExtension(CurrentPath, SelectedItem.Model.Format);
+            return Path.ChangeExtension(CurrentPath, format);
         }
 
         private async Task GetResults(bool fileSearch)
@@ -255,12 +277,12 @@ namespace SubloaderWpf.ViewModels
 
                 StatusText = "Searching subtitles...";
                 Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
-                var results = await SearchSuppliers(fileSearch);
+                var results = await SearchOpensubtitles(fileSearch);
                 if (results == null)
                 {
                     StatusText = "Server error. Try refreshing.";
                 }
-                else if (results.Count == 0)
+                else if (!results.Any())
                 {
                     StatusText = "No subtitles found.";
                 }
@@ -287,26 +309,33 @@ namespace SubloaderWpf.ViewModels
             await GetResults(true);
         }
 
-        private async Task<IReadOnlyList<SubtitleEntry>> SearchSuppliers(bool forFile = true)
+        private async Task<IEnumerable<SubtitleEntry>> SearchOpensubtitles(bool forFile = true)
         {
             var settings = App.Settings;
-            var result = new List<SubtitleEntry>();
+            using var newClient = new OpenSubtitlesClient(App.APIKey);
 
-            var langCode = settings.WantedLanguages?.Count == 1
-                ? settings.WantedLanguages.Single().Code
-                : null;
-
-            var results = forFile ? await client.SearchForFileAsync(currentPath, SearchByHash, SearchByName, langCode)
-                                  : await client.SearchAsync(SearchModalInputText, langCode);
-
-            if (!string.IsNullOrWhiteSpace(langCode) || settings.WantedLanguages?.Any() != true)
+            var parameters = new SearchParameters
             {
-                return results.Select(i => new SubtitleEntry(i)).ToList();
-            }
+                Languages = App.Settings.WantedLanguages,
+                OnlyMovieHashMatch = SearchByHash && !SearchByName
+            };
 
-            return results.Where(item => settings.WantedLanguages.Any(subLang => subLang.Name == item.Language))
-                .Select(i => new SubtitleEntry(i))
-                .ToList();
+            SearchResult result = null;
+
+            if (forFile)
+            {
+                var pathWithoutExt = Path.GetFileNameWithoutExtension(CurrentPath);
+                result = await newClient.SearchAsync(currentPath, parameters);
+                // order by levenshtein distance
+                return result.Items.Select(i => new SubtitleEntry(i))
+                    .Select(ResultItem => (ResultItem, levenshtein.Distance(ResultItem.Name, pathWithoutExt)))
+                    .OrderBy(i => i.Item2)
+                    .Select(i => i.ResultItem);
+            }
+            parameters.Query = SearchModalInputText;
+            result = await newClient.SearchAsync(parameters);
+
+            return result.Items.Select(i => new SubtitleEntry(i));
         }
     }
 }

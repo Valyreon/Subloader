@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Windows;
+using OpenSubtitlesSharp;
 using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf
@@ -9,12 +11,13 @@ namespace SubloaderWpf
     {
         private static Mutex mutex;
         public static InstanceMediator InstanceMediator { get; private set; }
+        public static string APIKey { get; private set; } = "idMNeWNRIKVKlGiP8zjNyG80a4AqKYBd";
 
         public string PathArg { get; set; }
 
         public static Settings Settings { get; } = SettingsParser.Load();
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             if (e.Args.Length > 0)
             {
@@ -42,6 +45,25 @@ namespace SubloaderWpf
             {
                 Cleanup();
             }
+
+            if (Settings.AllLanguages == null || Settings.AllLanguages.Count == 0)
+            {
+                using var osClient = new OpenSubtitlesClient(APIKey);
+                Settings.AllLanguages = await osClient.GetLanguagesAsync();
+
+                if(Settings.WantedLanguages == null || Settings.WantedLanguages.Count == 0)
+                {
+                    Settings.WantedLanguages = new List<string>() { "en" };
+                }
+            }
+
+            if(Settings.Formats == null || Settings.Formats.Count == 0)
+            {
+                using var osClient = new OpenSubtitlesClient(APIKey);
+                Settings.Formats = await osClient.GetSubtitleFormatsAsync();
+            }
+
+            SettingsParser.Save(Settings);
 
             base.OnStartup(e);
         }
