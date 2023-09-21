@@ -39,7 +39,7 @@ namespace OpenSubtitlesSharp
 
         private static byte[] ComputeMovieHashToByte(string filename)
         {
-            using var input = System.IO.File.OpenRead(filename);
+            using var input = File.OpenRead(filename);
             return ComputeMovieHash(input);
         }
 

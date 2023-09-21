@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="F23.StringSimilarity" Version="5.1.0" />
+    <PackageReference Include="Fastenshtein" Version="1.0.0.8" />
   </ItemGroup>
 
   <ItemGroup>

@@ -58,7 +58,7 @@ public class SearchParameters
     /// <summary>
     /// If true, search results will include Machine translated subtitles.
     /// </summary>
-    [DictionaryValue("machine_translated")]
+    [DictionaryValue("machine_translated", typeof(ExcludeIncludeValueConverter))]
     public bool? IncludeMachineTranslated { get; set; }
 
     /// <summary>

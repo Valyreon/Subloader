@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using F23.StringSimilarity;
+using Fastenshtein;
 using Microsoft.Win32;
 using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
@@ -18,7 +18,6 @@ namespace SubloaderWpf.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly Levenshtein levenshtein = new();
         private readonly INavigator navigator;
         private string currentPath;
         private bool isSearchModalOpen;
@@ -181,7 +180,7 @@ namespace SubloaderWpf.ViewModels
                     File.WriteAllBytes(destination, await DownloadFileAsync(downloadInfo.Link));
                     Application.Current.Dispatcher.Invoke(() => StatusText = $"Subtitle downloaded. Remaining: " + downloadInfo.Remaining);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     Application.Current.Dispatcher.Invoke(() => StatusText = "Error while downloading.");
                     SystemSounds.Hand.Play();
@@ -324,11 +323,11 @@ namespace SubloaderWpf.ViewModels
 
             if (forFile)
             {
-                var pathWithoutExt = Path.GetFileNameWithoutExtension(CurrentPath);
                 result = await newClient.SearchAsync(currentPath, parameters);
                 // order by levenshtein distance
+                var laven = new Levenshtein(Path.GetFileNameWithoutExtension(CurrentPath));
                 return result.Items.Select(i => new SubtitleEntry(i))
-                    .Select(ResultItem => (ResultItem, levenshtein.Distance(ResultItem.Name, pathWithoutExt)))
+                    .Select(ResultItem => (ResultItem, laven.DistanceFrom(ResultItem.Name)))
                     .OrderBy(i => i.Item2)
                     .Select(i => i.ResultItem);
             }
