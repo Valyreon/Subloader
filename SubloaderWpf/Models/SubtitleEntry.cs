@@ -2,24 +2,23 @@ using System.ComponentModel;
 using System.Linq;
 using OpenSubtitlesSharp;
 
-namespace SubloaderWpf.Utilities
+namespace SubloaderWpf.Utilities;
+
+public class SubtitleEntry : INotifyPropertyChanged
 {
-    public class SubtitleEntry : INotifyPropertyChanged
+    public SubtitleEntry(Subtitle item)
     {
-        public SubtitleEntry(Subtitle item)
-        {
-            Model = item;
-        }
+        Model = item;
+    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged;
 
-        public string Language => App.Settings.AllLanguages.SingleOrDefault(l => l.Code == Model.Information.Language)?.Name;
-        public Subtitle Model { get; }
-        public string Name => Model.Information.Release;
+    public string Language => App.Settings.AllLanguages.SingleOrDefault(l => l.Code == Model.Information.Language)?.Name;
+    public Subtitle Model { get; }
+    public string Name => Model.Information.Release;
 
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+    protected void OnPropertyChanged(string name)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

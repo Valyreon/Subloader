@@ -3,64 +3,63 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace SubloaderWpf.Converters
+namespace SubloaderWpf.Converters;
+
+public class ColorBrightnessConverter : IValueConverter
 {
-    public class ColorBrightnessConverter : IValueConverter
+    public static Color ChangeColorBrightness(Color color, float correctionFactor)
     {
-        public static Color ChangeColorBrightness(Color color, float correctionFactor)
+        var red = (float)color.R;
+        var green = (float)color.G;
+        var blue = (float)color.B;
+
+        if (correctionFactor < 0)
         {
-            var red = (float)color.R;
-            var green = (float)color.G;
-            var blue = (float)color.B;
-
-            if (correctionFactor < 0)
-            {
-                correctionFactor = 1 + correctionFactor;
-                red *= correctionFactor;
-                green *= correctionFactor;
-                blue *= correctionFactor;
-            }
-            else
-            {
-                red = ((255 - red) * correctionFactor) + red;
-                green = ((255 - green) * correctionFactor) + green;
-                blue = ((255 - blue) * correctionFactor) + blue;
-            }
-
-            return Color.FromArgb(color.A, (byte)red, (byte)green, (byte)blue);
+            correctionFactor = 1 + correctionFactor;
+            red *= correctionFactor;
+            green *= correctionFactor;
+            blue *= correctionFactor;
+        }
+        else
+        {
+            red = ((255 - red) * correctionFactor) + red;
+            green = ((255 - green) * correctionFactor) + green;
+            blue = ((255 - blue) * correctionFactor) + blue;
         }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        return Color.FromArgb(color.A, (byte)red, (byte)green, (byte)blue);
+    }
+
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (parameter is null or not string)
         {
-            if (parameter is null or not string)
-            {
-                parameter = "0";
-            }
-
-            if (value is Color color && parameter is string rateStr)
-            {
-                var success = float.TryParse(rateStr, out var rate);
-                return success ? ChangeColorBrightness(color, rate) : value;
-            }
-
-            return null;
+            parameter = "0";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        if (value is Color color && parameter is string rateStr)
         {
-            if (parameter is null or not string)
-            {
-                parameter = "1";
-            }
-
-            if (value is Color color && parameter is string rateStr)
-            {
-                var success = float.TryParse(rateStr, out var rate);
-                rate = 1 - rate;
-                return success ? ChangeColorBrightness(color, rate) : value;
-            }
-
-            return null;
+            var success = float.TryParse(rateStr, out var rate);
+            return success ? ChangeColorBrightness(color, rate) : value;
         }
+
+        return null;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (parameter is null or not string)
+        {
+            parameter = "1";
+        }
+
+        if (value is Color color && parameter is string rateStr)
+        {
+            var success = float.TryParse(rateStr, out var rate);
+            rate = 1 - rate;
+            return success ? ChangeColorBrightness(color, rate) : value;
+        }
+
+        return null;
     }
 }

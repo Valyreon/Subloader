@@ -1,41 +1,40 @@
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Utilities;
 
-namespace SubloaderWpf.ViewModels
+namespace SubloaderWpf.ViewModels;
+
+public class TheWindowViewModel : ViewModelBase, INavigator
 {
-    public class TheWindowViewModel : ViewModelBase, INavigator
+    private object currentControl;
+    private object previousControl = null;
+
+    public TheWindowViewModel()
     {
-        private object currentControl;
-        private object previousControl = null;
+        CurrentControl = new MainViewModel(this);
+        SettingsParser.Saved += () => RaisePropertyChanged(nameof(AlwaysOnTop));
+    }
 
-        public TheWindowViewModel()
+    public bool AlwaysOnTop => App.Settings.KeepWindowOnTop;
+
+    public object CurrentControl
+    {
+        get => currentControl;
+
+        private set
         {
-            CurrentControl = new MainViewModel(this);
-            SettingsParser.Saved += () => RaisePropertyChanged(nameof(AlwaysOnTop));
+            previousControl = currentControl;
+            Set(nameof(CurrentControl), ref currentControl, value);
         }
+    }
 
-        public bool AlwaysOnTop => App.Settings.KeepWindowOnTop;
+    public void GoToControl(object control)
+    {
+        CurrentControl = control;
+    }
 
-        public object CurrentControl
-        {
-            get => currentControl;
-
-            private set
-            {
-                previousControl = currentControl;
-                Set(nameof(CurrentControl), ref currentControl, value);
-            }
-        }
-
-        public void GoToControl(object control)
-        {
-            CurrentControl = control;
-        }
-
-        public void GoToPreviousControl()
-        {
-            CurrentControl = previousControl;
-            previousControl = null;
-        }
+    public void GoToPreviousControl()
+    {
+        CurrentControl = previousControl;
+        previousControl = null;
     }
 }

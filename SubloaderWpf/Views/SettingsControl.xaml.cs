@@ -1,15 +1,14 @@
 using System.Windows.Controls;
 
-namespace SubloaderWpf.Views
+namespace SubloaderWpf.Views;
+
+/// <summary>
+/// Interaction logic for SettingsControl.xaml
+/// </summary>
+public partial class SettingsControl : UserControl
 {
-    /// <summary>
-    /// Interaction logic for SettingsControl.xaml
-    /// </summary>
-    public partial class SettingsControl : UserControl
+    public SettingsControl()
     {
-        public SettingsControl()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -1,14 +1,13 @@
 using System.Windows;
 using SubloaderWpf.ViewModels;
 
-namespace SubloaderWpf.Views
+namespace SubloaderWpf.Views;
+
+public partial class TheWindow : Window
 {
-    public partial class TheWindow : Window
+    public TheWindow()
     {
-        public TheWindow()
-        {
-            InitializeComponent();
-            DataContext = new TheWindowViewModel();
-        }
+        InitializeComponent();
+        DataContext = new TheWindowViewModel();
     }
 }
