@@ -152,7 +152,7 @@ namespace SubloaderWpf.ViewModels
                 try
                 {
                     using var osClient = new OpenSubtitlesClient(App.APIKey, App.Settings.LoginToken, App.Settings.BaseUrl);
-                    var downloadInfo = await osClient.DownloadAsync(SelectedItem.Model.Information.Files.First().FileId.Value);
+                    var downloadInfo = await osClient.GetDownloadInfoAsync(SelectedItem.Model.Information.Files.First().FileId.Value);
                     var extension = Path.GetExtension(downloadInfo.FileName);
 
                     string destination;

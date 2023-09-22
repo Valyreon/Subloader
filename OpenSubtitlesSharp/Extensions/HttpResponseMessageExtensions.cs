@@ -12,8 +12,7 @@ internal static class HttpResponseMessageExtensions
             return await response.Content.ReadFromJsonAsync<T>();
         }
 
-        var contentString = await response.Content.ReadAsStringAsync();
         var errorResult = await response.Content.ReadFromJsonAsync<ErrorResponse>();
-        throw new RequestFailureException(errorResult.Status ?? response.StatusCode, errorResult.Message ?? errorResult.Errors?.FirstOrDefault() ?? "Something went wrong.");
+        throw new RequestFailedException(errorResult.Status ?? response.StatusCode, errorResult.Message?.Trim() ?? errorResult.Errors?.FirstOrDefault()?.Trim() ?? "Something went wrong.");
     }
 }

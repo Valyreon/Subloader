@@ -1,3 +1,5 @@
+using OpenSubtitlesSharp.Interfaces;
+
 namespace OpenSubtitlesSharp.DictionaryConverters;
 
 internal class IncludeOnlyValueConverter : IDictionaryValueConverter<bool?>

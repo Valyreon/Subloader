@@ -13,7 +13,7 @@ namespace SubloaderWpf.Utilities
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string Language => App.Settings.AllLanguages.SingleOrDefault(l => l.Code == Model.Information.Language).Name;
+        public string Language => App.Settings.AllLanguages.SingleOrDefault(l => l.Code == Model.Information.Language)?.Name;
         public Subtitle Model { get; }
         public string Name => Model.Information.Release;
 

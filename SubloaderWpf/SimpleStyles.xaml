@@ -92,18 +92,20 @@
 
     <Style TargetType="DataGrid">
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="AlternationCount" Value="2" />
         <Setter Property="AutoGenerateColumns" Value="False" />
         <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="RowHeight" Value="24" />
         <Setter Property="Background" Value="White" />
-        <Setter Property="HorizontalGridLinesBrush" Value="#ddd" />
-        <Setter Property="VerticalGridLinesBrush" Value="#ddd" />
+        <Setter Property="HorizontalGridLinesBrush" Value="#e5e5e5" />
+        <Setter Property="VerticalGridLinesBrush" Value="#e5e5e5" />
         <Setter Property="IsReadOnly" Value="True" />
         <Setter Property="BorderBrush" Value="#bbb" />
+        <Setter Property="CanUserReorderColumns" Value="False" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CanUserResizeColumns" Value="False" />
-        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="CanUserResizeColumns" Value="True" />
+        <Setter Property="GridLinesVisibility" Value="All" />
         <Setter Property="HeadersVisibility" Value="Column" />
         <Style.Resources>
             <Style x:Key="ScrollBarThumbVertical" TargetType="{x:Type Thumb}">

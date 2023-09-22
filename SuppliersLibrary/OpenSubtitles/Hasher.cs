@@ -6,10 +6,10 @@ namespace SuppliersLibrary.OpenSubtitles
 {
     public static class Hasher
     {
-        public static byte[] ComputeMovieHash(string filename)
+        public static string ComputeMovieHash(string filename)
         {
             using var input = File.OpenRead(filename);
-            return ComputeMovieHash(input);
+            return ToHexadecimal(ComputeMovieHash(input));
         }
 
         private static byte[] ComputeMovieHash(Stream input)

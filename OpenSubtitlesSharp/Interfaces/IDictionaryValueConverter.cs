@@ -1,4 +1,4 @@
-namespace OpenSubtitlesSharp.DictionaryConverters;
+namespace OpenSubtitlesSharp.Interfaces;
 
 internal interface IDictionaryValueConverter<T>
 {

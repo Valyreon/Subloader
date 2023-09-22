@@ -1,22 +1,18 @@
-using OpenSubtitlesSharp.Dtos;
-
 namespace OpenSubtitlesSharp;
 
 public interface IOpenSubtitlesClient
 {
     string Token { get; }
 
-    Task<DownloadInfo> DownloadAsync(DownloadParameters dlParameters);
+    Task<DownloadInfo> GetDownloadInfoAsync(DownloadParameters dlParameters);
 
-    Task<DownloadInfo> DownloadAsync(int fileId);
+    Task<DownloadInfo> GetDownloadInfoAsync(int fileId);
 
     Task<IReadOnlyList<SubtitleLanguage>> GetLanguagesAsync();
 
     Task<IReadOnlyList<string>> GetSubtitleFormatsAsync();
 
-    Task<UserInfo> GetUserInformationAsync();
-
-    Task<GuessResult> GuessPropertiesAsync(string fileName);
+    Task<UserInfo> GetUserInfoAsync();
 
     Task<LoginInfo> LoginAsync(string username, string password);
 

@@ -28,13 +28,13 @@ public class SearchParameters
     /// <summary>
     /// Filter that determines whether subtitles where only foreign parts are translated will be included. Default is Include.
     /// </summary>
-    [DictionaryValue("foreign_parts_only")]
+    [DictionaryValue("foreign_parts_only", ignoreValue: Filter.Include)]
     public Filter? ForeignPartsOnly { get; set; }
 
     /// <summary>
     /// Filter that determines whether subtitles for hearing impaired will be returned. Default is Include.
     /// </summary>
-    [DictionaryValue("hearing_impaired")]
+    [DictionaryValue("hearing_impaired", ignoreValue: Filter.Include)]
     public Filter? HearingImpaired { get; set; }
 
     /// <summary>
@@ -52,19 +52,19 @@ public class SearchParameters
     /// <summary>
     /// If true, search results will include AI translated subtitles.
     /// </summary>
-    [DictionaryValue("ai_translated", typeof(ExcludeIncludeValueConverter))]
+    [DictionaryValue("ai_translated", typeof(ExcludeIncludeValueConverter), true)]
     public bool? IncludeAiTranslated { get; set; }
 
     /// <summary>
     /// If true, search results will include Machine translated subtitles.
     /// </summary>
-    [DictionaryValue("machine_translated", typeof(ExcludeIncludeValueConverter))]
+    [DictionaryValue("machine_translated", typeof(ExcludeIncludeValueConverter), false)]
     public bool? IncludeMachineTranslated { get; set; }
 
     /// <summary>
     /// If true, search results will include only subtitles from trusted sources.
     /// </summary>
-    [DictionaryValue("trusted_sources", typeof(IncludeOnlyValueConverter))]
+    [DictionaryValue("trusted_sources", typeof(IncludeOnlyValueConverter), false)]
     public bool? IncludeOnlyFromTrustedSources { get; set; }
 
     /// <summary>
@@ -82,7 +82,7 @@ public class SearchParameters
     /// <summary>
     /// If true, results will include only subtitles which matched the MovieHash.
     /// </summary>
-    [DictionaryValue("moviehash_match", typeof(IncludeOnlyValueConverter))]
+    [DictionaryValue("moviehash_match", typeof(IncludeOnlyValueConverter), false)]
     public bool? OnlyMovieHashMatch { get; set; }
 
     /// <summary>
@@ -130,7 +130,7 @@ public class SearchParameters
     /// <summary>
     /// Type of the file.
     /// </summary>
-    [DictionaryValue("type")]
+    [DictionaryValue("type", ignoreValue: FileTypeFilter.All)]
     public FileTypeFilter? Type { get; set; }
 
     /// <summary>

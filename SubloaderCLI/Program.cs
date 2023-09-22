@@ -147,6 +147,12 @@ namespace SubloaderCLI
 
         private static async Task DownloadSubtitlesForDirectory(DirectoryInfo path, bool recursive, bool overwrite, string exts, string language)
         {
+            if (!path.Exists)
+            {
+                WriteExceptionMessage("Specified directory does not exist.");
+                return;
+            }
+
             var extensions = exts.Split('|').Select(e => "." + e).ToList();
 
             Console.WriteLine("Scanning files...");

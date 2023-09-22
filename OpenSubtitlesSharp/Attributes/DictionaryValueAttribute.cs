@@ -1,11 +1,18 @@
-using OpenSubtitlesSharp.DictionaryConverters;
+using OpenSubtitlesSharp.Interfaces;
 
 namespace OpenSubtitlesSharp.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
 internal class DictionaryValueAttribute : Attribute
 {
-    public DictionaryValueAttribute(string customName, Type converterType = null)
+    /// <summary>
+    /// Attribute to be used for converting an object into a IDictionary<string,string> type.
+    /// </summary>
+    /// <param name="customName">When dictionary is generated, this will be the key of the property.</param>
+    /// <param name="converterType">If specified will be used to convert the properties value into string.</param>
+    /// <param name="ignoreValue">If specified, when object is converted to dictionary and the property has this value it will not be included.</param>
+    /// <exception cref="ArgumentException"></exception>
+    public DictionaryValueAttribute(string customName, Type converterType = null, object ignoreValue = null)
     {
         if (string.IsNullOrWhiteSpace(customName))
         {
@@ -19,8 +26,10 @@ internal class DictionaryValueAttribute : Attribute
 
         CustomName = customName;
         ConverterType = converterType;
+        IgnoreValue = ignoreValue;
     }
 
     public Type ConverterType { get; }
     public string CustomName { get; }
+    public object IgnoreValue { get; }
 }
