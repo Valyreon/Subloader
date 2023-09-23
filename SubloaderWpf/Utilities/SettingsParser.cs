@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
+using SubloaderWpf.Models;
 
 namespace SubloaderWpf.Utilities;
 
@@ -8,21 +10,17 @@ public static class SettingsParser
 {
     public static event Action Saved;
 
-    public static void Save(Settings settings)
+    public static async Task SaveAsync(ApplicationSettings settings)
     {
         try
         {
             var path = GetConfigPath();
-
-            using var fileStream = new FileStream(path, FileMode.Create);
-            using var writer = new StreamWriter(fileStream);
-
             var json = JsonSerializer.Serialize(settings
 #if DEBUG
-                ,new JsonSerializerOptions { WriteIndented = true }
+                , new JsonSerializerOptions { WriteIndented = true }
 #endif
                 );
-            writer.Write(json);
+            await File.WriteAllTextAsync(path, json);
             Saved?.Invoke();
         }
         catch (Exception)
@@ -30,32 +28,26 @@ public static class SettingsParser
         }
     }
 
-    public static Settings Load()
+    public static async Task<ApplicationSettings> LoadAsync()
     {
         var path = GetConfigPath();
 
         if (!File.Exists(path))
         {
-            return new Settings();
+            return new ApplicationSettings();
         }
 
-        using var fileStream = new FileStream(path, FileMode.Open);
-        using var reader = new StreamReader(fileStream);
+        var text = await File.ReadAllTextAsync(path);
 
         try
         {
-            var settingsJson = JsonSerializer.Deserialize<Settings>(reader.ReadToEnd());
-
-            if (settingsJson != null)
-            {
-                return settingsJson;
-            }
+            return JsonSerializer.Deserialize<ApplicationSettings>(text);
         }
         catch (Exception)
         {
         }
 
-        return new Settings();
+        return new ApplicationSettings();
     }
 
     private static string GetConfigPath()

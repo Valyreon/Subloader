@@ -9,9 +9,8 @@
     RenderOptions.BitmapScalingMode="HighQuality"
     UseLayoutRounding="True"
     mc:Ignorable="d">
-    <DockPanel Margin="10">
-
-        <Grid DockPanel.Dock="Bottom">
+    <DockPanel>
+        <Grid Margin="10" DockPanel.Dock="Bottom">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="10" />
@@ -26,142 +25,238 @@
                 Command="{Binding CancelCommand}"
                 Content="Cancel" />
         </Grid>
-        <Grid Margin="0,10" DockPanel.Dock="Bottom">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="10" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="20" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <CheckBox
-                Grid.Row="0"
-                Grid.Column="1"
-                HorizontalAlignment="Left"
-                Content="Always on top"
-                IsChecked="{Binding AlwaysOnTop, UpdateSourceTrigger=PropertyChanged}" />
-            <CheckBox
-                Grid.Row="2"
-                Grid.Column="1"
-                HorizontalAlignment="Left"
-                Content="Download to Subs folder"
-                IsChecked="{Binding DownloadToSubsFolder, UpdateSourceTrigger=PropertyChanged}"
-                IsEnabled="{Binding AllowMultipleDownloads}" />
-            <CheckBox
-                Grid.Row="0"
-                Grid.Column="3"
-                HorizontalAlignment="Left"
-                Content="Allow multiple downloads"
-                IsChecked="{Binding AllowMultipleDownloads, UpdateSourceTrigger=PropertyChanged}" />
-            <CheckBox
-                Grid.Row="2"
-                Grid.Column="3"
-                HorizontalAlignment="Left"
-                Content="Overwrite same language files"
-                IsChecked="{Binding OverwriteSameLanguageSubs, UpdateSourceTrigger=PropertyChanged}"
-                IsEnabled="{Binding AllowMultipleDownloads}" />
-        </Grid>
+        <TabControl
+            Name="MainTabControl"
+            Margin="0,3,0,0"
+            BorderBrush="{StaticResource MainBorderColor}"
+            BorderThickness="0,1,0,1">
+            <TabItem Header="General">
+                <DockPanel Margin="10">
+                    <Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="10" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            Content="Always on top"
+                            IsChecked="{Binding AlwaysOnTop, UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            Content="Download to Subs folder"
+                            IsChecked="{Binding DownloadToSubsFolder, UpdateSourceTrigger=PropertyChanged}"
+                            IsEnabled="{Binding AllowMultipleDownloads}" />
+                        <CheckBox
+                            Grid.Row="0"
+                            Grid.Column="3"
+                            HorizontalAlignment="Left"
+                            Content="Allow multiple downloads"
+                            IsChecked="{Binding AllowMultipleDownloads, UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            HorizontalAlignment="Left"
+                            Content="Overwrite same language files"
+                            IsChecked="{Binding OverwriteSameLanguageSubs, UpdateSourceTrigger=PropertyChanged}"
+                            IsEnabled="{Binding AllowMultipleDownloads}" />
+                    </Grid>
 
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="6" />
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="6" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="36" />
+                            <RowDefinition />
+                            <RowDefinition Height="40" />
+                            <RowDefinition Height="6" />
+                            <RowDefinition Height="40" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <DataGrid
+                            x:Name="wantedLanguageList"
+                            Grid.Row="0"
+                            Grid.RowSpan="6"
+                            Grid.Column="0"
+                            ItemsSource="{Binding WantedLanguageList, Mode=TwoWay}"
+                            SelectedItem="{Binding SelectedWantedLanguage}">
+                            <DataGrid.InputBindings>
+                                <MouseBinding Command="{Binding DeleteCommand}" MouseAction="LeftDoubleClick" />
+                            </DataGrid.InputBindings>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn
+                                    Width="15*"
+                                    Binding="{Binding Name}"
+                                    ElementStyle="{StaticResource ColumnElementStyle}"
+                                    Header="Chosen languages" />
+                            </DataGrid.Columns>
+                        </DataGrid>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="6" />
-                <ColumnDefinition Width="40" />
-                <ColumnDefinition Width="6" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="36" />
-                <RowDefinition />
-                <RowDefinition Height="40" />
-                <RowDefinition Height="6" />
-                <RowDefinition Height="40" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <DataGrid
-                x:Name="wantedLanguageList"
-                Grid.Row="0"
-                Grid.RowSpan="6"
-                Grid.Column="0"
-                ItemsSource="{Binding WantedLanguageList}"
-                SelectedItem="{Binding SelectedWantedLanguage}">
-                <DataGrid.InputBindings>
-                    <MouseBinding Command="{Binding DeleteCommand}" MouseAction="LeftDoubleClick" />
-                </DataGrid.InputBindings>
-                <DataGrid.Columns>
-                    <DataGridTextColumn
-                        Width="15*"
-                        Binding="{Binding Name}"
-                        ElementStyle="{StaticResource ColumnElementStyle}"
-                        Header="Chosen languages" />
-                </DataGrid.Columns>
-            </DataGrid>
+                        <Button
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Width="40"
+                            Height="40"
+                            VerticalAlignment="Top"
+                            Command="{Binding AddCommand}"
+                            Content="3"
+                            FontFamily="Marlett"
+                            FontSize="20"
+                            Foreground="{StaticResource MainDarkColor}"
+                            IsEnabled="{Binding IsLanguageSelected, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button
+                            Grid.Row="4"
+                            Grid.Column="2"
+                            Width="40"
+                            Height="40"
+                            VerticalAlignment="Top"
+                            Command="{Binding DeleteCommand}"
+                            Content="4"
+                            FontFamily="Marlett"
+                            FontSize="20"
+                            Foreground="{StaticResource MainDarkColor}"
+                            IsEnabled="{Binding IsWantedLanguageSelected, UpdateSourceTrigger=PropertyChanged}" />
+                        <Grid Grid.Row="0" Grid.Column="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="5" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30" />
+                            </Grid.RowDefinitions>
+                            <Label Grid.Column="0" Foreground="{StaticResource MainDarkColor}">Search:</Label>
+                            <TextBox
+                                Grid.Column="2"
+                                VerticalContentAlignment="Center"
+                                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
 
-            <Button
-                Grid.Row="2"
-                Grid.Column="2"
-                Width="40"
-                Height="40"
-                VerticalAlignment="Top"
-                Command="{Binding AddCommand}"
-                Content="3"
-                FontFamily="Marlett"
-                FontSize="20"
-                Foreground="{StaticResource MainDarkColor}"
-                IsEnabled="{Binding IsLanguageSelected, UpdateSourceTrigger=PropertyChanged}" />
-            <Button
-                Grid.Row="4"
-                Grid.Column="2"
-                Width="40"
-                Height="40"
-                VerticalAlignment="Top"
-                Command="{Binding DeleteCommand}"
-                Content="4"
-                FontFamily="Marlett"
-                FontSize="20"
-                Foreground="{StaticResource MainDarkColor}"
-                IsEnabled="{Binding IsWantedLanguageSelected, UpdateSourceTrigger=PropertyChanged}" />
-            <Grid Grid.Row="0" Grid.Column="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30" />
-                </Grid.RowDefinitions>
-                <Label Grid.Column="0" Foreground="{StaticResource MainDarkColor}">Search:</Label>
-                <TextBox
-                    Grid.Column="2"
-                    VerticalContentAlignment="Center"
-                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-            </Grid>
+                        <DataGrid
+                            x:Name="unselectedLanguageList"
+                            Grid.Row="1"
+                            Grid.RowSpan="6"
+                            Grid.Column="4"
+                            ItemsSource="{Binding LanguageList, Mode=TwoWay}"
+                            SelectedItem="{Binding SelectedLanguage}">
+                            <DataGrid.InputBindings>
+                                <MouseBinding Command="{Binding AddCommand}" MouseAction="LeftDoubleClick" />
+                            </DataGrid.InputBindings>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn
+                                    Width="15*"
+                                    Binding="{Binding Name}"
+                                    ElementStyle="{StaticResource ColumnElementStyle}"
+                                    Header="Languages" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Subtitles">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <StackPanel Margin="0,0,0,8">
+                        <Label Content="Preferred subtitle format: " Target="{Binding ElementName=subtitleFormatComboBox}" />
+                        <ComboBox x:Name="subtitleFormatComboBox" />
+                    </StackPanel>
 
+                    <StackPanel Grid.Row="1" Margin="0,0,0,8">
+                        <Label
+                            Grid.Row="1"
+                            Content="Foreign parts only: "
+                            Target="{Binding ElementName=foreignPartsComboBox}" />
+                        <ComboBox x:Name="foreignPartsComboBox" />
+                    </StackPanel>
 
-            <DataGrid
-                x:Name="unselectedLanguageList"
-                Grid.Row="1"
-                Grid.RowSpan="6"
-                Grid.Column="4"
-                ItemsSource="{Binding LanguageList}"
-                SelectedItem="{Binding SelectedLanguage}">
-                <DataGrid.InputBindings>
-                    <MouseBinding Command="{Binding AddCommand}" MouseAction="LeftDoubleClick" />
-                </DataGrid.InputBindings>
-                <DataGrid.Columns>
-                    <DataGridTextColumn
-                        Width="15*"
-                        Binding="{Binding Name}"
-                        ElementStyle="{StaticResource ColumnElementStyle}"
-                        Header="Languages" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
+                    <StackPanel Grid.Row="2" Margin="0,0,0,8">
+                        <Label Content="For hearing impaired: " Target="{Binding ElementName=hearingImpairedCombobox}" />
+                        <ComboBox x:Name="hearingImpairedCombobox" Grid.Column="2" />
+                    </StackPanel>
+
+                    <CheckBox
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        Margin="0,5"
+                        HorizontalAlignment="Left"
+                        Content="Only from trusted sources"
+                        IsChecked="{Binding OnlyFromTrustedSources, UpdateSourceTrigger=PropertyChanged}" />
+                    <CheckBox
+                        Grid.Row="4"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        Margin="0,5"
+                        HorizontalAlignment="Left"
+                        Content="Include AI translated"
+                        IsChecked="{Binding IncludeAiTranslated, UpdateSourceTrigger=PropertyChanged}" />
+                    <CheckBox
+                        Grid.Row="5"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        Margin="0,5"
+                        HorizontalAlignment="Left"
+                        Content="Include machine translated"
+                        IsChecked="{Binding IncludeMachineTranslated, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Login">
+                <StackPanel
+                    Width="300"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+
+                    <TextBlock Margin="0,0,0,10" HorizontalAlignment="Center">
+                        Login to OpenSubtitles.com
+                    </TextBlock>
+
+                    <StackPanel Margin="0,0,0,10">
+                        <Label Content="Username: " Target="{Binding ElementName=usernameTextBox}" />
+                        <TextBox x:Name="usernameTextBox" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Margin="0,0,0,10">
+                        <Label
+                            Grid.Row="1"
+                            Content="Password: "
+                            Target="{Binding ElementName=passwordTextBox}" />
+                        <PasswordBox x:Name="passwordTextBox" />
+                    </StackPanel>
+
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        HorizontalAlignment="Center"
+                        Foreground="Red">
+                        Username/password is incorrect.
+                    </TextBlock>
+
+                    <Button
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        Width="100"
+                        Margin="0,5"
+                        HorizontalAlignment="Center"
+                        Command="{Binding LoginCommand}"
+                        Content="Login" />
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
     </DockPanel>
 </UserControl>

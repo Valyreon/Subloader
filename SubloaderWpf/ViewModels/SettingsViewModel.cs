@@ -4,12 +4,16 @@ using System.Linq;
 using System.Windows.Input;
 using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
+using SubloaderWpf.Models;
+using SubloaderWpf.Mvvm;
 using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf.ViewModels;
 
-public class SettingsViewModel : ViewModelBase
+public class SettingsViewModel : ObservableEntity
 {
+    private readonly ApplicationSettings _settings;
+    private readonly IEnumerable<SubtitleLanguage> allLanguages;
     private readonly INavigator navigator;
     private bool allowMultipleDownloads;
     private bool alwaysOnTop;
@@ -19,27 +23,28 @@ public class SettingsViewModel : ViewModelBase
     private SubtitleLanguage selectedLanguage;
     private SubtitleLanguage selectedWantedLanguage;
 
-    public SettingsViewModel(INavigator navigator)
+    public SettingsViewModel(INavigator navigator, ApplicationSettings settings, IEnumerable<SubtitleLanguage> allLanguages)
     {
         this.navigator = navigator;
-        var wantLangs = App.Settings.WantedLanguages;
-        foreach (var x in App.Settings.AllLanguages)
+        _settings = settings;
+        this.allLanguages = allLanguages.ToList();
+        foreach (var x in this.allLanguages)
         {
             LanguageList.Add(x);
         }
 
-        if (wantLangs != null)
+        if (_settings.WantedLanguages != null)
         {
-            foreach (var x in wantLangs)
+            foreach (var x in _settings.WantedLanguageCodes)
             {
-                WantedLanguageList.Add(App.Settings.AllLanguages.Single(c => c.Code == x));
+                WantedLanguageList.Add(allLanguages.SingleOrDefault(l => l.Code == x));
             }
         }
 
-        alwaysOnTop = App.Settings.KeepWindowOnTop;
-        downloadToSubsFolder = App.Settings.DownloadToSubsFolder;
-        allowMultipleDownloads = App.Settings.AllowMultipleDownloads;
-        overwriteSameLanguageSubs = App.Settings.OverwriteSameLanguageSub;
+        alwaysOnTop = _settings.KeepWindowOnTop;
+        downloadToSubsFolder = _settings.DownloadToSubsFolder;
+        allowMultipleDownloads = _settings.AllowMultipleDownloads;
+        overwriteSameLanguageSubs = _settings.OverwriteSameLanguageSub;
     }
 
     public ICommand AddCommand => new RelayCommand(Add);
@@ -50,16 +55,16 @@ public class SettingsViewModel : ViewModelBase
 
         set
         {
-            Set(nameof(AllowMultipleDownloads), ref allowMultipleDownloads, value);
-            Set(nameof(DownloadToSubsFolder), ref downloadToSubsFolder, false);
-            Set(nameof(OverwriteSameLanguageSubs), ref overwriteSameLanguageSubs, false);
+            Set(() => AllowMultipleDownloads, ref allowMultipleDownloads, value);
+            Set(() => DownloadToSubsFolder, ref downloadToSubsFolder, false);
+            Set(() => OverwriteSameLanguageSubs, ref overwriteSameLanguageSubs, false);
         }
     }
 
     public bool AlwaysOnTop
     {
         get => alwaysOnTop;
-        set => Set(nameof(AlwaysOnTop), ref alwaysOnTop, value);
+        set => Set(() => AlwaysOnTop, ref alwaysOnTop, value);
     }
 
     public ICommand CancelCommand => new RelayCommand(Cancel);
@@ -69,7 +74,7 @@ public class SettingsViewModel : ViewModelBase
     {
         get => downloadToSubsFolder;
 
-        set => Set(nameof(DownloadToSubsFolder), ref downloadToSubsFolder, value);
+        set => Set(() => DownloadToSubsFolder, ref downloadToSubsFolder, value);
     }
 
     public bool IsLanguageSelected => SelectedLanguage != null;
@@ -80,7 +85,7 @@ public class SettingsViewModel : ViewModelBase
     {
         get => overwriteSameLanguageSubs;
 
-        set => Set(nameof(OverwriteSameLanguageSubs), ref overwriteSameLanguageSubs, value);
+        set => Set(() => OverwriteSameLanguageSubs, ref overwriteSameLanguageSubs, value);
     }
 
     public ICommand SaveCommand => new RelayCommand(SaveAndBack);
@@ -93,7 +98,7 @@ public class SettingsViewModel : ViewModelBase
         {
             searchText = value;
             LanguageList.Clear();
-            foreach (var x in App.Settings.AllLanguages)
+            foreach (var x in allLanguages)
             {
                 if (x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Any(w => w.Code == x.Code))
                 {
@@ -101,7 +106,7 @@ public class SettingsViewModel : ViewModelBase
                 }
             }
 
-            Set(nameof(SearchText), ref searchText, value);
+            Set(() => SearchText, ref searchText, value);
         }
     }
 
@@ -116,8 +121,8 @@ public class SettingsViewModel : ViewModelBase
                 SelectedWantedLanguage = null;
             }
 
-            Set(nameof(SelectedLanguage), ref selectedLanguage, value);
-            RaisePropertyChanged(nameof(IsLanguageSelected));
+            Set(() => SelectedLanguage, ref selectedLanguage, value);
+            RaisePropertyChanged(() => IsLanguageSelected);
         }
     }
 
@@ -132,8 +137,8 @@ public class SettingsViewModel : ViewModelBase
                 SelectedLanguage = null;
             }
 
-            Set(nameof(SelectedWantedLanguage), ref selectedWantedLanguage, value);
-            RaisePropertyChanged(nameof(IsWantedLanguageSelected));
+            Set(() => SelectedWantedLanguage, ref selectedWantedLanguage, value);
+            RaisePropertyChanged(() => IsWantedLanguageSelected);
         }
     }
 
@@ -167,15 +172,12 @@ public class SettingsViewModel : ViewModelBase
 
     private void SaveAndBack()
     {
-        var wanted = new List<SubtitleLanguage>();
-        wanted.AddRange(WantedLanguageList);
-
-        App.Settings.KeepWindowOnTop = alwaysOnTop;
-        App.Settings.AllowMultipleDownloads = allowMultipleDownloads;
-        App.Settings.DownloadToSubsFolder = downloadToSubsFolder;
-        App.Settings.OverwriteSameLanguageSub = overwriteSameLanguageSubs;
-        App.Settings.WantedLanguages = wanted.Select(w => w.Code).ToList();
-        SettingsParser.Save(App.Settings);
+        _settings.KeepWindowOnTop = alwaysOnTop;
+        _settings.AllowMultipleDownloads = allowMultipleDownloads;
+        _settings.DownloadToSubsFolder = downloadToSubsFolder;
+        _settings.OverwriteSameLanguageSub = overwriteSameLanguageSubs;
+        _settings.WantedLanguages = WantedLanguageList.ToList();
+        _ = SettingsParser.SaveAsync(_settings);
         navigator.GoToPreviousControl();
     }
 }

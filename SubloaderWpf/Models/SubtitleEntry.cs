@@ -1,24 +1,19 @@
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Linq;
 using OpenSubtitlesSharp;
+using SubloaderWpf.Mvvm;
 
-namespace SubloaderWpf.Utilities;
+namespace SubloaderWpf.Models;
 
-public class SubtitleEntry : INotifyPropertyChanged
+public class SubtitleEntry : ObservableEntity
 {
-    public SubtitleEntry(Subtitle item)
+    public SubtitleEntry(Subtitle item, IEnumerable<SubtitleLanguage> allLanguages)
     {
         Model = item;
+        Language = allLanguages.SingleOrDefault(l => l.Code == Model.Information.Language)?.Name;
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    public string Language => App.Settings.AllLanguages.SingleOrDefault(l => l.Code == Model.Information.Language)?.Name;
+    public string Language { get; }
     public Subtitle Model { get; }
     public string Name => Model.Information.Release;
-
-    protected void OnPropertyChanged(string name)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
 }

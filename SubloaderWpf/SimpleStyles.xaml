@@ -328,6 +328,9 @@
     </Style>
 
     <Style TargetType="{x:Type TextBox}">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Padding" Value="2,0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
@@ -357,6 +360,28 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type PasswordBox}">
+        <Setter Property="Padding" Value="0,0,0,2" />
+        <Setter Property="Padding" Value="2,0" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style TargetType="{x:Type Label}">
+        <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
+        <Setter Property="Padding" Value="0,0,0,2" />
+    </Style>
+
+    <Style TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
+        <Setter Property="TextWrapping" Value="WrapWithOverflow" />
+    </Style>
+
+    <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
+        <Setter Property="Height" Value="25" />
     </Style>
 
 </ResourceDictionary>

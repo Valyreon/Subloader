@@ -4,21 +4,24 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Media;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Fastenshtein;
 using Microsoft.Win32;
 using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
+using SubloaderWpf.Models;
+using SubloaderWpf.Mvvm;
 using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf.ViewModels;
 
-public class MainViewModel : ViewModelBase
+public class MainViewModel : ObservableEntity
 {
-    private readonly INavigator navigator;
+    private readonly INavigator _navigator;
+    private readonly IOpenSubtitlesService _openSubtitlesService;
+    private readonly ApplicationSettings _settings;
+    private IEnumerable<SubtitleLanguage> allLanguages;
     private string currentPath;
     private bool isSearchModalOpen;
     private string lastSearchedText;
@@ -27,12 +30,13 @@ public class MainViewModel : ViewModelBase
     private string searchModalInputText;
     private string statusText;
 
-    public MainViewModel(INavigator navigator)
+    public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
     {
-        this.navigator = navigator;
-
-        searchByHash = App.Settings.IsByHashChecked;
-        searchByName = App.Settings.IsByNameChecked;
+        _navigator = navigator;
+        _openSubtitlesService = openSubtitlesService;
+        _settings = settings;
+        searchByHash = _settings.IsByHashChecked;
+        searchByName = _settings.IsByNameChecked;
 
         StatusText = "Open a video file.";
         CurrentPath = (Application.Current as App).PathArg;
@@ -62,7 +66,7 @@ public class MainViewModel : ViewModelBase
     {
         get => isSearchModalOpen;
 
-        set => Set(nameof(IsSearchModalOpen), ref isSearchModalOpen, value);
+        set => Set(() => IsSearchModalOpen, ref isSearchModalOpen, value);
     }
 
     public ICommand OpenSearchModalCommand => new RelayCommand(() => IsSearchModalOpen = true);
@@ -74,9 +78,9 @@ public class MainViewModel : ViewModelBase
 
         set
         {
-            Set(nameof(SearchByHash), ref searchByHash, value);
-            App.Settings.IsByHashChecked = value;
-            SettingsParser.Save(App.Settings);
+            Set(() => SearchByHash, ref searchByHash, value);
+            _settings.IsByHashChecked = value;
+            _ = SettingsParser.SaveAsync(_settings);
         }
     }
 
@@ -86,9 +90,9 @@ public class MainViewModel : ViewModelBase
 
         set
         {
-            Set(nameof(SearchByName), ref searchByName, value);
-            App.Settings.IsByNameChecked = value;
-            SettingsParser.Save(App.Settings);
+            Set(() => SearchByName, ref searchByName, value);
+            _settings.IsByNameChecked = value;
+            _ = SettingsParser.SaveAsync(_settings);
         }
     }
 
@@ -98,7 +102,7 @@ public class MainViewModel : ViewModelBase
     {
         get => searchModalInputText;
 
-        set => Set(nameof(SearchModalInputText), ref searchModalInputText, value);
+        set => Set(() => SearchModalInputText, ref searchModalInputText, value);
     }
 
     public SubtitleEntry SelectedItem { get; set; }
@@ -108,7 +112,7 @@ public class MainViewModel : ViewModelBase
     {
         get => statusText;
 
-        set => Set(nameof(StatusText), ref statusText, value);
+        set => Set(() => StatusText, ref statusText, value);
     }
 
     public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
@@ -146,52 +150,37 @@ public class MainViewModel : ViewModelBase
             return;
         }
 
-        StatusText = "Downloading...";
-        await Task.Run(async () =>
+        string destination = null;
+        if (string.IsNullOrWhiteSpace(CurrentPath))
         {
-            try
+            var saveFileDialog = new SaveFileDialog()
             {
-                using var osClient = new OpenSubtitlesClient(App.APIKey, App.Settings.LoginToken, App.Settings.BaseUrl);
-                var downloadInfo = await osClient.GetDownloadInfoAsync(SelectedItem.Model.Information.Files.First().FileId.Value);
-                var extension = Path.GetExtension(downloadInfo.FileName);
+                FileName = Path.ChangeExtension(SelectedItem.Name, _settings.PreferredFormat)
+            };
 
-                string destination;
-                if (string.IsNullOrWhiteSpace(CurrentPath))
-                {
-                    var saveFileDialog = new SaveFileDialog()
-                    {
-                        FileName = Path.ChangeExtension(SelectedItem.Name, extension)
-                    };
-
-                    if (saveFileDialog.ShowDialog() == true)
-                    {
-                        destination = saveFileDialog.FileName;
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    destination = GetDestinationPath(extension);
-                }
-
-                File.WriteAllBytes(destination, await DownloadFileAsync(downloadInfo.Link));
-                Application.Current.Dispatcher.Invoke(() => StatusText = $"Subtitle downloaded. Remaining: " + downloadInfo.Remaining);
-            }
-            catch (Exception ex)
+            if (saveFileDialog.ShowDialog() == true)
             {
-                Application.Current.Dispatcher.Invoke(() => StatusText = "Error while downloading.");
-                SystemSounds.Hand.Play();
+                destination = saveFileDialog.FileName;
             }
+            else
+            {
+                return;
+            }
+        }
+
+        StatusText = "Downloading...";
+        await RunAndHandleAsync(async () =>
+        {
+            var info = await _openSubtitlesService.DownloadSubtitleAsync(SelectedItem, CurrentPath, destination);
+            Application.Current.Dispatcher.Invoke(() => StatusText = $"Subtitle downloaded. Remaining today: " + info.Remaining);
         });
     }
 
-    public void GoToSettings()
+    public async void GoToSettings()
     {
-        var settingsControl = new SettingsViewModel(navigator);
-        navigator.GoToControl(settingsControl);
+        allLanguages ??= await _openSubtitlesService.GetLanguagesAsync();
+        var settingsControl = new SettingsViewModel(_navigator, _settings, allLanguages);
+        _navigator.GoToControl(settingsControl);
     }
 
     public async void Refresh()
@@ -216,124 +205,69 @@ public class MainViewModel : ViewModelBase
         }
 
         lastSearchedText = SearchModalInputText;
-        await GetResults(false);
-    }
 
-    private static async Task<byte[]> DownloadFileAsync(string url)
-    {
-        using var httpClient = new HttpClient();
-        try
+        Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
+        StatusText = "Searching subtitles...";
+        Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
+        await RunAndHandleAsync(async () =>
         {
-            var response = await httpClient.GetAsync(url);
-
-            return response.IsSuccessStatusCode
-                ? await response.Content.ReadAsByteArrayAsync()
-                : null;
-        }
-        catch (HttpRequestException e)
-        {
-            return null;
-        }
-    }
-
-    private string GetDestinationPath(string format)
-    {
-        format = format.StartsWith(".") ? format[1..] : format;
-
-        var directoryPath = App.Settings.DownloadToSubsFolder
-            ? Path.Combine(Path.GetDirectoryName(CurrentPath), "Subs")
-            : Path.GetDirectoryName(CurrentPath);
-
-        Directory.CreateDirectory(directoryPath);
-
-        if (App.Settings.AllowMultipleDownloads)
-        {
-            var fileNameWithoutPathOrExtension = Path.GetFileNameWithoutExtension(CurrentPath);
-            var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{SelectedItem.Model.Information.Language}.{format}");
-
-            if (!App.Settings.OverwriteSameLanguageSub && File.Exists(path))
-            {
-                var counter = 1;
-                while (File.Exists(
-                    path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.({counter}).{SelectedItem.Model.Information.Language}.{format}")))
-                {
-                    counter++;
-                }
-            }
-
-            return path;
-        }
-
-        return Path.ChangeExtension(CurrentPath, format);
-    }
-
-    private async Task GetResults(bool fileSearch)
-    {
-        try
-        {
-            // try to focus window
-            Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
-
-            StatusText = "Searching subtitles...";
-            Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
-            var results = await SearchOpensubtitles(fileSearch);
-            if (results == null)
-            {
-                StatusText = "Server error. Try refreshing.";
-            }
-            else if (!results.Any())
-            {
-                StatusText = "No subtitles found.";
-            }
-            else
-            {
-                foreach (var x in results)
-                {
-                    Application.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
-                    await Task.Delay(20);
-                }
-
-                StatusText = "Use double-click to download.";
-            }
-        }
-        catch (Exception ex)
-        {
-            StatusText = ex.Message;
-            SystemSounds.Hand.Play();
-        }
+            var results = await _openSubtitlesService.SearchSubtitlesAsync(SearchModalInputText);
+            await ProcessResults(results);
+        });
     }
 
     private async void ProcessFileAsync()
     {
-        await GetResults(true);
+        Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
+        StatusText = "Searching subtitles...";
+        Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
+        await RunAndHandleAsync(async () =>
+        {
+            var results = await _openSubtitlesService.GetSubtitlesForFileAsync(CurrentPath, SearchByName, SearchByHash);
+            await ProcessResults(results);
+        });
     }
 
-    private async Task<IEnumerable<SubtitleEntry>> SearchOpensubtitles(bool forFile = true)
+    private async Task ProcessResults(IEnumerable<SubtitleEntry> results)
     {
-        var settings = App.Settings;
-        using var newClient = new OpenSubtitlesClient(App.APIKey);
-
-        var parameters = new SearchParameters
+        if (results == null)
         {
-            Languages = App.Settings.WantedLanguages,
-            OnlyMovieHashMatch = SearchByHash && !SearchByName
-        };
-
-        SearchResult result = null;
-
-        if (forFile)
-        {
-            result = await newClient.SearchAsync(currentPath, parameters);
-            // order by levenshtein distance
-            var laven = new Levenshtein(Path.GetFileNameWithoutExtension(CurrentPath));
-            return result.Items.Select(i => new SubtitleEntry(i))
-                .Select(ResultItem => (ResultItem, laven.DistanceFrom(ResultItem.Name)))
-                .OrderBy(i => i.Item2)
-                .Select(i => i.ResultItem);
+            Application.Current.Dispatcher.Invoke(() => StatusText = "Server error. Try refreshing.");
         }
-        parameters.Query = SearchModalInputText;
-        result = await newClient.SearchAsync(parameters);
+        else if (!results.Any())
+        {
+            Application.Current.Dispatcher.Invoke(() => StatusText = "No subtitles found.");
+        }
+        else
+        {
+            foreach (var x in results)
+            {
+                Application.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
+                await Task.Delay(20);
+            }
 
-        return result.Items.Select(i => new SubtitleEntry(i));
+            Application.Current.Dispatcher.Invoke(() => StatusText = "Use double-click to download.");
+        }
+    }
+
+    private Task RunAndHandleAsync(Func<Task> func)
+    {
+        return Task.Run(async () =>
+        {
+            try
+            {
+                await func();
+            }
+            catch (RequestFailedException ex)
+            {
+                Application.Current.Dispatcher.Invoke(() => StatusText = ex.Message);
+                SystemSounds.Hand.Play();
+            }
+            catch (Exception ex)
+            {
+                Application.Current.Dispatcher.Invoke(() => StatusText = "Something went wrong.");
+                SystemSounds.Hand.Play();
+            }
+        });
     }
 }

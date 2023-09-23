@@ -48,10 +48,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <StackPanel
-                Grid.Row="1"
-                attachedProperties:UI.Elevation="4"
-                Background="#f2f2f2">
+            <StackPanel Grid.Row="1" Background="#f2f2f2">
                 <TextBox
                     x:Name="searchTextBox"
                     Height="30"

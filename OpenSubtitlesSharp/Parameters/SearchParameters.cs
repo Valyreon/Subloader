@@ -17,7 +17,7 @@ public enum Filter
     Only
 }
 
-public class SearchParameters
+public record SearchParameters
 {
     /// <summary>
     /// Episode number for TV Shows.
@@ -71,7 +71,7 @@ public class SearchParameters
     /// List of language codes to filter.
     /// </summary>
     [DictionaryValue("languages", typeof(OrderedCsvValueConverter))]
-    public IReadOnlyList<string> Languages { get; set; }
+    public IEnumerable<string> Languages { get; set; }
 
     /// <summary>
     /// Moviehash of the movie/episode file.

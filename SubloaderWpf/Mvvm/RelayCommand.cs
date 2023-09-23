@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Input;
 
-namespace SubloaderWpf.ViewModels;
+namespace SubloaderWpf.Mvvm;
 
 internal class RelayCommand : ICommand
 {
@@ -18,13 +18,13 @@ internal class RelayCommand : ICommand
         remove { }
     }
 
-    public void Execute(object parameter)
-    {
-        action();
-    }
-
     public bool CanExecute(object parameter)
     {
         return true;
+    }
+
+    public void Execute(object parameter)
+    {
+        action();
     }
 }
