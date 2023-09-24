@@ -304,7 +304,7 @@ public class SettingsViewModel : ObservableEntity
             _settings.LoggedInUser = result;
             Password = null;
             User = result;
-            _ = SettingsParser.SaveAsync(_settings);
+            _ = ApplicationDataReader.SaveSettingsAsync(_settings);
         }
         catch (RequestFailedException ex)
         {
@@ -319,7 +319,7 @@ public class SettingsViewModel : ObservableEntity
             _settings.LoggedInUser = null;
             IsLoggedIn = false;
             User = null;
-            _ = SettingsParser.SaveAsync(_settings);
+            _ = ApplicationDataReader.SaveSettingsAsync(_settings);
         }
     }
 
@@ -336,7 +336,7 @@ public class SettingsViewModel : ObservableEntity
         _settings.DefaultSearchParameters.IncludeAiTranslated = IncludeAiTranslated;
         _settings.DefaultSearchParameters.IncludeMachineTranslated = IncludeMachineTranslated;
         _settings.PreferredFormat = SelectedFormat;
-        _ = SettingsParser.SaveAsync(_settings);
+        _ = ApplicationDataReader.SaveSettingsAsync(_settings);
         navigator.GoToPreviousControl();
     }
 }

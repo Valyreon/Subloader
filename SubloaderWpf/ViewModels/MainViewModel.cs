@@ -23,7 +23,7 @@ public class MainViewModel : ObservableEntity
     private readonly ApplicationSettings _settings;
     private IEnumerable<SubtitleLanguage> allLanguages;
     private string currentPath;
-    private IEnumerable<string> formats;
+    private IEnumerable<string> allFormats;
     private bool isSearchModalOpen;
     private string lastSearchedText;
     private bool searchByHash;
@@ -149,18 +149,39 @@ public class MainViewModel : ObservableEntity
 
     public async void GoToSettings()
     {
-        if (allLanguages == null || formats == null)
+        if (allLanguages == null)
         {
-            var languageTask = allLanguages == null ? _openSubtitlesService.GetLanguagesAsync() : Task.FromResult(allLanguages);
-            var formatsTask = formats == null ? _openSubtitlesService.GetFormatsAsync() : Task.FromResult(formats);
+            var languagesFromFile = await ApplicationDataReader.LoadLanguagesAsync();
 
-            await Task.WhenAll(languageTask, formatsTask);
-
-            allLanguages ??= languageTask.Result;
-            formats ??= formatsTask.Result;
+            if(languagesFromFile == null)
+            {
+                var fromAPI = await _openSubtitlesService.GetLanguagesAsync();
+                _ = ApplicationDataReader.SaveLanguagesAsync(fromAPI);
+                allLanguages = fromAPI;
+            }
+            else
+            {
+                allLanguages = languagesFromFile;
+            }
         }
 
-        var settingsControl = new SettingsViewModel(_navigator, _openSubtitlesService, _settings, allLanguages, formats);
+        if(allFormats == null)
+        {
+            var formatsFromFile = await ApplicationDataReader.LoadFormatsAsync();
+
+            if(formatsFromFile == null)
+            {
+                var fromAPI = await _openSubtitlesService.GetFormatsAsync();
+                _ = ApplicationDataReader.SaveFormatsAsync(fromAPI);
+                allFormats = fromAPI;
+            }
+            else
+            {
+                allFormats = formatsFromFile;
+            }
+        }
+
+        var settingsControl = new SettingsViewModel(_navigator, _openSubtitlesService, _settings, allLanguages, allFormats);
         _navigator.GoToControl(settingsControl);
     }
 

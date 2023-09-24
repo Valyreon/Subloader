@@ -20,7 +20,7 @@ public class TheWindowViewModel : ObservableEntity, INavigator
         _settings = settings;
         _openSubtitlesService = openSubtitlesService;
         AlwaysOnTop = _settings.KeepWindowOnTop;
-        SettingsParser.Saved += () => Application.Current.Dispatcher.Invoke(() => AlwaysOnTop = _settings.KeepWindowOnTop);
+        ApplicationDataReader.Saved += () => Application.Current.Dispatcher.Invoke(() => AlwaysOnTop = _settings.KeepWindowOnTop);
         _openSubtitlesService = openSubtitlesService;
     }
 

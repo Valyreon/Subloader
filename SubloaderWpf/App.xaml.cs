@@ -20,7 +20,7 @@ public partial class App : Application
     {
         CheckMutex(e);
 
-        var settings = await SettingsParser.LoadAsync();
+        var settings = await ApplicationDataReader.LoadSettingsAsync();
         var openSubtitlesService = new OpenSubtitlesService(settings);
         MainWindow = new TheWindow
         {

@@ -46,7 +46,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
             _settings.LoggedInUser.ResetTime = downloadInfo.ResetTimeUtc;
             _settings.LoggedInUser.RemainingDownloads = downloadInfo.Remaining;
 
-            _ = SettingsParser.SaveAsync(_settings);
+            _ = ApplicationDataReader.SaveSettingsAsync(_settings);
         }
 
         return downloadInfo;
