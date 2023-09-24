@@ -5,34 +5,50 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:SubloaderWpf.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:SubloaderWpf.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}"
     FontFamily="Segoe UI Semibold"
     RenderOptions.BitmapScalingMode="HighQuality"
     UseLayoutRounding="True"
     mc:Ignorable="d">
     <DockPanel>
-        <Grid Margin="10" DockPanel.Dock="Bottom">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="10" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Button
-                Grid.Column="0"
-                Command="{Binding SaveCommand}"
-                Content="Save" />
-            <Button
-                Grid.Column="2"
-                Command="{Binding CancelCommand}"
-                Content="Cancel" />
-        </Grid>
+
         <TabControl
             Name="MainTabControl"
             Margin="0,3,0,0"
             BorderBrush="{StaticResource MainBorderColor}"
-            BorderThickness="0,1,0,1">
-            <TabItem Header="General">
-                <DockPanel Margin="10">
-                    <Grid Margin="0,10,0,0" DockPanel.Dock="Bottom">
+            BorderThickness="0,1,0,0">
+            <TabItem>
+                <TabItem.Header>
+                    <Border Width="60">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">General</TextBlock>
+                    </Border>
+                </TabItem.Header>
+                <DockPanel>
+                    <Border
+                        Padding="10"
+                        Background="{StaticResource MainBackgroundColor}"
+                        BorderBrush="{StaticResource MainBorderColor}"
+                        BorderThickness="0,1,0,0"
+                        DockPanel.Dock="Bottom">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Button
+                                Grid.Column="0"
+                                Command="{Binding SaveCommand}"
+                                Content="Save" />
+                            <Button
+                                Grid.Column="2"
+                                Command="{Binding CancelCommand}"
+                                Content="Cancel" />
+                        </Grid>
+                    </Border>
+
+                    <Grid Margin="0,0,0,10" DockPanel.Dock="Bottom">
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition Height="10" />
@@ -73,7 +89,7 @@
                             IsEnabled="{Binding AllowMultipleDownloads}" />
                     </Grid>
 
-                    <Grid>
+                    <Grid Margin="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition Width="6" />
@@ -141,11 +157,10 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="30" />
                             </Grid.RowDefinitions>
-                            <Label Grid.Column="0" Foreground="{StaticResource MainDarkColor}">Search:</Label>
-                            <TextBox
-                                Grid.Column="2"
-                                VerticalContentAlignment="Center"
-                                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                            <Label Grid.Column="0" VerticalAlignment="Center">
+                                Search:
+                            </Label>
+                            <TextBox Grid.Column="2" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
                         </Grid>
 
                         <DataGrid
@@ -169,94 +184,187 @@
                     </Grid>
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Subtitles">
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <StackPanel Margin="0,0,0,8">
-                        <Label Content="Preferred subtitle format: " Target="{Binding ElementName=subtitleFormatComboBox}" />
-                        <ComboBox x:Name="subtitleFormatComboBox" />
-                    </StackPanel>
+            <TabItem>
+                <TabItem.Header>
+                    <Border Width="60">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Subtitles</TextBlock>
+                    </Border>
+                </TabItem.Header>
+                <DockPanel>
+                    <Border
+                        Padding="10"
+                        Background="{StaticResource MainBackgroundColor}"
+                        BorderBrush="{StaticResource MainBorderColor}"
+                        BorderThickness="0,1,0,0"
+                        DockPanel.Dock="Bottom">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Button
+                                Grid.Column="0"
+                                Command="{Binding SaveCommand}"
+                                Content="Save" />
+                            <Button
+                                Grid.Column="2"
+                                Command="{Binding CancelCommand}"
+                                Content="Cancel" />
+                        </Grid>
+                    </Border>
 
-                    <StackPanel Grid.Row="1" Margin="0,0,0,8">
-                        <Label
-                            Grid.Row="1"
-                            Content="Foreign parts only: "
-                            Target="{Binding ElementName=foreignPartsComboBox}" />
-                        <ComboBox x:Name="foreignPartsComboBox" />
-                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <StackPanel Margin="0,0,0,8">
+                            <Label Content="Preferred subtitle format: " Target="{Binding ElementName=subtitleFormatComboBox}" />
+                            <ComboBox
+                                x:Name="subtitleFormatComboBox"
+                                ItemsSource="{Binding Formats}"
+                                SelectedItem="{Binding SelectedFormat}" />
+                        </StackPanel>
 
-                    <StackPanel Grid.Row="2" Margin="0,0,0,8">
-                        <Label Content="For hearing impaired: " Target="{Binding ElementName=hearingImpairedCombobox}" />
-                        <ComboBox x:Name="hearingImpairedCombobox" Grid.Column="2" />
-                    </StackPanel>
+                        <StackPanel Grid.Row="1" Margin="0,0,0,8">
+                            <Label
+                                Grid.Row="1"
+                                Content="Foreign parts only: "
+                                Target="{Binding ElementName=foreignPartsComboBox}" />
+                            <ComboBox x:Name="foreignPartsComboBox" SelectedIndex="{Binding ForeignPartsSelectedIndex, Mode=TwoWay}">
+                                <ComboBoxItem Content="Include" />
+                                <ComboBoxItem Content="Exclude" />
+                                <ComboBoxItem Content="Only" />
+                            </ComboBox>
+                        </StackPanel>
 
-                    <CheckBox
-                        Grid.Row="3"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        Margin="0,5"
-                        HorizontalAlignment="Left"
-                        Content="Only from trusted sources"
-                        IsChecked="{Binding OnlyFromTrustedSources, UpdateSourceTrigger=PropertyChanged}" />
-                    <CheckBox
-                        Grid.Row="4"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        Margin="0,5"
-                        HorizontalAlignment="Left"
-                        Content="Include AI translated"
-                        IsChecked="{Binding IncludeAiTranslated, UpdateSourceTrigger=PropertyChanged}" />
-                    <CheckBox
-                        Grid.Row="5"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        Margin="0,5"
-                        HorizontalAlignment="Left"
-                        Content="Include machine translated"
-                        IsChecked="{Binding IncludeMachineTranslated, UpdateSourceTrigger=PropertyChanged}" />
-                </StackPanel>
+                        <StackPanel Grid.Row="2" Margin="0,0,0,8">
+                            <Label Content="For hearing impaired: " Target="{Binding ElementName=hearingImpairedCombobox}" />
+                            <ComboBox
+                                x:Name="hearingImpairedCombobox"
+                                Grid.Column="2"
+                                SelectedIndex="{Binding HearingImpairedSelectedIndex, Mode=TwoWay}">
+                                <ComboBoxItem Content="Include" />
+                                <ComboBoxItem Content="Exclude" />
+                                <ComboBoxItem Content="Only" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <CheckBox
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Margin="0,5"
+                            HorizontalAlignment="Left"
+                            Content="Only from trusted sources"
+                            IsChecked="{Binding OnlyFromTrustedSources, UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Margin="0,5"
+                            HorizontalAlignment="Left"
+                            Content="Include AI translated"
+                            IsChecked="{Binding IncludeAiTranslated, UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox
+                            Grid.Row="5"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Margin="0,5"
+                            HorizontalAlignment="Left"
+                            Content="Include machine translated"
+                            IsChecked="{Binding IncludeMachineTranslated, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </DockPanel>
             </TabItem>
-            <TabItem Header="Login">
-                <StackPanel
-                    Width="300"
+            <TabItem>
+                <TabItem.Header>
+                    <Border Width="60">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Login</TextBlock>
+                    </Border>
+                </TabItem.Header>
+                <Border
+                    Padding="20"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    Background="{StaticResource MainBackgroundColor}"
+                    BorderBrush="{StaticResource MainBorderColor}"
+                    BorderThickness="1">
+                    <Grid>
+                        <StackPanel Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock Margin="0,0,0,5" HorizontalAlignment="Left">
+                                <Run Text="You are logged in as" />
+                                <Run Foreground="{StaticResource AccentColor}" Text="{Binding Username}" />
+                            </TextBlock>
+                            <TextBlock
+                                Margin="0,0,0,5"
+                                HorizontalAlignment="Left"
+                                Visibility="{Binding User.Level, Converter={StaticResource ObjectToVisibilityConverter}}">
+                                <Run Text="User level:" />
+                                <Run Foreground="{StaticResource AccentColor}" Text="{Binding User.Level}" />
+                            </TextBlock>
+                            <TextBlock Margin="0,0,0,5" HorizontalAlignment="Left">
+                                <Run Text="Daily download limit:" />
+                                <Run Text="{Binding User.AllowedDownloads, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </TextBlock>
+                            <TextBlock Margin="0,0,0,5" HorizontalAlignment="Left">
+                                <Run Text="Remaining downloads:" />
+                                <Run Text="{Binding User.RemainingDownloads, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </TextBlock>
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                HorizontalAlignment="Left"
+                                Visibility="{Binding ResetTimer, Converter={StaticResource ObjectToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <Run Text="Download counter resets in" />
+                                <Run Text="{Binding ResetTimer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </TextBlock>
+                            <Button
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Width="100"
+                                Margin="0,5"
+                                HorizontalAlignment="Center"
+                                Command="{Binding LogoutCommand}"
+                                Content="Logout" />
+                        </StackPanel>
+                        <StackPanel Width="280" Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}">
 
-                    <TextBlock Margin="0,0,0,10" HorizontalAlignment="Center">
-                        Login to OpenSubtitles.com
-                    </TextBlock>
+                            <TextBlock Margin="0,0,0,10" HorizontalAlignment="Center">
+                                Login to OpenSubtitles.com
+                            </TextBlock>
 
-                    <StackPanel Margin="0,0,0,10">
-                        <Label Content="Username: " Target="{Binding ElementName=usernameTextBox}" />
-                        <TextBox x:Name="usernameTextBox" />
-                    </StackPanel>
+                            <StackPanel Margin="0,0,0,10">
+                                <Label Content="Username: " Target="{Binding ElementName=usernameTextBox}" />
+                                <TextBox x:Name="usernameTextBox" Text="{Binding Username}" />
+                            </StackPanel>
 
-                    <StackPanel Grid.Row="1" Margin="0,0,0,10">
-                        <Label
-                            Grid.Row="1"
-                            Content="Password: "
-                            Target="{Binding ElementName=passwordTextBox}" />
-                        <PasswordBox x:Name="passwordTextBox" />
-                    </StackPanel>
+                            <StackPanel Grid.Row="1" Margin="0,0,0,10">
+                                <Label
+                                    Grid.Row="1"
+                                    Content="Password: "
+                                    Target="{Binding ElementName=passwordTextBox}" />
+                                <PasswordBox x:Name="passwordTextBox" PasswordChanged="passwordTextBox_PasswordChanged" />
+                            </StackPanel>
 
-                    <TextBlock
-                        Margin="0,0,0,10"
-                        HorizontalAlignment="Center"
-                        Foreground="Red">
-                        Username/password is incorrect.
-                    </TextBlock>
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                HorizontalAlignment="Center"
+                                Foreground="Red"
+                                Text="{Binding LoginErrorText, Mode=TwoWay}"
+                                Visibility="{Binding LoginErrorText, Converter={StaticResource ObjectToVisibilityConverter}}" />
 
-                    <Button
-                        Grid.Row="3"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        Width="100"
-                        Margin="0,5"
-                        HorizontalAlignment="Center"
-                        Command="{Binding LoginCommand}"
-                        Content="Login" />
-                </StackPanel>
+                            <Button
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Width="100"
+                                Margin="0,5"
+                                HorizontalAlignment="Center"
+                                Click="LoginButton_Click"
+                                Command="{Binding LoginCommand}"
+                                Content="Login" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
             </TabItem>
         </TabControl>
-
     </DockPanel>
 </UserControl>

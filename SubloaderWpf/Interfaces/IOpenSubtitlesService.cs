@@ -17,7 +17,7 @@ public interface IOpenSubtitlesService
 
     Task<User> LoginAsync(string username, string password);
 
-    Task<User> LogoutAsync(string username, string password);
+    Task<bool> LogoutAsync();
 
     Task<IEnumerable<SubtitleEntry>> SearchSubtitlesAsync(
         string token,

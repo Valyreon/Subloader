@@ -6,8 +6,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Converters:ColorBrightnessConverter x:Key="ColorConverter" />
+    <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    <Converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter" />
     <SolidColorBrush x:Key="MainDarkColor" Color="#333" />
     <SolidColorBrush x:Key="MainBorderColor" Color="#a6a6a6" />
+    <SolidColorBrush x:Key="MainBackgroundColor" Color="#e8e8e8" />
     <SolidColorBrush x:Key="LighterBorderColor" Color="#bbb" />
     <SolidColorBrush x:Key="AccentColor" Color="CornflowerBlue" />
     <SolidColorBrush x:Key="MediumLightAccentColor" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.2}" />
@@ -383,5 +386,4 @@
         <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
         <Setter Property="Height" Value="25" />
     </Style>
-
 </ResourceDictionary>

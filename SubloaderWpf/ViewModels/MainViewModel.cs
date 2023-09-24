@@ -23,6 +23,7 @@ public class MainViewModel : ObservableEntity
     private readonly ApplicationSettings _settings;
     private IEnumerable<SubtitleLanguage> allLanguages;
     private string currentPath;
+    private IEnumerable<string> formats;
     private bool isSearchModalOpen;
     private string lastSearchedText;
     private bool searchByHash;
@@ -65,7 +66,6 @@ public class MainViewModel : ObservableEntity
     public bool IsSearchModalOpen
     {
         get => isSearchModalOpen;
-
         set => Set(() => IsSearchModalOpen, ref isSearchModalOpen, value);
     }
 
@@ -101,7 +101,6 @@ public class MainViewModel : ObservableEntity
     public string SearchModalInputText
     {
         get => searchModalInputText;
-
         set => Set(() => SearchModalInputText, ref searchModalInputText, value);
     }
 
@@ -178,8 +177,18 @@ public class MainViewModel : ObservableEntity
 
     public async void GoToSettings()
     {
-        allLanguages ??= await _openSubtitlesService.GetLanguagesAsync();
-        var settingsControl = new SettingsViewModel(_navigator, _settings, allLanguages);
+        if (allLanguages == null || formats == null)
+        {
+            var languageTask = allLanguages == null ? _openSubtitlesService.GetLanguagesAsync() : Task.FromResult(allLanguages);
+            var formatsTask = formats == null ? _openSubtitlesService.GetFormatsAsync() : Task.FromResult(formats);
+
+            await Task.WhenAll(languageTask, formatsTask);
+
+            allLanguages ??= languageTask.Result;
+            formats ??= formatsTask.Result;
+        }
+
+        var settingsControl = new SettingsViewModel(_navigator, _openSubtitlesService, _settings, allLanguages, formats);
         _navigator.GoToControl(settingsControl);
     }
 

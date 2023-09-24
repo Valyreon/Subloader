@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,21 +13,38 @@ namespace SubloaderWpf.ViewModels;
 
 public class SettingsViewModel : ObservableEntity
 {
+    private readonly IOpenSubtitlesService _openSubtitlesService;
     private readonly ApplicationSettings _settings;
     private readonly IEnumerable<SubtitleLanguage> allLanguages;
     private readonly INavigator navigator;
     private bool allowMultipleDownloads;
     private bool alwaysOnTop;
     private bool downloadToSubsFolder;
+    private int foreignPartsSelectedIndex;
+    private int hearingImpairedSelectedIndex;
+    private bool includeAiTranslated;
+    private bool includeMachineTranslated;
+    private bool isLoggedIn;
+    private string loginErrorText;
+    private bool onlyFromTrustedSources;
     private bool overwriteSameLanguageSubs;
+    private string password;
+    private string resetTimer;
     private string searchText;
+    private string selectedFormat;
     private SubtitleLanguage selectedLanguage;
     private SubtitleLanguage selectedWantedLanguage;
 
-    public SettingsViewModel(INavigator navigator, ApplicationSettings settings, IEnumerable<SubtitleLanguage> allLanguages)
+    private User user;
+    private string username;
+
+    public SettingsViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings, IEnumerable<SubtitleLanguage> allLanguages, IEnumerable<string> formats)
     {
         this.navigator = navigator;
+        _openSubtitlesService = openSubtitlesService;
         _settings = settings;
+        Formats = formats;
+        SelectedFormat = _settings.PreferredFormat;
         this.allLanguages = allLanguages.ToList();
         foreach (var x in this.allLanguages)
         {
@@ -45,6 +63,29 @@ public class SettingsViewModel : ObservableEntity
         downloadToSubsFolder = _settings.DownloadToSubsFolder;
         allowMultipleDownloads = _settings.AllowMultipleDownloads;
         overwriteSameLanguageSubs = _settings.OverwriteSameLanguageSub;
+        includeAiTranslated = !_settings.DefaultSearchParameters.IncludeAiTranslated.HasValue || _settings.DefaultSearchParameters.IncludeAiTranslated == true;
+        includeMachineTranslated = _settings.DefaultSearchParameters.IncludeMachineTranslated == true;
+        onlyFromTrustedSources = _settings.DefaultSearchParameters.IncludeOnlyFromTrustedSources == true;
+
+        if (_settings.DefaultSearchParameters.HearingImpaired.HasValue)
+        {
+            hearingImpairedSelectedIndex = (int)_settings.DefaultSearchParameters.HearingImpaired.Value;
+        }
+
+        if (_settings.DefaultSearchParameters.ForeignPartsOnly.HasValue)
+        {
+            foreignPartsSelectedIndex = (int)_settings.DefaultSearchParameters.ForeignPartsOnly.Value;
+        }
+
+        User = _settings.LoggedInUser;
+        Username = _settings.LoggedInUser?.Username;
+        IsLoggedIn = _settings.LoggedInUser != null;
+
+        if (IsLoggedIn && User.ResetTime.HasValue && User.ResetTime.Value > DateTime.UtcNow)
+        {
+            var timeSpan = User.ResetTime.Value - DateTime.UtcNow;
+            ResetTimer = $"{timeSpan.Hours:D2} hours and {timeSpan.Minutes:D2} minutes";
+        }
     }
 
     public ICommand AddCommand => new RelayCommand(Add);
@@ -68,6 +109,7 @@ public class SettingsViewModel : ObservableEntity
     }
 
     public ICommand CancelCommand => new RelayCommand(Cancel);
+
     public ICommand DeleteCommand => new RelayCommand(Delete);
 
     public bool DownloadToSubsFolder
@@ -77,15 +119,78 @@ public class SettingsViewModel : ObservableEntity
         set => Set(() => DownloadToSubsFolder, ref downloadToSubsFolder, value);
     }
 
+    public int ForeignPartsSelectedIndex
+    {
+        get => foreignPartsSelectedIndex;
+        set => Set(() => ForeignPartsSelectedIndex, ref foreignPartsSelectedIndex, value);
+    }
+
+    public IEnumerable<string> Formats { get; }
+
+    public int HearingImpairedSelectedIndex
+    {
+        get => hearingImpairedSelectedIndex;
+        set => Set(() => HearingImpairedSelectedIndex, ref hearingImpairedSelectedIndex, value);
+    }
+
+    public bool IncludeAiTranslated
+    {
+        get => includeAiTranslated;
+        set => Set(() => IncludeAiTranslated, ref includeAiTranslated, value);
+    }
+
+    public bool IncludeMachineTranslated
+    {
+        get => includeMachineTranslated;
+        set => Set(() => IncludeMachineTranslated, ref includeMachineTranslated, value);
+    }
+
     public bool IsLanguageSelected => SelectedLanguage != null;
+
+    public bool IsLoggedIn
+    {
+        get => isLoggedIn;
+
+        set => Set(() => IsLoggedIn, ref isLoggedIn, value);
+    }
+
     public bool IsWantedLanguageSelected => SelectedWantedLanguage != null;
+
     public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
+
+    public ICommand LoginCommand => new RelayCommand(Login);
+
+    public string LoginErrorText
+    {
+        get => loginErrorText;
+        set => Set(() => LoginErrorText, ref loginErrorText, value);
+    }
+
+    public ICommand LogoutCommand => new RelayCommand(Logout);
+
+    public bool OnlyFromTrustedSources
+    {
+        get => onlyFromTrustedSources;
+        set => Set(() => OnlyFromTrustedSources, ref onlyFromTrustedSources, value);
+    }
 
     public bool OverwriteSameLanguageSubs
     {
         get => overwriteSameLanguageSubs;
 
         set => Set(() => OverwriteSameLanguageSubs, ref overwriteSameLanguageSubs, value);
+    }
+
+    public string Password
+    {
+        get => password;
+        set => Set(() => Password, ref password, value);
+    }
+
+    public string ResetTimer
+    {
+        get => resetTimer;
+        set => Set(() => ResetTimer, ref resetTimer, value);
     }
 
     public ICommand SaveCommand => new RelayCommand(SaveAndBack);
@@ -108,6 +213,12 @@ public class SettingsViewModel : ObservableEntity
 
             Set(() => SearchText, ref searchText, value);
         }
+    }
+
+    public string SelectedFormat
+    {
+        get => selectedFormat;
+        set => Set(() => SelectedFormat, ref selectedFormat, value);
     }
 
     public SubtitleLanguage SelectedLanguage
@@ -142,6 +253,15 @@ public class SettingsViewModel : ObservableEntity
         }
     }
 
+    public User User
+    {
+        get => user;
+
+        set => Set(() => User, ref user, value);
+    }
+
+    public string Username { get => username; set => Set(() => Username, ref username, value); }
+
     public ObservableCollection<SubtitleLanguage> WantedLanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
 
     private void Add()
@@ -166,7 +286,41 @@ public class SettingsViewModel : ObservableEntity
             var selected = SelectedWantedLanguage;
             WantedLanguageList.Remove(selected);
             LanguageList.Add(selected);
-            SearchText = SearchText;
+        }
+    }
+
+    private async void Login()
+    {
+        if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+        {
+            LoginErrorText = "Enter your credentials.";
+        }
+
+        try
+        {
+            var result = await _openSubtitlesService.LoginAsync(Username, Password);
+
+            IsLoggedIn = true;
+            _settings.LoggedInUser = result;
+            Password = null;
+            User = result;
+            ShowRemainingDownloads = false;
+            _ = SettingsParser.SaveAsync(_settings);
+        }
+        catch (RequestFailedException ex)
+        {
+            LoginErrorText = ex.Message;
+        }
+    }
+
+    private async void Logout()
+    {
+        if (await _openSubtitlesService.LogoutAsync())
+        {
+            _settings.LoggedInUser = null;
+            IsLoggedIn = false;
+            User = null;
+            _ = SettingsParser.SaveAsync(_settings);
         }
     }
 
@@ -177,6 +331,12 @@ public class SettingsViewModel : ObservableEntity
         _settings.DownloadToSubsFolder = downloadToSubsFolder;
         _settings.OverwriteSameLanguageSub = overwriteSameLanguageSubs;
         _settings.WantedLanguages = WantedLanguageList.ToList();
+        _settings.DefaultSearchParameters.ForeignPartsOnly = (Filter)ForeignPartsSelectedIndex;
+        _settings.DefaultSearchParameters.HearingImpaired = (Filter)HearingImpairedSelectedIndex;
+        _settings.DefaultSearchParameters.IncludeOnlyFromTrustedSources = OnlyFromTrustedSources;
+        _settings.DefaultSearchParameters.IncludeAiTranslated = IncludeAiTranslated;
+        _settings.DefaultSearchParameters.IncludeMachineTranslated = IncludeMachineTranslated;
+        _settings.PreferredFormat = SelectedFormat;
         _ = SettingsParser.SaveAsync(_settings);
         navigator.GoToPreviousControl();
     }

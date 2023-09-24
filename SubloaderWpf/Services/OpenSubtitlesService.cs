@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using Fastenshtein;
 using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
+using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf.Services;
 
@@ -21,7 +23,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
     public async Task<DownloadInfo> DownloadSubtitleAsync(SubtitleEntry subtitle, string videoPath, string savePath = null)
     {
-        using var osClient = new OpenSubtitlesClient(App.APIKey, _settings.LoginToken, _settings.BaseUrl);
+        using var osClient = GetClient();
         var downloadInfo = await osClient.GetDownloadInfoAsync(subtitle.Model.Information.Files.First().FileId.Value);
         var extension = Path.GetExtension(downloadInfo.FileName);
 
@@ -31,18 +33,26 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
         File.WriteAllBytes(destination, await GetRawFileAsync(downloadInfo.Link));
 
+        if (_settings.LoggedInUser != null)
+        {
+            _settings.LoggedInUser.ResetTime = downloadInfo.ResetTimeUtc;
+            _settings.LoggedInUser.RemainingDownloads = downloadInfo.Remaining;
+
+            _ = SettingsParser.SaveAsync(_settings);
+        }
+
         return downloadInfo;
     }
 
     public async Task<IEnumerable<string>> GetFormatsAsync()
     {
-        using var newClient = new OpenSubtitlesClient(App.APIKey, _settings.LoginToken, _settings.BaseUrl);
+        using var newClient = GetClient();
         return await newClient.GetSubtitleFormatsAsync();
     }
 
     public async Task<IEnumerable<SubtitleLanguage>> GetLanguagesAsync()
     {
-        using var newClient = new OpenSubtitlesClient(App.APIKey, _settings.LoginToken, _settings.BaseUrl);
+        using var newClient = GetClient();
         return await newClient.GetLanguagesAsync();
     }
 
@@ -54,7 +64,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
             OnlyMovieHashMatch = searchByHash && !searchByName
         };
 
-        using var newClient = new OpenSubtitlesClient(App.APIKey, _settings.LoginToken, _settings.BaseUrl);
+        using var newClient = GetClient();
 
         var result = await newClient.SearchAsync(filePath, parameters);
 
@@ -66,14 +76,36 @@ public class OpenSubtitlesService : IOpenSubtitlesService
             .Select(i => i.ResultItem);
     }
 
-    public Task<User> LoginAsync(string username, string password)
+    public async Task<User> LoginAsync(string username, string password)
     {
-        throw new System.NotImplementedException();
+        using var client = GetClient();
+        var info = await client.LoginAsync(username, password);
+
+        return new User
+        {
+            Token = info.Token,
+            BaseUrl = info.BaseUrl,
+            AllowedDownloads = info.User.AllowedDownloads,
+            RemainingDownloads = info.User.RemainingDownloads,
+            IsVIP = info.User.Vip,
+            Level = info.User.Level,
+            UserId = info.User.UserId,
+            Username = username
+        };
     }
 
-    public Task<User> LogoutAsync(string username, string password)
+    public async Task<bool> LogoutAsync()
     {
-        throw new System.NotImplementedException();
+        using var client = GetClient();
+
+        try
+        {
+            return await client.LogoutAsync();
+        }
+        catch (RequestFailedException)
+        {
+            return false;
+        }
     }
 
     public async Task<IEnumerable<SubtitleEntry>> SearchSubtitlesAsync(string token, int? episodeNumber = null, int? seasonNumber = null, int? year = null, FileTypeFilter? filter = null, int? imdbId = null, int? parentImdbId = null)
@@ -91,7 +123,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
             ParentImdbId = parentImdbId,
         };
 
-        using var newClient = new OpenSubtitlesClient(App.APIKey, _settings.LoginToken, _settings.BaseUrl);
+        using var newClient = GetClient();
 
         var result = await newClient.SearchAsync(parameters);
 
@@ -106,6 +138,11 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         return response.IsSuccessStatusCode
             ? await response.Content.ReadAsByteArrayAsync()
             : null;
+    }
+
+    private OpenSubtitlesClient GetClient()
+    {
+        return new OpenSubtitlesClient(App.APIKey, _settings.LoggedInUser?.Token, _settings.LoggedInUser?.BaseUrl);
     }
 
     private string GetDestinationPath(string CurrentPath, string languageCode, string format)

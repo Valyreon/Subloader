@@ -23,14 +23,9 @@ public partial class MainControl : UserControl
     {
         var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-        if (files.Length == 1 && File.Exists(files[0]))
-        {
-            e.Effects = DragDropEffects.Link;
-        }
-        else
-        {
-            e.Effects = DragDropEffects.None;
-        }
+        e.Effects = files.Length == 1 && File.Exists(files[0])
+            ? DragDropEffects.Link
+            : DragDropEffects.None;
 
         e.Handled = true;
     }

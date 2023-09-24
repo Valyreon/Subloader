@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using SubloaderWpf.Models;
 
@@ -8,10 +9,13 @@ namespace SubloaderWpf.Utilities;
 
 public static class SettingsParser
 {
+    private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
     public static event Action Saved;
 
     public static async Task SaveAsync(ApplicationSettings settings)
     {
+        await semaphore.WaitAsync();
         try
         {
             var path = GetConfigPath();
@@ -26,6 +30,8 @@ public static class SettingsParser
         catch (Exception)
         {
         }
+
+        semaphore.Release();
     }
 
     public static async Task<ApplicationSettings> LoadAsync()
@@ -37,11 +43,12 @@ public static class SettingsParser
             return new ApplicationSettings();
         }
 
+        await semaphore.WaitAsync();
         var text = await File.ReadAllTextAsync(path);
-
+        semaphore.Release();
         try
         {
-            return JsonSerializer.Deserialize<ApplicationSettings>(text);
+            return JsonSerializer.Deserialize<ApplicationSettings>(text).Initialize();
         }
         catch (Exception)
         {
