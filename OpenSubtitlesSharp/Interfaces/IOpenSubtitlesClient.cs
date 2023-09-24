@@ -21,6 +21,4 @@ public interface IOpenSubtitlesClient
     Task<SearchResult> SearchAsync(SearchParameters searchParameters);
 
     Task<SearchResult> SearchAsync(string filePath, SearchParameters parameters = null);
-
-    SearchParameters ParseFileNameForSearchParameters(string filePath, SearchParameters initialParameters = null);
 }

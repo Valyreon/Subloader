@@ -182,7 +182,7 @@ public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
         return "?" + query;
     }
 
-    public SearchParameters ParseFileNameForSearchParameters(string filePath, SearchParameters initialParameters = null)
+    internal SearchParameters ParseFileNameForSearchParameters(string filePath, SearchParameters initialParameters = null)
     {
         var parameters = initialParameters;
 
