@@ -304,7 +304,6 @@ public class SettingsViewModel : ObservableEntity
             _settings.LoggedInUser = result;
             Password = null;
             User = result;
-            ShowRemainingDownloads = false;
             _ = SettingsParser.SaveAsync(_settings);
         }
         catch (RequestFailedException ex)
