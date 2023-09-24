@@ -17,7 +17,7 @@ public class InstanceMediator
     {
         Task.Run(() =>
         {
-            while (true)
+            while (!tokenSource.IsCancellationRequested)
             {
                 using var server = new NamedPipeServerStream(NamedPipeName);
                 server.WaitForConnection();

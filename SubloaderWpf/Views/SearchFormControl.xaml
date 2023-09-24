@@ -1,0 +1,129 @@
+<UserControl
+    x:Class="SubloaderWpf.Views.SearchFormControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:SubloaderWpf.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:SubloaderWpf.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:SearchFormViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <StackPanel>
+        <TextBox
+            x:Name="searchTextBox"
+            Height="30"
+            Margin="0,0,0,10"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            FontSize="15"
+            Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
+            </TextBox.InputBindings>
+        </TextBox>
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Column="1"
+                Width="80"
+                Margin="5,0">
+                <Label Content="Type: " Target="{Binding ElementName=searchTypeComboBox}" />
+                <ComboBox x:Name="searchTypeComboBox" SelectedIndex="{Binding SearchTypeSelectedIndex, Mode=TwoWay}">
+                    <ComboBoxItem Content="Movie" />
+                    <ComboBoxItem Content="Episode" />
+                    <ComboBoxItem Content="All" />
+                </ComboBox>
+            </StackPanel>
+            <StackPanel
+                Grid.Column="2"
+                Width="50"
+                Margin="5,0"
+                IsEnabled="{Binding AreTvShowFiltersEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Season: " Target="{Binding ElementName=searchSeasonTextBox}" />
+                <TextBox
+                    x:Name="searchSeasonTextBox"
+                    PreviewTextInput="PreviewNumberInput"
+                    Text="{Binding SeasonText}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+            </StackPanel>
+            <StackPanel
+                Grid.Column="3"
+                Width="50"
+                Margin="5,0"
+                IsEnabled="{Binding AreTvShowFiltersEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Episode: " Target="{Binding ElementName=searchEpisodeTextBox}" />
+                <TextBox
+                    x:Name="searchEpisodeTextBox"
+                    PreviewTextInput="PreviewNumberInput"
+                    Text="{Binding EpisodeText}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+            </StackPanel>
+            <StackPanel
+                Grid.Column="4"
+                Width="60"
+                Margin="5,0">
+                <Label Content="Year: " Target="{Binding ElementName=searchYearTextBox}" />
+                <TextBox
+                    x:Name="searchYearTextBox"
+                    PreviewTextInput="PreviewNumberInput"
+                    Text="{Binding YearText}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+            </StackPanel>
+        </Grid>
+        <Grid Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Column="1"
+                Width="80"
+                Margin="5,0">
+                <Label Content="IMDb ID: " Target="{Binding ElementName=searchImdbIdTextBox}" />
+                <TextBox
+                    x:Name="searchImdbIdTextBox"
+                    PreviewTextInput="PreviewNumberInput"
+                    Text="{Binding ImdbIdText}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+            </StackPanel>
+            <StackPanel
+                Grid.Column="2"
+                Width="88"
+                Margin="5,0"
+                IsEnabled="{Binding AreTvShowFiltersEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <Label Content="Parent IMDb ID: " Target="{Binding ElementName=searchParentImdbIdTextBox}" />
+                <TextBox
+                    x:Name="searchParentImdbIdTextBox"
+                    PreviewTextInput="PreviewNumberInput"
+                    Text="{Binding ParentImdbIdText}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,7 +23,16 @@ public class OpenSubtitlesService : IOpenSubtitlesService
     public async Task<DownloadInfo> DownloadSubtitleAsync(SubtitleEntry subtitle, string videoPath, string savePath = null)
     {
         using var osClient = GetClient();
-        var downloadInfo = await osClient.GetDownloadInfoAsync(subtitle.Model.Information.Files.First().FileId.Value);
+
+        var fileId = subtitle.Model.Information.Files.First().FileId.Value;
+
+        var downloadParameters = new DownloadParameters
+        {
+            FileId = fileId,
+            SubFormat = _settings.PreferredFormat
+        };
+
+        var downloadInfo = await osClient.GetDownloadInfoAsync(downloadParameters);
         var extension = Path.GetExtension(downloadInfo.FileName);
 
         var destination = string.IsNullOrWhiteSpace(savePath)

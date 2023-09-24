@@ -339,9 +339,9 @@
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border
                         x:Name="textBoxBorder"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Background="White"
+                        BorderBrush="{StaticResource LighterBorderColor}"
+                        BorderThickness="1"
                         SnapsToDevicePixels="True">
                         <ScrollViewer
                             x:Name="PART_ContentHost"

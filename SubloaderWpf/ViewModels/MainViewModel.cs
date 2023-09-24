@@ -28,7 +28,6 @@ public class MainViewModel : ObservableEntity
     private string lastSearchedText;
     private bool searchByHash;
     private bool searchByName;
-    private string searchModalInputText;
     private string statusText;
 
     public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
@@ -41,12 +40,13 @@ public class MainViewModel : ObservableEntity
 
         StatusText = "Open a video file.";
         CurrentPath = (Application.Current as App).PathArg;
+        SearchForm = new SearchFormViewModel(Search);
 
         App.InstanceMediator.ReceivedArgument += arg => CurrentPath = arg;
     }
 
     public ICommand ChooseFileCommand => new RelayCommand(ChooseFile);
-    public ICommand CloseSearchModalCommand => new RelayCommand(() => { IsSearchModalOpen = false; SearchModalInputText = lastSearchedText; });
+    public ICommand CloseSearchModalCommand => new RelayCommand(() => { IsSearchModalOpen = false; SearchForm.Text = lastSearchedText; });
 
     public string CurrentPath
     {
@@ -96,13 +96,9 @@ public class MainViewModel : ObservableEntity
         }
     }
 
-    public ICommand SearchCommand => new RelayCommand(Search);
+    public SearchFormViewModel SearchForm { get; set; }
 
-    public string SearchModalInputText
-    {
-        get => searchModalInputText;
-        set => Set(() => SearchModalInputText, ref searchModalInputText, value);
-    }
+    public ICommand SearchCommand => new RelayCommand(Search);
 
     public SubtitleEntry SelectedItem { get; set; }
     public ICommand SettingsCommand => new RelayCommand(GoToSettings);
@@ -198,7 +194,7 @@ public class MainViewModel : ObservableEntity
         {
             await Task.Run(() => ProcessFileAsync());
         }
-        else if (!string.IsNullOrWhiteSpace(SearchModalInputText))
+        else if (!string.IsNullOrWhiteSpace(SearchForm.Text))
         {
             Search();
         }
@@ -208,19 +204,31 @@ public class MainViewModel : ObservableEntity
     {
         IsSearchModalOpen = false;
         CurrentPath = null;
-        if (string.IsNullOrWhiteSpace(SearchModalInputText))
+        if (string.IsNullOrWhiteSpace(SearchForm.Text) &&
+            !SearchForm.Episode.HasValue &&
+            !SearchForm.Season.HasValue &&
+            !SearchForm.Year.HasValue &&
+            !SearchForm.ImdbId.HasValue &&
+            !SearchForm.ParentImdbId.HasValue)
         {
             return;
         }
 
-        lastSearchedText = SearchModalInputText;
+        lastSearchedText = SearchForm.Text;
 
         Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
         StatusText = "Searching subtitles...";
         Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
         await RunAndHandleAsync(async () =>
         {
-            var results = await _openSubtitlesService.SearchSubtitlesAsync(SearchModalInputText);
+            var results = await _openSubtitlesService.SearchSubtitlesAsync(
+                SearchForm.Text,
+                SearchForm.Episode,
+                SearchForm.Season,
+                SearchForm.Year,
+                SearchForm.Type,
+                SearchForm.ImdbId,
+                SearchForm.ParentImdbId);
             await ProcessResults(results);
         });
     }

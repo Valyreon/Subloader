@@ -174,7 +174,7 @@ public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
     {
         var query = HttpUtility.ParseQueryString(string.Empty);
 
-        foreach (var kvp in paramsDict)
+        foreach (var kvp in paramsDict.OrderBy(c => c.Key))
         {
             query.Add(kvp.Key, kvp.Value);
         }

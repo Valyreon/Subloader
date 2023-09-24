@@ -9,7 +9,7 @@
                 x:Name="Border"
                 Grid.ColumnSpan="2"
                 Background="Transparent"
-                BorderBrush="{StaticResource MainBorderColor}"
+                BorderBrush="{StaticResource LighterBorderColor}"
                 BorderThickness="1"
                 CornerRadius="0" />
             <Image

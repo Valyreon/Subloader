@@ -1,12 +1,16 @@
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using SubloaderWpf.Extensions;
 using SubloaderWpf.ViewModels;
 
 namespace SubloaderWpf.Views;
 
 public partial class MainControl : UserControl
 {
+    private TextBox searchTextBoxChild;
+
     public MainControl()
     {
         InitializeComponent();
@@ -30,12 +34,19 @@ public partial class MainControl : UserControl
         e.Handled = true;
     }
 
-    private void searchModal_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    private async void searchModal_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if(e.NewValue is bool visibility && visibility)
+        if (e.NewValue is bool visibility && visibility)
         {
-            searchTextBox.SelectAll();
-            searchTextBox.Focus();
+            // seems like focus will not work if the control
+            // is not drawn (finished processing the visibility change
+            await Task.Delay(15);
+            searchTextBoxChild.Focus();
         }
+    }
+
+    private void TheControl_Loaded(object sender, RoutedEventArgs e)
+    {
+        searchTextBoxChild = searchFormContent.GetFirstDescendantOfType<TextBox>();
     }
 }
