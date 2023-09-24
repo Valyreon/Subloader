@@ -72,30 +72,6 @@ public class MainViewModel : ObservableEntity
     public ICommand OpenSearchModalCommand => new RelayCommand(() => IsSearchModalOpen = true);
     public ICommand RefreshCommand => new RelayCommand(Refresh);
 
-    public bool SearchByHash
-    {
-        get => searchByHash;
-
-        set
-        {
-            Set(() => SearchByHash, ref searchByHash, value);
-            _settings.IsByHashChecked = value;
-            _ = SettingsParser.SaveAsync(_settings);
-        }
-    }
-
-    public bool SearchByName
-    {
-        get => searchByName;
-
-        set
-        {
-            Set(() => SearchByName, ref searchByName, value);
-            _settings.IsByNameChecked = value;
-            _ = SettingsParser.SaveAsync(_settings);
-        }
-    }
-
     public SearchFormViewModel SearchForm { get; set; }
 
     public ICommand SearchCommand => new RelayCommand(Search);
@@ -240,7 +216,7 @@ public class MainViewModel : ObservableEntity
         Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
         await RunAndHandleAsync(async () =>
         {
-            var results = await _openSubtitlesService.GetSubtitlesForFileAsync(CurrentPath, SearchByName, SearchByHash);
+            var results = await _openSubtitlesService.GetSubtitlesForFileAsync(CurrentPath);
             await ProcessResults(results);
         });
     }

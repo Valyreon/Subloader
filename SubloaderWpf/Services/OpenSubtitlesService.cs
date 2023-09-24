@@ -64,24 +64,39 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         return await newClient.GetLanguagesAsync();
     }
 
-    public async Task<IEnumerable<SubtitleEntry>> GetSubtitlesForFileAsync(string filePath, bool searchByName, bool searchByHash)
+    public async Task<IEnumerable<SubtitleEntry>> GetSubtitlesForFileAsync(string filePath)
     {
-        var parameters = _settings.DefaultSearchParameters with
+        using var hashClient = GetClient();
+        using var nameClient = GetClient();
+
+        var parametersForHashOnly = _settings.DefaultSearchParameters with
         {
             Languages = _settings.WantedLanguages.Select(l => l.Code),
-            OnlyMovieHashMatch = searchByHash && !searchByName
+            OnlyMovieHashMatch = true
         };
 
-        using var newClient = GetClient();
+        var parametersForByNameOnly = nameClient.ParseFileNameForSearchParameters(filePath, _settings.DefaultSearchParameters with
+        {
+            Languages = _settings.WantedLanguages.Select(l => l.Code),
+            OnlyMovieHashMatch = false
+        });
+        parametersForByNameOnly.MovieHash = null;
 
-        var result = await newClient.SearchAsync(filePath, parameters);
+        var resultHashTask = hashClient.SearchAsync(filePath, parametersForHashOnly);
+        var resultNameTask = nameClient.SearchAsync(parametersForByNameOnly);
+
+        await Task.WhenAll(resultHashTask, resultNameTask);
+
+        var hashResults = resultHashTask.Result.Items.Select(s => new SubtitleEntry(s, _settings.WantedLanguages, true));
+        var nameResults = resultNameTask.Result.Items.Select(s => new SubtitleEntry(s, _settings.WantedLanguages, false));
 
         // order by levenshtein distance
         var laven = new Levenshtein(Path.GetFileNameWithoutExtension(filePath));
-        return result.Items.Select(i => new SubtitleEntry(i, _settings.WantedLanguages))
+        return hashResults.Concat(nameResults)
             .Select(ResultItem => (ResultItem, laven.DistanceFrom(ResultItem.Name)))
             .OrderBy(i => i.Item2)
-            .Select(i => i.ResultItem);
+            .Select(i => i.ResultItem)
+            .DistinctBy(i => i.Model.Id);
     }
 
     public async Task<User> LoginAsync(string username, string password)
@@ -135,7 +150,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
         var result = await newClient.SearchAsync(parameters);
 
-        return result.Items.Select(c => new SubtitleEntry(c, _settings.WantedLanguages));
+        return result.Items.Select(c => new SubtitleEntry(c, _settings.WantedLanguages, false));
     }
 
     private static async Task<byte[]> GetRawFileAsync(string url)
