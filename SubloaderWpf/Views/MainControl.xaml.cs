@@ -59,7 +59,7 @@ public partial class MainControl : UserControl
     {
         retryButton.IsEnabled = false;
         retryButton.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
-        await Task.Delay(5000);
+        await Task.Delay(2500);
         retryButton.IsEnabled = true;
     }
 }

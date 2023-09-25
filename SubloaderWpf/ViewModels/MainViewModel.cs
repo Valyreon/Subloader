@@ -237,9 +237,12 @@ public class MainViewModel : ObservableEntity
             !SearchForm.ImdbId.HasValue &&
             !SearchForm.ParentImdbId.HasValue)
         {
+            StatusText = "Not enough parameters";
             return;
         }
 
+        IsSearchModalOpen = false;
+        CurrentPath = null;
         lastSearchedText = SearchForm.Text;
 
         Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
@@ -320,7 +323,7 @@ public class MainViewModel : ObservableEntity
         try
         {
             using var ping = new Ping();
-            var reply = await ping.SendPingAsync("api.opensubtitles.com");
+            var reply = await ping.SendPingAsync("api.opensubtitles.com", 2500);
 
             if (reply != null && reply.Status == IPStatus.Success)
             {
