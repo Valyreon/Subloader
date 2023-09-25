@@ -118,6 +118,9 @@ public class SubtitleInformation
     [JsonPropertyName("foreign_parts_only")]
     public bool? ForeignPartsOnly { get; set; }
 
+    [JsonPropertyName("moviehash_match")]
+    public bool? IsHashMatch { get; set; }
+
     [JsonPropertyName("fps")]
     public double Fps { get; set; }
 

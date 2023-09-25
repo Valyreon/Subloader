@@ -64,15 +64,14 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         return await newClient.GetLanguagesAsync();
     }
 
-    public async Task<IEnumerable<SubtitleEntry>> GetSubtitlesForFileAsync(string filePath, bool searchByName, bool searchByHash)
+    public async Task<IEnumerable<SubtitleEntry>> GetSubtitlesForFileAsync(string filePath)
     {
+        using var newClient = GetClient();
+
         var parameters = _settings.DefaultSearchParameters with
         {
-            Languages = _settings.WantedLanguages.Select(l => l.Code),
-            OnlyMovieHashMatch = searchByHash && !searchByName
+            Languages = _settings.WantedLanguages.Select(l => l.Code)
         };
-
-        using var newClient = GetClient();
 
         var result = await newClient.SearchAsync(filePath, parameters);
 

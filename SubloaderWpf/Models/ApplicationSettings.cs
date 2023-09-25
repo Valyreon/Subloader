@@ -11,8 +11,6 @@ public class ApplicationSettings
     public bool AllowMultipleDownloads { get; set; }
     public SearchParameters DefaultSearchParameters { get; set; } = new();
     public bool DownloadToSubsFolder { get; set; }
-    public bool IsByHashChecked { get; set; } = true;
-    public bool IsByNameChecked { get; set; }
     public bool KeepWindowOnTop { get; set; } = true;
     public User LoggedInUser { get; set; }
     public bool OverwriteSameLanguageSub { get; set; }

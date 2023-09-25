@@ -14,6 +14,7 @@ public class SubtitleEntry : ObservableEntity
     }
 
     public string Language { get; }
+    public bool IsHashMatch => Model.Information.IsHashMatch == true;
     public Subtitle Model { get; }
     public string Name => Model.Information.Release;
 }

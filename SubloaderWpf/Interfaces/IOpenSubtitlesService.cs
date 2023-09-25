@@ -13,7 +13,7 @@ public interface IOpenSubtitlesService
 
     Task<IEnumerable<SubtitleLanguage>> GetLanguagesAsync();
 
-    Task<IEnumerable<SubtitleEntry>> GetSubtitlesForFileAsync(string filePath, bool searchByName, bool searchByHash);
+    Task<IEnumerable<SubtitleEntry>> GetSubtitlesForFileAsync(string filePath);
 
     Task<User> LoginAsync(string username, string password);
 

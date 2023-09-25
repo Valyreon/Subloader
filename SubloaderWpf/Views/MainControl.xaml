@@ -98,7 +98,7 @@
                     <ColumnDefinition Width="10" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="5" />
+                    <RowDefinition Height="10" />
                     <RowDefinition Height="30" />
                     <RowDefinition Height="10" />
                 </Grid.RowDefinitions>
@@ -123,30 +123,6 @@
                     Grid.Column="7"
                     Command="{Binding SettingsCommand}"
                     Content="Settings" />
-            </Grid>
-            <Grid
-                Grid.Row="2"
-                Margin="0,8,0,5"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                DockPanel.Dock="Bottom">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="15" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <CheckBox
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Content="Search by name"
-                    IsChecked="{Binding SearchByName, UpdateSourceTrigger=PropertyChanged}" />
-                <CheckBox
-                    Grid.Row="1"
-                    Grid.Column="3"
-                    Content="Search by hash"
-                    IsChecked="{Binding SearchByHash, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
             <Border
                 Grid.Row="1"
@@ -187,6 +163,21 @@
                         Header="Language"
                         SortDirection="Ascending" />
                 </DataGrid.Columns>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsHashMatch}" Value="True">
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </DataTrigger>
+                            <Trigger Property="AlternationIndex" Value="1">
+                                <Setter Property="Background" Value="#f5f5f5" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource LighterAccentColor}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
             </DataGrid>
         </DockPanel>
     </Grid>

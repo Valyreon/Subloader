@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -26,8 +27,6 @@ public class MainViewModel : ObservableEntity
     private IEnumerable<string> allFormats;
     private bool isSearchModalOpen;
     private string lastSearchedText;
-    private bool searchByHash;
-    private bool searchByName;
     private string statusText;
 
     public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
@@ -35,8 +34,6 @@ public class MainViewModel : ObservableEntity
         _navigator = navigator;
         _openSubtitlesService = openSubtitlesService;
         _settings = settings;
-        searchByHash = _settings.IsByHashChecked;
-        searchByName = _settings.IsByNameChecked;
 
         StatusText = "Open a video file.";
         CurrentPath = (Application.Current as App).PathArg;
@@ -71,30 +68,6 @@ public class MainViewModel : ObservableEntity
 
     public ICommand OpenSearchModalCommand => new RelayCommand(() => IsSearchModalOpen = true);
     public ICommand RefreshCommand => new RelayCommand(Refresh);
-
-    public bool SearchByHash
-    {
-        get => searchByHash;
-
-        set
-        {
-            Set(() => SearchByHash, ref searchByHash, value);
-            _settings.IsByHashChecked = value;
-            _ = SettingsParser.SaveAsync(_settings);
-        }
-    }
-
-    public bool SearchByName
-    {
-        get => searchByName;
-
-        set
-        {
-            Set(() => SearchByName, ref searchByName, value);
-            _settings.IsByNameChecked = value;
-            _ = SettingsParser.SaveAsync(_settings);
-        }
-    }
 
     public SearchFormViewModel SearchForm { get; set; }
 
@@ -223,6 +196,11 @@ public class MainViewModel : ObservableEntity
 
     public async void Search()
     {
+        if(!await IsInternetConnected())
+        {
+            MessageBox.Show("Couldn't access internet.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
         IsSearchModalOpen = false;
         CurrentPath = null;
         if (string.IsNullOrWhiteSpace(SearchForm.Text) &&
@@ -261,7 +239,7 @@ public class MainViewModel : ObservableEntity
         Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
         await RunAndHandleAsync(async () =>
         {
-            var results = await _openSubtitlesService.GetSubtitlesForFileAsync(CurrentPath, SearchByName, SearchByHash);
+            var results = await _openSubtitlesService.GetSubtitlesForFileAsync(CurrentPath);
             await ProcessResults(results);
         });
     }
@@ -307,5 +285,24 @@ public class MainViewModel : ObservableEntity
                 SystemSounds.Hand.Play();
             }
         });
+    }
+
+    public static async Task<bool> IsInternetConnected()
+    {
+        try
+        {
+            using var ping = new Ping();
+            var reply = await ping.SendPingAsync("api.opensubtitles.com");
+
+            if (reply != null && reply.Status == IPStatus.Success)
+            {
+                return true; // Internet connection is available.
+            }
+        }
+        catch (PingException)
+        {
+        }
+
+        return false; // No internet connection.
     }
 }
