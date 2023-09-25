@@ -44,7 +44,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Background="White"
-                            BorderBrush="{StaticResource MainBorderColor}"
+                            BorderBrush="{StaticResource LighterBorderColor}"
                             BorderThickness="1">
                             <Image
                                 x:Name="optionMark"
@@ -108,6 +108,7 @@
         <Setter Property="CanUserReorderColumns" Value="False" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CanUserResizeColumns" Value="True" />
+        <Setter Property="CanUserResizeRows" Value="False" />
         <Setter Property="GridLinesVisibility" Value="All" />
         <Setter Property="HeadersVisibility" Value="Column" />
         <Style.Resources>
@@ -289,7 +290,6 @@
     </Style>
 
     <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
-        <Setter Property="Foreground" Value="{DynamicResource LighterAccentColor}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Height" Value="30" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
@@ -300,9 +300,8 @@
                         x:Name="borderTemplate"
                         HorizontalAlignment="Stretch"
                         Background="White"
-                        BorderBrush="{DynamicResource MainBorderColor}"
-                        BorderThickness="1"
-                        TextBlock.Foreground="{DynamicResource MainDarkColor}">
+                        BorderBrush="{StaticResource LighterBorderColor}"
+                        BorderThickness="1">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -321,8 +320,9 @@
                             <Setter TargetName="borderTemplate" Property="Border.BorderThickness" Value="2" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="borderTemplate" Property="TextBlock.Foreground" Value="#888" />
-                            <Setter TargetName="borderTemplate" Property="Background" Value="#efefef" />
+                            <Setter Property="Foreground" Value="#888" />
+                            <Setter Property="Focusable" Value="False" />
+                            <Setter TargetName="borderTemplate" Property="Background" Value="#e7e7e7" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -375,11 +375,6 @@
     <Style TargetType="{x:Type Label}">
         <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
         <Setter Property="Padding" Value="0,0,0,2" />
-    </Style>
-
-    <Style TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
-        <Setter Property="TextWrapping" Value="WrapWithOverflow" />
     </Style>
 
     <Style TargetType="{x:Type ComboBox}">

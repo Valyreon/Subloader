@@ -28,6 +28,7 @@ public class MainViewModel : ObservableEntity
     private bool isSearchModalOpen;
     private string lastSearchedText;
     private string statusText;
+    private bool isConnectionModalOpen;
 
     public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
     {
@@ -60,12 +61,36 @@ public class MainViewModel : ObservableEntity
 
     public ICommand DownloadCommand => new RelayCommand(Download);
 
+    public ICommand CheckConnectionCommand => new RelayCommand(StartCheckConnectionTask);
+
+    public void StartCheckConnectionTask()
+    {
+        _ = Task.Run(async () =>
+        {
+            var pingSuccess = await CanConnectToOsAPI();
+
+            if(pingSuccess)
+            {
+                Application.Current.Dispatcher.Invoke(() => IsConnectionModalOpen = false);
+            }
+            else
+            {
+                Application.Current.Dispatcher.Invoke(() => IsConnectionModalOpen = true);
+            }
+        });
+    }
+
     public bool IsSearchModalOpen
     {
         get => isSearchModalOpen;
         set => Set(() => IsSearchModalOpen, ref isSearchModalOpen, value);
     }
 
+    public bool IsConnectionModalOpen
+    {
+        get => isConnectionModalOpen;
+        set => Set(() => IsConnectionModalOpen, ref isConnectionModalOpen, value);
+    }
     public ICommand OpenSearchModalCommand => new RelayCommand(() => IsSearchModalOpen = true);
     public ICommand RefreshCommand => new RelayCommand(Refresh);
 
@@ -146,6 +171,11 @@ public class MainViewModel : ObservableEntity
 
     public async void GoToSettings()
     {
+        if (!await CanConnectToOsAPI())
+        {
+            IsConnectionModalOpen = true;
+        }
+
         if (allLanguages == null)
         {
             var languagesFromFile = await ApplicationDataReader.LoadLanguagesAsync();
@@ -196,10 +226,7 @@ public class MainViewModel : ObservableEntity
 
     public async void Search()
     {
-        if(!await IsInternetConnected())
-        {
-            MessageBox.Show("Couldn't access internet.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        StartCheckConnectionTask();
 
         IsSearchModalOpen = false;
         CurrentPath = null;
@@ -234,6 +261,7 @@ public class MainViewModel : ObservableEntity
 
     private async void ProcessFileAsync()
     {
+        StartCheckConnectionTask();
         Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
         StatusText = "Searching subtitles...";
         Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
@@ -287,7 +315,7 @@ public class MainViewModel : ObservableEntity
         });
     }
 
-    public static async Task<bool> IsInternetConnected()
+    public static async Task<bool> CanConnectToOsAPI()
     {
         try
         {
