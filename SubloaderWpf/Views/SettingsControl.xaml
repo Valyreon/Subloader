@@ -365,22 +365,5 @@
                 </Grid>
             </Border>
         </TabItem>
-        <TabItem>
-            <TabItem.Header>
-                <Border Width="60">
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">About</TextBlock>
-                </Border>
-            </TabItem.Header>
-
-            <Border
-                Padding="20"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Background="{StaticResource MainBackgroundColor}"
-                BorderBrush="{StaticResource MainBorderColor}"
-                BorderThickness="1">
-                <StackPanel />
-            </Border>
-        </TabItem>
     </TabControl>
 </UserControl>

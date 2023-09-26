@@ -7,6 +7,7 @@
     mc:Ignorable="d">
     <Converters:ColorBrightnessConverter x:Key="ColorConverter" />
     <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    <Converters:ReverseBoolConverter x:Key="ReverseBoolConverter" />
     <Converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter" />
     <SolidColorBrush x:Key="MainDarkColor" Color="#333" />
     <SolidColorBrush x:Key="MainBorderColor" Color="#a6a6a6" />
@@ -27,14 +28,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type CheckBox}">
-                    <Grid
+                    <StackPanel
                         x:Name="templateRoot"
                         Background="Transparent"
+                        Orientation="Horizontal"
                         SnapsToDevicePixels="True">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
                         <Border
                             x:Name="checkBoxBorder"
                             Grid.Column="0"
@@ -69,10 +67,10 @@
                             x:Name="contentPresenter"
                             Grid.Column="1"
                             Margin="3,0,0,0"
-                            HorizontalAlignment="Center"
+                            HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             RecognizesAccessKey="True" />
-                    </Grid>
+                    </StackPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter TargetName="checkBoxBorder" Property="Background" Value="{StaticResource LighterAccentColor}" />
@@ -320,9 +318,9 @@
                             <Setter TargetName="borderTemplate" Property="Border.BorderThickness" Value="2" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="#888" />
+                            <Setter Property="Foreground" Value="#666" />
                             <Setter Property="Focusable" Value="False" />
-                            <Setter TargetName="borderTemplate" Property="Background" Value="#e7e7e7" />
+                            <Setter TargetName="borderTemplate" Property="Background" Value="#ddd" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

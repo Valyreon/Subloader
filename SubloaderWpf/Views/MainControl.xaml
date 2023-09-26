@@ -13,7 +13,6 @@
     Background="#e8e8e8"
     DragDrop.DragOver="OnDragOverFile"
     DragDrop.Drop="OnDropFile"
-    Focusable="False"
     FontFamily="Segoe UI Semibold"
     Loaded="TheControl_Loaded"
     RenderOptions.BitmapScalingMode="HighQuality"
@@ -159,7 +158,8 @@
                     Grid.Row="1"
                     Grid.Column="5"
                     Command="{Binding RefreshCommand}"
-                    Content="Refresh" />
+                    Content="Refresh"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource ReverseBoolConverter}}" />
                 <Button
                     Grid.Row="1"
                     Grid.Column="7"

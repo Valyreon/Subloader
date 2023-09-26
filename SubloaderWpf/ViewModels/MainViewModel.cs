@@ -29,6 +29,7 @@ public class MainViewModel : ObservableEntity
     private string lastSearchedText;
     private string statusText;
     private bool isConnectionModalOpen;
+    private bool isLoading;
 
     public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
     {
@@ -84,6 +85,12 @@ public class MainViewModel : ObservableEntity
     {
         get => isSearchModalOpen;
         set => Set(() => IsSearchModalOpen, ref isSearchModalOpen, value);
+    }
+
+    public bool IsLoading
+    {
+        get => isLoading;
+        set => Set(() => IsLoading, ref isLoading, value);
     }
 
     public bool IsConnectionModalOpen
@@ -212,11 +219,11 @@ public class MainViewModel : ObservableEntity
         _navigator.GoToControl(settingsControl);
     }
 
-    public async void Refresh()
+    public void Refresh()
     {
         if (CurrentPath != null)
         {
-            await Task.Run(() => ProcessFileAsync());
+            ProcessFileAsync();
         }
         else if (!string.IsNullOrWhiteSpace(SearchForm.Text))
         {
@@ -226,6 +233,12 @@ public class MainViewModel : ObservableEntity
 
     public async void Search()
     {
+        if (IsLoading)
+        {
+            return;
+        }
+        IsLoading = true;
+
         StartCheckConnectionTask();
 
         IsSearchModalOpen = false;
@@ -264,6 +277,12 @@ public class MainViewModel : ObservableEntity
 
     private async void ProcessFileAsync()
     {
+        if(IsLoading)
+        {
+            return;
+        }
+        IsLoading = true;
+
         StartCheckConnectionTask();
         Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
         StatusText = "Searching subtitles...";
@@ -294,6 +313,7 @@ public class MainViewModel : ObservableEntity
             }
 
             Application.Current.Dispatcher.Invoke(() => StatusText = "Use double-click to download.");
+            Application.Current.Dispatcher.Invoke(() => IsLoading = false);
         }
     }
 
