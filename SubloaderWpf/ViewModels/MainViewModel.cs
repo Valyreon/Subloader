@@ -257,6 +257,7 @@ public class MainViewModel : ObservableEntity
             !SearchForm.ParentImdbId.HasValue)
         {
             StatusText = "Not enough parameters";
+            IsLoading = false;
             return;
         }
 
