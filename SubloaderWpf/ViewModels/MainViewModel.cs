@@ -13,7 +13,6 @@ using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
 using SubloaderWpf.Mvvm;
-using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf.ViewModels;
 
@@ -22,9 +21,7 @@ public class MainViewModel : ObservableEntity
     private readonly INavigator _navigator;
     private readonly IOpenSubtitlesService _openSubtitlesService;
     private readonly ApplicationSettings _settings;
-    private IEnumerable<SubtitleLanguage> allLanguages;
     private string currentPath;
-    private IEnumerable<string> allFormats;
     private bool isSearchModalOpen;
     private string lastSearchedText;
     private string statusText;
@@ -104,6 +101,7 @@ public class MainViewModel : ObservableEntity
 
     public SearchFormViewModel SearchForm { get; set; }
 
+
     public ICommand SearchCommand => new RelayCommand(Search);
 
     public SubtitleEntry SelectedItem { get; set; }
@@ -181,46 +179,11 @@ public class MainViewModel : ObservableEntity
         });
     }
 
-    public async void GoToSettings()
+    public void GoToSettings()
     {
-        if (!await CanConnectToOsAPI())
-        {
-            IsConnectionModalOpen = true;
-        }
+        StartCheckConnectionTask();
 
-        if (allLanguages == null)
-        {
-            var languagesFromFile = await ApplicationDataReader.LoadLanguagesAsync();
-
-            if (languagesFromFile == null)
-            {
-                var fromAPI = await _openSubtitlesService.GetLanguagesAsync();
-                _ = ApplicationDataReader.SaveLanguagesAsync(fromAPI);
-                allLanguages = fromAPI;
-            }
-            else
-            {
-                allLanguages = languagesFromFile;
-            }
-        }
-
-        if (allFormats == null)
-        {
-            var formatsFromFile = await ApplicationDataReader.LoadFormatsAsync();
-
-            if (formatsFromFile == null)
-            {
-                var fromAPI = await _openSubtitlesService.GetFormatsAsync();
-                _ = ApplicationDataReader.SaveFormatsAsync(fromAPI);
-                allFormats = fromAPI;
-            }
-            else
-            {
-                allFormats = formatsFromFile;
-            }
-        }
-
-        var settingsControl = new SettingsViewModel(_navigator, _openSubtitlesService, _settings, allLanguages, allFormats);
+        var settingsControl = new SettingsViewModel(_navigator, _openSubtitlesService, _settings);
         _navigator.GoToControl(settingsControl);
     }
 

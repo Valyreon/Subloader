@@ -8,6 +8,9 @@ using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
 using SubloaderWpf.Mvvm;
 using SubloaderWpf.Utilities;
+using SubloaderWpf.Views;
+using System.Resources;
+using System.Text.Json;
 
 namespace SubloaderWpf.ViewModels;
 
@@ -15,7 +18,6 @@ public class SettingsViewModel : ObservableEntity
 {
     private readonly IOpenSubtitlesService _openSubtitlesService;
     private readonly ApplicationSettings _settings;
-    private readonly IEnumerable<SubtitleLanguage> allLanguages;
     private readonly INavigator navigator;
     private bool allowMultipleDownloads;
     private bool alwaysOnTop;
@@ -37,25 +39,40 @@ public class SettingsViewModel : ObservableEntity
 
     private User user;
     private string username;
+    private ObservableCollection<SubtitleLanguage> languageList = new();
+    private bool isLoggingIn;
+    private readonly IEnumerable<SubtitleLanguage> allLanguages;
 
-    public SettingsViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings, IEnumerable<SubtitleLanguage> allLanguages, IEnumerable<string> formats)
+    public SettingsViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
     {
         this.navigator = navigator;
         _openSubtitlesService = openSubtitlesService;
         _settings = settings;
-        Formats = formats;
         SelectedFormat = _settings.PreferredFormat;
-        this.allLanguages = allLanguages.ToList();
-        foreach (var x in this.allLanguages)
-        {
-            LanguageList.Add(x);
-        }
 
-        if (_settings.WantedLanguages != null)
+        Formats = new List<string> { "srt", "sub", "mpl", "webvtt", "dfxp", "txt" };
+
+        var manager = new ResourceManager("SubloaderWpf.Resources.Resources", typeof(TheWindow).Assembly);
+
+        allLanguages = JsonSerializer.Deserialize<IEnumerable<SubtitleLanguage>>(manager.GetString("LanguagesList"));
+
+        if (_settings.WantedLanguages != null && _settings.WantedLanguages.Any())
         {
             foreach (var x in _settings.WantedLanguageCodes)
             {
                 WantedLanguageList.Add(allLanguages.SingleOrDefault(l => l.Code == x));
+            }
+
+            foreach (var x in allLanguages.Except(WantedLanguageList))
+            {
+                LanguageList.Add(x);
+            }
+        }
+        else
+        {
+            foreach (var x in allLanguages)
+            {
+                LanguageList.Add(x);
             }
         }
 
@@ -108,6 +125,12 @@ public class SettingsViewModel : ObservableEntity
         set => Set(() => AlwaysOnTop, ref alwaysOnTop, value);
     }
 
+    public bool IsLoggingIn
+    {
+        get => isLoggingIn;
+        set => Set(() => IsLoggingIn, ref isLoggingIn, value);
+    }
+
     public ICommand CancelCommand => new RelayCommand(Cancel);
 
     public ICommand DeleteCommand => new RelayCommand(Delete);
@@ -156,7 +179,11 @@ public class SettingsViewModel : ObservableEntity
 
     public bool IsWantedLanguageSelected => SelectedWantedLanguage != null;
 
-    public ObservableCollection<SubtitleLanguage> LanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
+    public ObservableCollection<SubtitleLanguage> LanguageList
+    {
+        get => languageList;
+        set => Set(() => LanguageList, ref languageList, value);
+    }
 
     public ICommand LoginCommand => new RelayCommand(Login);
 
@@ -202,15 +229,7 @@ public class SettingsViewModel : ObservableEntity
         set
         {
             searchText = value;
-            LanguageList.Clear();
-            foreach (var x in allLanguages)
-            {
-                if (x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Any(w => w.Code == x.Code))
-                {
-                    LanguageList.Add(x);
-                }
-            }
-
+            LanguageList = new(allLanguages.Where(x => x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Any(w => w.Code == x.Code)));
             Set(() => SearchText, ref searchText, value);
         }
     }
@@ -286,6 +305,7 @@ public class SettingsViewModel : ObservableEntity
             var selected = SelectedWantedLanguage;
             WantedLanguageList.Remove(selected);
             LanguageList.Add(selected);
+            LanguageList = new(LanguageList.OrderBy(x => x.Name));
         }
     }
 
@@ -295,22 +315,20 @@ public class SettingsViewModel : ObservableEntity
         {
             LoginErrorText = "Enter your credentials.";
         }
-        else
-        {
-            try
-            {
-                var result = await _openSubtitlesService.LoginAsync(Username, Password);
 
-                IsLoggedIn = true;
-                _settings.LoggedInUser = result;
-                Password = null;
-                User = result;
-                _ = ApplicationDataReader.SaveSettingsAsync(_settings);
-            }
-            catch (RequestFailedException ex)
-            {
-                LoginErrorText = ex.Message;
-            }
+        try
+        {
+            var result = await _openSubtitlesService.LoginAsync(Username, Password);
+
+            IsLoggedIn = true;
+            _settings.LoggedInUser = result;
+            Password = null;
+            User = result;
+            _ = ApplicationDataReader.SaveSettingsAsync(_settings);
+        }
+        catch (RequestFailedException ex)
+        {
+            LoginErrorText = ex.Message;
         }
     }
 

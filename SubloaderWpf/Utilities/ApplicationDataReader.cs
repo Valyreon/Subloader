@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenSubtitlesSharp;
 using SubloaderWpf.Models;
 
 namespace SubloaderWpf.Utilities;
@@ -57,90 +55,6 @@ public static class ApplicationDataReader
         }
 
         return new ApplicationSettings().Initialize();
-    }
-
-    public static async Task<IReadOnlyList<SubtitleLanguage>> LoadLanguagesAsync()
-    {
-        var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var path = Path.Combine(appDataFolder, @"Subloader\languages.json");
-
-        if (!File.Exists(path))
-        {
-            return null;
-        }
-
-        await semaphore.WaitAsync();
-        var text = await File.ReadAllTextAsync(path);
-        semaphore.Release();
-        try
-        {
-            return JsonSerializer.Deserialize<IReadOnlyList<SubtitleLanguage>>(text);
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
-
-    public static async Task<IReadOnlyList<string>> LoadFormatsAsync()
-    {
-        var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var path = Path.Combine(appDataFolder, @"Subloader\formats.json");
-
-        if (!File.Exists(path))
-        {
-            return null;
-        }
-
-        await semaphore.WaitAsync();
-        var text = await File.ReadAllTextAsync(path);
-        semaphore.Release();
-        try
-        {
-            return JsonSerializer.Deserialize<IReadOnlyList<string>>(text);
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
-
-    public static async Task SaveLanguagesAsync(IEnumerable<SubtitleLanguage> languages)
-    {
-        var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var path = Path.Combine(appDataFolder, @"Subloader\languages.json");
-
-        await semaphore.WaitAsync();
-
-        var serialized = JsonSerializer.Serialize(languages);
-
-        semaphore.Release();
-        try
-        {
-            File.WriteAllText(path, serialized);
-        }
-        catch (Exception)
-        {
-        }
-    }
-
-    public static async Task SaveFormatsAsync(IEnumerable<string> formats)
-    {
-        var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var path = Path.Combine(appDataFolder, @"Subloader\formats.json");
-
-        await semaphore.WaitAsync();
-
-        var serialized = JsonSerializer.Serialize(formats);
-
-        semaphore.Release();
-        try
-        {
-            await File.WriteAllTextAsync(path, serialized);
-        }
-        catch (Exception)
-        {
-        }
     }
 
     private static string GetConfigPath()
