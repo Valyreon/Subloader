@@ -62,8 +62,8 @@ Section "Install"
   WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader" "Icon" '"$INSTDIR\SubLoad.exe"'
   WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader\command" "" '"$INSTDIR\SubLoad.exe" "%1"'
 
-  DetailPrint "Updating environment Path to include Subloader installation directory for CLI"
-  EnVar::AddValue "PATH" $INSTDIR
+  ;DetailPrint "Updating environment Path to include Subloader installation directory for CLI"
+  ;EnVar::AddValue "PATH" $INSTDIR
 
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
@@ -74,9 +74,13 @@ SectionEnd
 Section "Uninstall"
 	;Delete Files
 	RMDir /r "$INSTDIR\*.*"
+	RMDir /r "$APPDATA\SubLoader\*.*"
+	RMDir /r "$APPDATA\Subloader\*.*"
 
 	;Remove the installation directory
 	RMDir "$INSTDIR"
+	RMDir "$APPDATA\SubLoader"
+	RMDir "$APPDATA\Subloader"
 
 	Var /GLOBAL crVar
 
@@ -95,8 +99,8 @@ Section "Uninstall"
 	DetailPrint "Deleting registry key: HKLM\$crVar\shell\Subloader"
 	DeleteRegKey HKEY_CLASSES_ROOT "$crVar\shell\Subloader"
 
-  DetailPrint "Removing Subloader from environment Path variable"
-  EnVar::DeleteValue "PATH" $INSTDIR
+  ;DetailPrint "Removing Subloader from environment Path variable"
+  ;EnVar::DeleteValue "PATH" $INSTDIR
 
 	;Delete Start Menu Shortcuts
 	Delete "$SMPROGRAMS\Subloader\*.*"
@@ -116,6 +120,14 @@ Function UninstallPrevious
     ${If} $R0 == ""
         Goto Done
     ${EndIf}
+	
+	;Delete Files
+	RMDir /r "$APPDATA\SubLoader\*.*"
+	RMDir /r "$APPDATA\Subloader\*.*"
+
+	;Remove the installation directory
+	RMDir "$APPDATA\SubLoader"
+	RMDir "$APPDATA\Subloader"
 
     DetailPrint "Removing previous installation."
 
