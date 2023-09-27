@@ -295,20 +295,22 @@ public class SettingsViewModel : ObservableEntity
         {
             LoginErrorText = "Enter your credentials.";
         }
-
-        try
+        else
         {
-            var result = await _openSubtitlesService.LoginAsync(Username, Password);
+            try
+            {
+                var result = await _openSubtitlesService.LoginAsync(Username, Password);
 
-            IsLoggedIn = true;
-            _settings.LoggedInUser = result;
-            Password = null;
-            User = result;
-            _ = ApplicationDataReader.SaveSettingsAsync(_settings);
-        }
-        catch (RequestFailedException ex)
-        {
-            LoginErrorText = ex.Message;
+                IsLoggedIn = true;
+                _settings.LoggedInUser = result;
+                Password = null;
+                User = result;
+                _ = ApplicationDataReader.SaveSettingsAsync(_settings);
+            }
+            catch (RequestFailedException ex)
+            {
+                LoginErrorText = ex.Message;
+            }
         }
     }
 
