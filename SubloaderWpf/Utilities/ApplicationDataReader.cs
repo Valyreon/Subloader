@@ -42,7 +42,7 @@ public static class ApplicationDataReader
 
         if (!File.Exists(path))
         {
-            return new ApplicationSettings();
+            return new ApplicationSettings().Initialize();
         }
 
         await semaphore.WaitAsync();
@@ -56,13 +56,13 @@ public static class ApplicationDataReader
         {
         }
 
-        return new ApplicationSettings();
+        return new ApplicationSettings().Initialize();
     }
 
     public static async Task<IReadOnlyList<SubtitleLanguage>> LoadLanguagesAsync()
     {
         var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var path = Path.Combine(appDataFolder, @"SubLoader\languages.json");
+        var path = Path.Combine(appDataFolder, @"Subloader\languages.json");
 
         if (!File.Exists(path))
         {
@@ -85,7 +85,7 @@ public static class ApplicationDataReader
     public static async Task<IReadOnlyList<string>> LoadFormatsAsync()
     {
         var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var path = Path.Combine(appDataFolder, @"SubLoader\formats.json");
+        var path = Path.Combine(appDataFolder, @"Subloader\formats.json");
 
         if (!File.Exists(path))
         {
@@ -108,7 +108,7 @@ public static class ApplicationDataReader
     public static async Task SaveLanguagesAsync(IEnumerable<SubtitleLanguage> languages)
     {
         var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var path = Path.Combine(appDataFolder, @"SubLoader\languages.json");
+        var path = Path.Combine(appDataFolder, @"Subloader\languages.json");
 
         await semaphore.WaitAsync();
 
@@ -127,7 +127,7 @@ public static class ApplicationDataReader
     public static async Task SaveFormatsAsync(IEnumerable<string> formats)
     {
         var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var path = Path.Combine(appDataFolder, @"SubLoader\formats.json");
+        var path = Path.Combine(appDataFolder, @"Subloader\formats.json");
 
         await semaphore.WaitAsync();
 
@@ -149,7 +149,7 @@ public static class ApplicationDataReader
         var path = "subLoadConfig.json";
 #else
         var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var path = Path.Combine(appDataFolder, @"SubLoader\config.json");
+        var path = Path.Combine(appDataFolder, @"Subloader\config.json");
         var dirFolder = Path.GetDirectoryName(path);
 
         if (!string.IsNullOrWhiteSpace(dirFolder))

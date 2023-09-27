@@ -7,6 +7,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/SimpleStyles.xaml" />
+                <ResourceDictionary Source="Themes/Generic.xaml" />
                 <ResourceDictionary Source="Resources/ComboBoxStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

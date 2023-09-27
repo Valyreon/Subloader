@@ -6,6 +6,7 @@
     xmlns:attachedProperties="clr-namespace:SubloaderWpf.AttachedProperties"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:themes="clr-namespace:SubloaderWpf.Themes"
     xmlns:viewmodels="clr-namespace:SubloaderWpf.ViewModels"
     x:Name="TheControl"
     d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
@@ -180,47 +181,57 @@
                     Text="{Binding StatusText, UpdateSourceTrigger=PropertyChanged}"
                     TextAlignment="Center" />
             </Border>
-            <DataGrid
-                x:Name="resultsDataGrid"
-                BorderThickness="0,0,0,1"
-                ItemsSource="{Binding SubtitleList}"
-                SelectedItem="{Binding SelectedItem}"
-                SelectionMode="Single">
-                <DataGrid.InputBindings>
-                    <MouseBinding Command="{Binding DownloadCommand}" MouseAction="LeftDoubleClick" />
-                    <KeyBinding Key="Return" Command="{Binding DownloadCommand}" />
-                </DataGrid.InputBindings>
-                <DataGrid.Columns>
-                    <DataGridTextColumn
-                        Width="15*"
-                        Binding="{Binding Name}"
-                        DisplayIndex="0"
-                        ElementStyle="{StaticResource ColumnElementStyle}"
-                        Header="Subtitle" />
-                    <DataGridTextColumn
-                        Width="5*"
-                        Binding="{Binding Language}"
-                        DisplayIndex="1"
-                        ElementStyle="{StaticResource ColumnElementStyle}"
-                        Header="Language"
-                        SortDirection="Ascending" />
-                </DataGrid.Columns>
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsHashMatch}" Value="True">
-                                <Setter Property="FontWeight" Value="Bold" />
-                            </DataTrigger>
-                            <Trigger Property="AlternationIndex" Value="1">
-                                <Setter Property="Background" Value="#f5f5f5" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource LighterAccentColor}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.RowStyle>
-            </DataGrid>
+            <Grid>
+                <themes:Spinner
+                    Width="50"
+                    Height="50"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Panel.ZIndex="1000"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <DataGrid
+                    x:Name="resultsDataGrid"
+                    BorderThickness="0,0,0,1"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource ReverseBoolConverter}}"
+                    ItemsSource="{Binding SubtitleList}"
+                    SelectedItem="{Binding SelectedItem}"
+                    SelectionMode="Single">
+                    <DataGrid.InputBindings>
+                        <MouseBinding Command="{Binding DownloadCommand}" MouseAction="LeftDoubleClick" />
+                        <KeyBinding Key="Return" Command="{Binding DownloadCommand}" />
+                    </DataGrid.InputBindings>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="15*"
+                            Binding="{Binding Name}"
+                            DisplayIndex="0"
+                            ElementStyle="{StaticResource ColumnElementStyle}"
+                            Header="Subtitle" />
+                        <DataGridTextColumn
+                            Width="5*"
+                            Binding="{Binding Language}"
+                            DisplayIndex="1"
+                            ElementStyle="{StaticResource ColumnElementStyle}"
+                            Header="Language"
+                            SortDirection="Ascending" />
+                    </DataGrid.Columns>
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsHashMatch}" Value="True">
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                </DataTrigger>
+                                <Trigger Property="AlternationIndex" Value="1">
+                                    <Setter Property="Background" Value="#f5f5f5" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource LighterAccentColor}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                </DataGrid>
+            </Grid>
         </DockPanel>
     </Grid>
 </UserControl>

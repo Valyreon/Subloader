@@ -30,6 +30,7 @@ public class MainViewModel : ObservableEntity
     private string statusText;
     private bool isConnectionModalOpen;
     private bool isLoading;
+    private ObservableCollection<SubtitleEntry> subtitleList;
 
     public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
     {
@@ -70,13 +71,13 @@ public class MainViewModel : ObservableEntity
         {
             var pingSuccess = await CanConnectToOsAPI();
 
-            if(pingSuccess)
+            if (pingSuccess)
             {
-                Application.Current.Dispatcher.Invoke(() => IsConnectionModalOpen = false);
+                IsConnectionModalOpen = false;
             }
             else
             {
-                Application.Current.Dispatcher.Invoke(() => IsConnectionModalOpen = true);
+                IsConnectionModalOpen = true;
             }
         });
     }
@@ -111,11 +112,14 @@ public class MainViewModel : ObservableEntity
     public string StatusText
     {
         get => statusText;
-
         set => Set(() => StatusText, ref statusText, value);
     }
 
-    public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
+    public ObservableCollection<SubtitleEntry> SubtitleList
+    {
+        get => subtitleList;
+        set => Set(() => SubtitleList, ref subtitleList, value);
+    }
 
     public void ChooseFile()
     {
@@ -135,7 +139,7 @@ public class MainViewModel : ObservableEntity
         try
         {
             var fileInfo = new FileInfo(fileChooseDialog.FileName);
-            SubtitleList.Clear();
+            SubtitleList = null;
             CurrentPath = fileChooseDialog.FileName;
         }
         catch (Exception)
@@ -172,7 +176,7 @@ public class MainViewModel : ObservableEntity
         await RunAndHandleAsync(async () =>
         {
             var info = await _openSubtitlesService.DownloadSubtitleAsync(SelectedItem, CurrentPath, destination);
-            Application.Current.Dispatcher.Invoke(() => StatusText = $"Subtitle downloaded. Remaining today: " + info.Remaining);
+            StatusText = $"Subtitle downloaded. Remaining today: " + info.Remaining;
         });
     }
 
@@ -187,7 +191,7 @@ public class MainViewModel : ObservableEntity
         {
             var languagesFromFile = await ApplicationDataReader.LoadLanguagesAsync();
 
-            if(languagesFromFile == null)
+            if (languagesFromFile == null)
             {
                 var fromAPI = await _openSubtitlesService.GetLanguagesAsync();
                 _ = ApplicationDataReader.SaveLanguagesAsync(fromAPI);
@@ -199,11 +203,11 @@ public class MainViewModel : ObservableEntity
             }
         }
 
-        if(allFormats == null)
+        if (allFormats == null)
         {
             var formatsFromFile = await ApplicationDataReader.LoadFormatsAsync();
 
-            if(formatsFromFile == null)
+            if (formatsFromFile == null)
             {
                 var fromAPI = await _openSubtitlesService.GetFormatsAsync();
                 _ = ApplicationDataReader.SaveFormatsAsync(fromAPI);
@@ -238,6 +242,7 @@ public class MainViewModel : ObservableEntity
             return;
         }
         IsLoading = true;
+        SubtitleList = null;
 
         StartCheckConnectionTask();
 
@@ -258,9 +263,8 @@ public class MainViewModel : ObservableEntity
         CurrentPath = null;
         lastSearchedText = SearchForm.Text;
 
-        Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
+        Application.Current.MainWindow.Activate();
         StatusText = "Searching subtitles...";
-        Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
         await RunAndHandleAsync(async () =>
         {
             var results = await _openSubtitlesService.SearchSubtitlesAsync(
@@ -271,50 +275,47 @@ public class MainViewModel : ObservableEntity
                 SearchForm.Type,
                 SearchForm.ImdbId,
                 SearchForm.ParentImdbId);
-            await ProcessResults(results);
+            ProcessResults(results);
         });
     }
 
     private async void ProcessFileAsync()
     {
-        if(IsLoading)
+        if (IsLoading)
         {
             return;
         }
         IsLoading = true;
 
         StartCheckConnectionTask();
-        Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
+        Application.Current.MainWindow.Activate();
         StatusText = "Searching subtitles...";
-        Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
+        SubtitleList = null;
         await RunAndHandleAsync(async () =>
         {
             var results = await _openSubtitlesService.GetSubtitlesForFileAsync(CurrentPath);
-            await ProcessResults(results);
+            ProcessResults(results);
         });
     }
 
-    private async Task ProcessResults(IEnumerable<SubtitleEntry> results)
+    private void ProcessResults(IEnumerable<SubtitleEntry> results)
     {
+        IsLoading = false;
+
         if (results == null)
         {
-            Application.Current.Dispatcher.Invoke(() => StatusText = "Server error. Try refreshing.");
+            StatusText = "Server error. Try refreshing.";
         }
         else if (!results.Any())
         {
-            Application.Current.Dispatcher.Invoke(() => StatusText = "No subtitles found.");
+            StatusText = "No subtitles found.";
         }
         else
         {
-            foreach (var x in results)
-            {
-                Application.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
-                await Task.Delay(20);
-            }
-
-            Application.Current.Dispatcher.Invoke(() => StatusText = "Use double-click to download.");
-            Application.Current.Dispatcher.Invoke(() => IsLoading = false);
+            SubtitleList = new ObservableCollection<SubtitleEntry>(results);
+            StatusText = "Use double-click to download.";
         }
+
     }
 
     private Task RunAndHandleAsync(Func<Task> func)
@@ -327,13 +328,17 @@ public class MainViewModel : ObservableEntity
             }
             catch (RequestFailedException ex)
             {
-                Application.Current.Dispatcher.Invoke(() => StatusText = ex.Message);
+                StatusText = ex.Message;
                 SystemSounds.Hand.Play();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Application.Current.Dispatcher.Invoke(() => StatusText = "Something went wrong.");
+                StatusText = "Something went wrong.";
                 SystemSounds.Hand.Play();
+            }
+            finally
+            {
+                IsLoading = false;
             }
         });
     }

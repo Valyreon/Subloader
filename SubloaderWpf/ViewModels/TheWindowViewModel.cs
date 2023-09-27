@@ -1,4 +1,3 @@
-using System.Windows;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
 using SubloaderWpf.Mvvm;
@@ -20,7 +19,7 @@ public class TheWindowViewModel : ObservableEntity, INavigator
         _settings = settings;
         _openSubtitlesService = openSubtitlesService;
         AlwaysOnTop = _settings.KeepWindowOnTop;
-        ApplicationDataReader.Saved += () => Application.Current.Dispatcher.Invoke(() => AlwaysOnTop = _settings.KeepWindowOnTop);
+        ApplicationDataReader.Saved += () => AlwaysOnTop = _settings.KeepWindowOnTop;
         _openSubtitlesService = openSubtitlesService;
     }
 
