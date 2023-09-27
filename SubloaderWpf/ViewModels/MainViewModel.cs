@@ -159,6 +159,7 @@ public class MainViewModel : ObservableEntity
         {
             var saveFileDialog = new SaveFileDialog()
             {
+                Filter = $"All files (*.*) |*.*|Subtitle files|*.{_settings.PreferredFormat}",
                 FileName = Path.ChangeExtension(SelectedItem.Name, _settings.PreferredFormat)
             };
 
