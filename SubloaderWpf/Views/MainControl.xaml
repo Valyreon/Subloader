@@ -123,6 +123,7 @@
                         Click="Retry_Button_Click"
                         Command="{Binding CheckConnectionCommand}"
                         Content="Retry" />
+                    <themes:Spinner x:Name="retrySpinner" Visibility="Collapsed" />
                 </StackPanel>
             </Border>
         </Grid>

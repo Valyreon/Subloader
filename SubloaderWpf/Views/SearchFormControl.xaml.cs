@@ -56,4 +56,9 @@ public partial class SearchFormControl : UserControl
             }
         }
     }
+
+    private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        textboxPlaceholder.Visibility = string.IsNullOrWhiteSpace(searchTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+    }
 }

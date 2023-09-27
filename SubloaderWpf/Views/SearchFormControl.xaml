@@ -11,18 +11,31 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <StackPanel>
-        <TextBox
-            x:Name="searchTextBox"
-            Height="30"
-            Margin="0,0,0,10"
-            HorizontalContentAlignment="Center"
-            VerticalContentAlignment="Center"
-            FontSize="15"
-            Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}">
-            <TextBox.InputBindings>
-                <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
-            </TextBox.InputBindings>
-        </TextBox>
+        <Grid>
+            <TextBlock
+                x:Name="textboxPlaceholder"
+                Margin="0,0,0,10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Panel.ZIndex="10"
+                FontSize="15"
+                Foreground="LightGray"
+                IsHitTestVisible="False"
+                Text="Search" />
+            <TextBox
+                x:Name="searchTextBox"
+                Height="30"
+                Margin="0,0,0,10"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                FontSize="15"
+                Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
+                TextChanged="searchTextBox_TextChanged">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
+        </Grid>
         <Grid Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />

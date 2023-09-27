@@ -10,7 +10,7 @@ public class SubtitleEntry : ObservableEntity
     public SubtitleEntry(Subtitle item, IEnumerable<SubtitleLanguage> allLanguages)
     {
         Model = item;
-        Language = allLanguages.SingleOrDefault(l => l.Code == Model.Information.Language)?.Name;
+        Language = allLanguages.SingleOrDefault(l => string.Equals(l.Code, Model.Information.Language, System.StringComparison.InvariantCultureIgnoreCase))?.Name;
     }
 
     public string Language { get; }

@@ -41,6 +41,7 @@ public class SettingsViewModel : ObservableEntity
     private string username;
     private ObservableCollection<SubtitleLanguage> languageList = new();
     private bool isLoggingIn;
+    private bool isLoggingOut;
     private readonly IEnumerable<SubtitleLanguage> allLanguages;
 
     public SettingsViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
@@ -56,7 +57,7 @@ public class SettingsViewModel : ObservableEntity
 
         allLanguages = JsonSerializer.Deserialize<IEnumerable<SubtitleLanguage>>(manager.GetString("LanguagesList"));
 
-        if (_settings.WantedLanguages != null && _settings.WantedLanguages.Any())
+        if (_settings.WantedLanguages?.Any() == true)
         {
             foreach (var x in _settings.WantedLanguageCodes)
             {
@@ -129,6 +130,12 @@ public class SettingsViewModel : ObservableEntity
     {
         get => isLoggingIn;
         set => Set(() => IsLoggingIn, ref isLoggingIn, value);
+    }
+
+    public bool IsLoggingOut
+    {
+        get => isLoggingOut;
+        set => Set(() => IsLoggingOut, ref isLoggingOut, value);
     }
 
     public ICommand CancelCommand => new RelayCommand(Cancel);
@@ -314,7 +321,11 @@ public class SettingsViewModel : ObservableEntity
         if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
         {
             LoginErrorText = "Enter your credentials.";
+            return;
         }
+
+        LoginErrorText = null;
+        IsLoggingIn = true;
 
         try
         {
@@ -330,10 +341,15 @@ public class SettingsViewModel : ObservableEntity
         {
             LoginErrorText = ex.Message;
         }
+        finally
+        {
+            IsLoggingIn = false;
+        }
     }
 
     private async void Logout()
     {
+        IsLoggingOut = true;
         if (await _openSubtitlesService.LogoutAsync())
         {
             _settings.LoggedInUser = null;
@@ -341,6 +357,7 @@ public class SettingsViewModel : ObservableEntity
             User = null;
             _ = ApplicationDataReader.SaveSettingsAsync(_settings);
         }
+        IsLoggingOut = false;
     }
 
     private void SaveAndBack()

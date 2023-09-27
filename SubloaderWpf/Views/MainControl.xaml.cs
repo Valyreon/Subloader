@@ -58,8 +58,12 @@ public partial class MainControl : UserControl
     private async void Retry_Button_Click(object sender, RoutedEventArgs e)
     {
         retryButton.IsEnabled = false;
+        retrySpinner.Visibility = Visibility.Visible;
+        retryButton.Visibility = Visibility.Collapsed;
         retryButton.MoveFocus(new TraversalRequest(FocusNavigationDirection.Up));
         await Task.Delay(2500);
+        retryButton.Visibility = Visibility.Visible;
+        retrySpinner.Visibility = Visibility.Collapsed;
         retryButton.IsEnabled = true;
     }
 }
