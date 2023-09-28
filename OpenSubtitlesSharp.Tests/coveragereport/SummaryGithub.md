@@ -3,17 +3,17 @@
 
 |||
 |:---|:---|
-| Generated on: | 9/22/2023 - 11:31:31 PM |
-| Coverage date: | 9/22/2023 - 10:50:10 PM - 9/22/2023 - 11:31:25 PM |
-| Parser: | MultiReport (4x Cobertura) |
+| Generated on: | 9/27/2023 - 10:56:55 PM |
+| Coverage date: | 9/22/2023 - 10:50:10 PM - 9/27/2023 - 10:56:19 PM |
+| Parser: | MultiReport (5x Cobertura) |
 | Assemblies: | 1 |
 | Classes: | 29 |
 | Files: | 22 |
-| **Line coverage:** | 93.8% (383 of 408) |
-| Covered lines: | 383 |
+| **Line coverage:** | 93.9% (385 of 410) |
+| Covered lines: | 385 |
 | Uncovered lines: | 25 |
-| Coverable lines: | 408 |
-| Total lines: | 1001 |
+| Coverable lines: | 410 |
+| Total lines: | 1004 |
 | **Branch coverage:** | 82.7% (96 of 116) |
 | Covered branches: | 96 |
 | Total branches: | 116 |
@@ -22,11 +22,11 @@
 </details>
 
 ## Coverage
-<details><summary>OpenSubtitlesSharp - 93.8%</summary>
+<details><summary>OpenSubtitlesSharp - 93.9%</summary>
 
 |**Name**|**Line**|**Branch**|
 |:---|---:|---:|
-|**OpenSubtitlesSharp**|**93.8%**|**82.7%**|
+|**OpenSubtitlesSharp**|**93.9%**|**82.7%**|
 |OpenSubtitlesSharp.Attributes.DictionaryValueAttribute|100%|87.5%|
 |OpenSubtitlesSharp.DictionaryConverters.ExcludeIncludeValueConverter|100%|100%|
 |OpenSubtitlesSharp.DictionaryConverters.IncludeOnlyValueConverter|100%|100%|
