@@ -5,7 +5,8 @@
 #define MyAppVersion "1.6"
 #define MyAppPublisher "Valyreon"
 #define MyAppURL "https://github.com/Valyreon/Subloader"
-#define MyAppExeName "Subloader.exe"
+#define MyAppExeName "SubLoad.exe"
+#define MyAppCliExeName "subloader-cli.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -37,8 +38,10 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\Repositories\Subloader\SubloaderWpf\bin\Release\PUBLISH\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "set_path.ps1"; DestDir: "{tmp}";
+Source: "{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyAppCliExeName}"; DestDir: "{app}"; Flags: ignoreversion; Components: cli
+Source: "remove_path.ps1"; DestDir: "{app}/UninstallerScripts"; Flags: ignoreversion; Components: cli
+Source: "set_path.ps1"; DestDir: "{tmp}"; Flags: ignoreversion; Components: cli
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Components]
@@ -49,6 +52,9 @@ Name: "cli"; Description: "Command Line Interface (Installs CLI executable and a
 [Run]
 Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File ""{tmp}/set_path.ps1"" ""{app}"" "; Flags: runhidden; Check: ShouldAddToPathEnvVar
 
+[UninstallRun]
+Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File ""{app}/UninstallerScripts/remove_path.ps1"" ""{app}"" "; Flags: runhidden; Check: ShouldAddToPathEnvVar; RunOnceId: remove_path
+
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
@@ -56,7 +62,7 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 [Code]
 function ShouldAddToPathEnvVar: Boolean;
 begin
-  Result := IsComponentSelected('cli');
+  Result := WizardIsComponentSelected('cli');
 end;
 
 procedure UpdateStatusLabel(StepText: String);
@@ -73,22 +79,25 @@ begin
       UpdateStatusLabel('Adding entry to context menu...');
       // AVI
       RegWriteStringValue(HKCR, 'SystemFileAssociations\.avi\shell\Subloader', '', 'Find subtitles');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.avi\shell\Subloader', 'Icon', WizardDirValue + '\Subloader.exe');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.avi\shell\Subloader\command', '', '"' + WizardDirValue + '\Subloader.exe' + '" ' + '"%1"');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.avi\shell\Subloader', 'Icon', WizardDirValue + '\SubLoad.exe');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.avi\shell\Subloader\command', '', '"' + WizardDirValue + '\SubLoad.exe' + '" ' + '"%1"');
       // MP4
       RegWriteStringValue(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader', '', 'Find subtitles');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader', 'Icon', WizardDirValue + '\Subloader.exe');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader\command', '', '"' + WizardDirValue + '\Subloader.exe' + '" ' + '"%1"');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader', 'Icon', WizardDirValue + '\SubLoad.exe');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader\command', '', '"' + WizardDirValue + '\SubLoad.exe' + '" ' + '"%1"');
       // MKV
       RegWriteStringValue(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader', '', 'Find subtitles');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader', 'Icon', WizardDirValue + '\Subloader.exe');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader\command', '', '"' + WizardDirValue + '\Subloader.exe' + '" ' + '"%1"');
-    end;
-
-    if WizardIsComponentSelected('cli') then
-    begin
-      UpdateStatusLabel('Adding installation directory to PATH variable...');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader', 'Icon', WizardDirValue + '\SubLoad.exe');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader\command', '', '"' + WizardDirValue + '\SubLoad.exe' + '" ' + '"%1"');
     end;
   end;
 end;
 
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+  if CurUninstallStep = usUninstall then begin
+    RegDeleteKeyIncludingSubkeys(HKCR, 'SystemFileAssociations\.avi\shell\Subloader');
+    RegDeleteKeyIncludingSubkeys(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader');
+    RegDeleteKeyIncludingSubkeys(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader');
+  end;
+end;
