@@ -20,15 +20,15 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=D:\Repositories\Subloader\NSIS\licence.txt
+LicenseFile=licence.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
-;PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=dialog
+PrivilegesRequired=admin
 OutputBaseFilename=SubloaderV160
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 ArchitecturesInstallIn64BitMode=x64
+SetupIconFile=icon.ico
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -38,9 +38,57 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "D:\Repositories\Subloader\SubloaderWpf\bin\Release\PUBLISH\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "set_path.ps1"; DestDir: "{tmp}";
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+[Components]
+Name: "main"; Description: "Main Files"; Types: full compact custom; Flags: fixed
+Name: "context_menu"; Description: "Add to context menu (.avi, .mp4 and .mkv files)"; Types: full compact
+Name: "cli"; Description: "Command Line Interface (Installs CLI executable and adds it to Path env variable)"; Types: full
+
+[Run]
+Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File ""{tmp}/set_path.ps1"" ""{app}"" "; Flags: runhidden; Check: ShouldAddToPathEnvVar
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+
+[Code]
+function ShouldAddToPathEnvVar: Boolean;
+begin
+  Result := IsComponentSelected('cli');
+end;
+
+procedure UpdateStatusLabel(StepText: String);
+begin
+  WizardForm.StatusLabel.Caption := StepText;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssPostInstall then
+  begin
+    if WizardIsComponentSelected('context_menu') then
+    begin
+      UpdateStatusLabel('Adding entry to context menu...');
+      // AVI
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.avi\shell\Subloader', '', 'Find subtitles');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.avi\shell\Subloader', 'Icon', WizardDirValue + '\Subloader.exe');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.avi\shell\Subloader\command', '', '"' + WizardDirValue + '\Subloader.exe' + '" ' + '"%1"');
+      // MP4
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader', '', 'Find subtitles');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader', 'Icon', WizardDirValue + '\Subloader.exe');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader\command', '', '"' + WizardDirValue + '\Subloader.exe' + '" ' + '"%1"');
+      // MKV
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader', '', 'Find subtitles');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader', 'Icon', WizardDirValue + '\Subloader.exe');
+      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader\command', '', '"' + WizardDirValue + '\Subloader.exe' + '" ' + '"%1"');
+    end;
+
+    if WizardIsComponentSelected('cli') then
+    begin
+      UpdateStatusLabel('Adding installation directory to PATH variable...');
+    end;
+  end;
+end;
 

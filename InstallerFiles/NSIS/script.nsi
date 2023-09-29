@@ -14,6 +14,12 @@ InstallDir "$PROGRAMFILES64\Subloader"
 
 !insertmacro MUI_PAGE_LICENSE "licence.txt"
 !insertmacro MUI_PAGE_DIRECTORY
+
+!define MUI_COMPONENTSPAGE_TEXT_TOP "Please select the options that best match your setup and preferences."
+!define MUI_PAGE_HEADER_TEXT "Setup Options"
+!define MUI_PAGE_HEADER_SUBTEXT "Choose which features of Subloader you want to install."
+!define MUI_COMPONENTSPAGE_smallDESC
+!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_LANGUAGE "English"
 
@@ -24,15 +30,15 @@ Section "Install"
   ;Add files
   SetOutPath "$INSTDIR"
 
-  File "SubLoad.exe"
-  File "subloader-cli.exe"
+  File "Subloader.exe"
+  ;File "subloader-cli.exe"
 
   Call UninstallPrevious
 
   ;create start-menu items
   CreateDirectory "$SMPROGRAMS\Subloader"
   CreateShortCut "$SMPROGRAMS\Subloader\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\Subloader\Subloader.lnk" "$INSTDIR\SubLoad.exe" "" "$INSTDIR\SubLoad.exe" 0
+  CreateShortCut "$SMPROGRAMS\Subloader\Subloader.lnk" "$INSTDIR\Subloader.exe" "" "$INSTDIR\Subloader.exe" 0
 
   ;write uninstall information to the registry
   WriteRegStr HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Subloader" "DisplayName" "Subloader (remove only)"
@@ -45,22 +51,22 @@ Section "Install"
   DetailPrint "Writing registry keys for AVI context menu"
   ;AVI
   WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader" "" "Find subtitles"
-  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader" "Icon" '"$INSTDIR\SubLoad.exe"'
-  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader\command" "" '"$INSTDIR\SubLoad.exe" "%1"'
+  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader" "Icon" '"$INSTDIR\Subloader.exe"'
+  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader\command" "" '"$INSTDIR\Subloader.exe" "%1"'
 
   StrCpy $extPath "SystemFileAssociations\.mp4"
   DetailPrint "Writing registry keys for MP4 context menu"
   ;for mp4
   WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader" "" "Find subtitles"
-  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader" "Icon" '"$INSTDIR\SubLoad.exe"'
-  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader\command" "" '"$INSTDIR\SubLoad.exe" "%1"'
+  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader" "Icon" '"$INSTDIR\Subloader.exe"'
+  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader\command" "" '"$INSTDIR\Subloader.exe" "%1"'
 
   StrCpy $extPath "SystemFileAssociations\.mkv"
   DetailPrint "Writing registry keys for MKV context menu"
   ;for mkv
   WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader" "" "Find subtitles"
-  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader" "Icon" '"$INSTDIR\SubLoad.exe"'
-  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader\command" "" '"$INSTDIR\SubLoad.exe" "%1"'
+  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader" "Icon" '"$INSTDIR\Subloader.exe"'
+  WriteRegStr HKEY_CLASSES_ROOT "$extPath\shell\Subloader\command" "" '"$INSTDIR\Subloader.exe" "%1"'
 
   ;DetailPrint "Updating environment Path to include Subloader installation directory for CLI"
   ;EnVar::AddValue "PATH" $INSTDIR
@@ -120,14 +126,14 @@ Function UninstallPrevious
     ${If} $R0 == ""
         Goto Done
     ${EndIf}
-	
+
 	;Delete Files
 	RMDir /r "$APPDATA\SubLoader\*.*"
 	RMDir /r "$APPDATA\Subloader\*.*"
 
 	;Remove the installation directory
-	RMDir "$APPDATA\SubLoader"
-	RMDir "$APPDATA\Subloader"
+	RMDir "$INSTDIR\SubLoader"
+	RMDir "$INSTDIR\Subloader"
 
     DetailPrint "Removing previous installation."
 

@@ -290,6 +290,11 @@ public class SettingsViewModel : ObservableEntity
             var selected = SelectedLanguage;
             LanguageList.Remove(selected);
             WantedLanguageList.Add(selected);
+
+            if(!LanguageList.Any())
+            {
+                SearchText = string.Empty;
+            }
         }
     }
 

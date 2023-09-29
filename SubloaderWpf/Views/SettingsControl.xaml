@@ -315,7 +315,11 @@
 
                             <StackPanel Margin="0,0,0,10" Visibility="{Binding IsLoggingIn, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}">
                                 <Label Content="Username: " Target="{Binding ElementName=usernameTextBox}" />
-                                <TextBox x:Name="usernameTextBox" Text="{Binding Username}" />
+                                <TextBox x:Name="usernameTextBox" Text="{Binding Username}">
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Key="Return" Command="{Binding LoginCommand}" />
+                                    </TextBox.InputBindings>
+                                </TextBox>
                             </StackPanel>
 
                             <StackPanel
@@ -326,7 +330,11 @@
                                     Grid.Row="1"
                                     Content="Password: "
                                     Target="{Binding ElementName=passwordTextBox}" />
-                                <PasswordBox x:Name="passwordTextBox" PasswordChanged="passwordTextBox_PasswordChanged" />
+                                <PasswordBox x:Name="passwordTextBox" PasswordChanged="passwordTextBox_PasswordChanged">
+                                    <PasswordBox.InputBindings>
+                                        <KeyBinding Key="Return" Command="{Binding LoginCommand}" />
+                                    </PasswordBox.InputBindings>
+                                </PasswordBox>
                             </StackPanel>
 
                             <TextBlock
