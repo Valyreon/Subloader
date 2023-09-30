@@ -79,7 +79,8 @@
                             Grid.Column="3"
                             Command="{Binding CloseSearchModalCommand}"
                             CommandParameter="no"
-                            Content="Cancel" />
+                            Content="Cancel"
+                            PreviewLostKeyboardFocus="CancelButton_PreviewLostKeyboardFocus" />
                     </Grid>
                 </StackPanel>
             </Border>
@@ -88,6 +89,7 @@
             x:Name="connectionModal"
             Panel.ZIndex="10000"
             Focusable="False"
+            IsVisibleChanged="connectionModal_IsVisibleChanged"
             Visibility="{Binding IsConnectionModalOpen, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid.Background>
                 <SolidColorBrush Opacity="0.35" Color="#222" />
@@ -122,7 +124,8 @@
                         Width="100"
                         Click="Retry_Button_Click"
                         Command="{Binding CheckConnectionCommand}"
-                        Content="Retry" />
+                        Content="Retry"
+                        PreviewLostKeyboardFocus="retryButton_PreviewLostKeyboardFocus" />
                     <themes:Spinner x:Name="retrySpinner" Visibility="Collapsed" />
                 </StackPanel>
             </Border>

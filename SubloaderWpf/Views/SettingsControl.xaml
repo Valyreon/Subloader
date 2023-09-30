@@ -21,22 +21,12 @@
             BorderBrush="{StaticResource MainBorderColor}"
             BorderThickness="0,1,0,0"
             DockPanel.Dock="Bottom">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Button
-                    Grid.Column="0"
-                    Command="{Binding SaveCommand}"
-                    Content="Save"
-                    IsDefault="True" />
-                <Button
-                    Grid.Column="2"
-                    Command="{Binding CancelCommand}"
-                    Content="Cancel" />
-            </Grid>
+            <Button
+                Grid.Column="2"
+                Width="150"
+                HorizontalAlignment="Center"
+                Command="{Binding BackCommand}"
+                Content="Back" />
         </Border>
         <TabControl
             Name="MainTabControl"
@@ -262,7 +252,7 @@
                     </Border>
                 </TabItem.Header>
                 <Border
-                    Padding="20"
+                    Padding="20,10"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Background="{StaticResource MainBackgroundColor}"
@@ -300,13 +290,17 @@
                                 Grid.Row="3"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
-                                Width="100"
+                                Width="80"
                                 Margin="0,5"
                                 HorizontalAlignment="Center"
                                 Command="{Binding LogoutCommand}"
                                 Content="Logout"
                                 Visibility="{Binding IsLoggingOut, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}" />
-                            <themes:Spinner Margin="0,5,0,0" Visibility="{Binding IsLoggingOut, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            <themes:Spinner
+                                Width="35"
+                                Height="35"
+                                Margin="0,5,0,0"
+                                Visibility="{Binding IsLoggingOut, Converter={StaticResource BoolToVisibilityConverter}}" />
                         </StackPanel>
                         <StackPanel Width="280" Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}">
                             <TextBlock Margin="0,0,0,10" HorizontalAlignment="Center">
@@ -349,7 +343,7 @@
                                 Grid.Row="3"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
-                                Width="100"
+                                Width="80"
                                 Margin="0,5"
                                 HorizontalAlignment="Center"
                                 Click="LoginButton_Click"
@@ -358,13 +352,42 @@
                                 IsDefault="True"
                                 Visibility="{Binding IsLoggingIn, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}" />
 
-                            <themes:Spinner Margin="0,5,0,0" Visibility="{Binding IsLoggingIn, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            <themes:Spinner
+                                Width="35"
+                                Height="35"
+                                Margin="0,5,0,0"
+                                Visibility="{Binding IsLoggingIn, Converter={StaticResource BoolToVisibilityConverter}}" />
                         </StackPanel>
                     </Grid>
                 </Border>
             </TabItem>
-
-
+            <TabItem>
+                <TabItem.Header>
+                    <Border Width="60">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">About</TextBlock>
+                    </Border>
+                </TabItem.Header>
+                <Border
+                    Padding="20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="{StaticResource MainBackgroundColor}"
+                    BorderBrush="{StaticResource MainBorderColor}"
+                    BorderThickness="1">
+                    <StackPanel Width="150">
+                        <TextBlock Margin="0,0,0,10" HorizontalAlignment="Center">
+                            <Run Text="Created by" />
+                            <Run Foreground="{StaticResource AccentColor}" Text="Valyreon" />
+                        </TextBlock>
+                        <Button Margin="0,0,0,10" Command="{Binding OpenProjectHomeCommand}">Project Home</Button>
+                        <Button Command="{Binding CheckForUpdatesCommand}" Visibility="{Binding IsCheckingForUpdates, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}">Check for updates</Button>
+                        <themes:Spinner
+                            Width="35"
+                            Height="35"
+                            Visibility="{Binding IsCheckingForUpdates, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </StackPanel>
+                </Border>
+            </TabItem>
         </TabControl>
     </DockPanel>
 </UserControl>

@@ -66,4 +66,34 @@ public partial class MainControl : UserControl
         retrySpinner.Visibility = Visibility.Collapsed;
         retryButton.IsEnabled = true;
     }
+
+    private void CancelButton_PreviewLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        if (e.NewFocus != searchTextBoxChild && searchModal.Visibility == Visibility.Visible)
+        {
+            searchTextBoxChild.Focus();
+            Keyboard.Focus(searchTextBoxChild);
+            e.Handled = true;
+        }
+    }
+
+    private void retryButton_PreviewLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        if (connectionModal.Visibility == Visibility.Visible)
+        {
+            e.Handled = true;
+        }
+    }
+
+    private async void connectionModal_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (e.NewValue is bool visibility && visibility)
+        {
+            // seems like focus will not work if the control
+            // is not drawn (finished processing the visibility change
+            await Task.Delay(15);
+            retryButton.Focus();
+            Keyboard.Focus(retryButton);
+        }
+    }
 }

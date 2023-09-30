@@ -11,8 +11,8 @@ namespace SubloaderWpf;
 public partial class App : Application
 {
     private static Mutex mutex;
-
-    public static string APIKey { get; private set; } = "idMNeWNRIKVKlGiP8zjNyG80a4AqKYBd";
+    public static readonly string VersionTag = "v1.6.0";
+    public static string APIKey { get; private set; } = "idMNeWNRIKVKlGiP8zjNyG80a4AqKYBd"; 
     public static InstanceMediator InstanceMediator { get; private set; }
     public string PathArg { get; set; }
 
@@ -65,7 +65,7 @@ public partial class App : Application
         }
     }
 
-    private void Cleanup()
+    private static void Cleanup()
     {
         InstanceMediator?.StopListening();
         mutex?.ReleaseMutex();

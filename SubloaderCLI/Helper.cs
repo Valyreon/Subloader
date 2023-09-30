@@ -149,7 +149,8 @@ public static class Helper
 
         using var client = new OpenSubtitlesClient(Constants.APIKey);
         var loginInfo = await client.LoginAsync(username, password);
-        return new Session
+
+        var session = new Session
         {
             Username = username,
             Token = loginInfo.Token,
@@ -158,5 +159,11 @@ public static class Helper
             Level = loginInfo.User.Level,
             AllowedDownloads = loginInfo.User.AllowedDownloads
         };
+
+        ConsoleHelper.WriteLine("Login success.", ConsoleColor.Green);
+        Console.WriteLine("Remaining downloads: " + session.RemainingDownloads);
+        Console.WriteLine("Level: " + session.Level);
+
+        return session;
     }
 }

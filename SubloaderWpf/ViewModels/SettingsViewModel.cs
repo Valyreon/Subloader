@@ -11,6 +11,9 @@ using SubloaderWpf.Utilities;
 using SubloaderWpf.Views;
 using System.Resources;
 using System.Text.Json;
+using System.Diagnostics;
+using SubloaderWpf.Services;
+using System.Windows;
 
 namespace SubloaderWpf.ViewModels;
 
@@ -42,6 +45,7 @@ public class SettingsViewModel : ObservableEntity
     private ObservableCollection<SubtitleLanguage> languageList = new();
     private bool isLoggingIn;
     private bool isLoggingOut;
+    private bool isCheckingForUpdates;
 
     public static IEnumerable<SubtitleLanguage> AllLanguages { get; set; }
 
@@ -97,6 +101,9 @@ public class SettingsViewModel : ObservableEntity
             var timeSpan = User.ResetTime.Value - DateTime.UtcNow;
             ResetTimer = $"{timeSpan.Hours:D2} hours and {timeSpan.Minutes:D2} minutes";
         }
+
+        PropertyChanged += (e, v) => Save();
+        WantedLanguageList.CollectionChanged += (e, v) => Save();
     }
 
     public ICommand AddCommand => new RelayCommand(Add);
@@ -131,7 +138,7 @@ public class SettingsViewModel : ObservableEntity
         set => Set(() => IsLoggingOut, ref isLoggingOut, value);
     }
 
-    public ICommand CancelCommand => new RelayCommand(Cancel);
+    public ICommand BackCommand => new RelayCommand(() => navigator.GoToPreviousControl());
 
     public ICommand DeleteCommand => new RelayCommand(Delete);
 
@@ -173,8 +180,13 @@ public class SettingsViewModel : ObservableEntity
     public bool IsLoggedIn
     {
         get => isLoggedIn;
-
         set => Set(() => IsLoggedIn, ref isLoggedIn, value);
+    }
+
+    public bool IsCheckingForUpdates
+    {
+        get => isCheckingForUpdates;
+        set => Set(() => IsCheckingForUpdates, ref isCheckingForUpdates, value);
     }
 
     public bool IsWantedLanguageSelected => SelectedWantedLanguage != null;
@@ -186,6 +198,40 @@ public class SettingsViewModel : ObservableEntity
     }
 
     public ICommand LoginCommand => new RelayCommand(Login);
+
+    public ICommand CheckForUpdatesCommand => new RelayCommand(CheckForUpdates);
+
+    private async void CheckForUpdates()
+    {
+        var service = new GitHubService();
+
+        try
+        {
+            IsCheckingForUpdates = true;
+            var isLatestVersion = await service.IsLatestVersionAsync(App.VersionTag);
+            IsCheckingForUpdates = false;
+
+            if (!isLatestVersion)
+            {
+                MessageBox.Show("You have the latest version!", "Update Check");
+            }
+            else
+            {
+                var result = MessageBox.Show("New version of Subloader is available. Do you want to download now?", "Update available", MessageBoxButton.YesNo);
+
+                if(result == MessageBoxResult.Yes)
+                {
+                    Process.Start(new ProcessStartInfo("https://github.com/Valyreon/Subloader/releases/latest") { UseShellExecute = true });
+                }
+            }
+        }
+        catch (Exception)
+        {
+            MessageBox.Show("Something went wrong while checking for updates, please try again later.");
+        }
+    }
+
+    public ICommand OpenProjectHomeCommand => new RelayCommand(() => Process.Start(new ProcessStartInfo("https://github.com/Valyreon/Subloader") { UseShellExecute = true }));
 
     public string LoginErrorText
     {
@@ -219,8 +265,6 @@ public class SettingsViewModel : ObservableEntity
         get => resetTimer;
         set => Set(() => ResetTimer, ref resetTimer, value);
     }
-
-    public ICommand SaveCommand => new RelayCommand(SaveAndBack);
 
     public string SearchText
     {
@@ -291,16 +335,11 @@ public class SettingsViewModel : ObservableEntity
             LanguageList.Remove(selected);
             WantedLanguageList.Add(selected);
 
-            if(!LanguageList.Any())
+            if (!LanguageList.Any())
             {
                 SearchText = string.Empty;
             }
         }
-    }
-
-    private void Cancel()
-    {
-        navigator.GoToPreviousControl();
     }
 
     private void Delete()
@@ -358,7 +397,7 @@ public class SettingsViewModel : ObservableEntity
         IsLoggingOut = false;
     }
 
-    private void SaveAndBack()
+    private void Save()
     {
         _settings.KeepWindowOnTop = alwaysOnTop;
         _settings.AllowMultipleDownloads = allowMultipleDownloads;
@@ -372,6 +411,5 @@ public class SettingsViewModel : ObservableEntity
         _settings.DefaultSearchParameters.IncludeMachineTranslated = IncludeMachineTranslated;
         _settings.PreferredFormat = SelectedFormat;
         _ = ApplicationDataReader.SaveSettingsAsync(_settings);
-        navigator.GoToPreviousControl();
     }
 }

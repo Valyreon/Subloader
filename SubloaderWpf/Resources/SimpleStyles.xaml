@@ -9,6 +9,8 @@
     <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     <Converters:ReverseBoolConverter x:Key="ReverseBoolConverter" />
     <Converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter" />
+    <Converters:MultiplyConverter x:Key="MultiplyConverter" />
+
     <SolidColorBrush x:Key="MainDarkColor" Color="#333" />
     <SolidColorBrush x:Key="MainBorderColor" Color="#a6a6a6" />
     <SolidColorBrush x:Key="MainBackgroundColor" Color="#e8e8e8" />

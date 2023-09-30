@@ -1,5 +1,4 @@
 using System.CommandLine;
-using OpenSubtitlesSharp;
 using SubloaderCLI.Interfaces;
 
 namespace SubloaderCLI.Commands;
@@ -63,30 +62,9 @@ public class DirectoryCommand : ICommand
             return;
         }
 
-        Session session = new();
-        if(!string.IsNullOrWhiteSpace(username))
-        {
-            Console.Write("Password: ");
-            var password = Helper.GetPassword();
+        var session = string.IsNullOrWhiteSpace(username) ? new() : await Helper.Login(username);
 
-            if(string.IsNullOrWhiteSpace(password))
-            {
-                ConsoleHelper.WriteExceptionMessage("Password is empty.");
-                return;
-            }
-
-            using var client = new OpenSubtitlesClient(Constants.APIKey);
-            var loginInfo = await client.LoginAsync(username, password);
-            session.Username = username;
-            session.Token = loginInfo.Token;
-            session.RemainingDownloads = loginInfo.User.RemainingDownloads;
-            session.BaseUrl = loginInfo.BaseUrl;
-            session.Level = loginInfo.User.Level;
-            session.AllowedDownloads = loginInfo.User.AllowedDownloads;
-        }
-
-        ConsoleHelper.WriteLine("Login success.", ConsoleColor.Green);
-        Console.WriteLine("Remaining downloads: " + session.RemainingDownloads);
+        
 
         var extensions = exts.Split('|').Select(e => "." + e).ToList();
 
