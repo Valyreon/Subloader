@@ -1,8 +1,6 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using SubloaderWpf.Services;
+using System.Windows.Input;
 using SubloaderWpf.ViewModels;
 
 namespace SubloaderWpf.Views;
@@ -29,5 +27,11 @@ public partial class SettingsControl : UserControl
         {
             ((SettingsViewModel)DataContext).Password = ((PasswordBox)sender).Password;
         }
+    }
+
+    private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+    {
+        searchLanguagesTextBox.Focus();
+        Keyboard.Focus(searchLanguagesTextBox);
     }
 }

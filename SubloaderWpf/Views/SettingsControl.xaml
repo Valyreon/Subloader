@@ -11,9 +11,13 @@
     FocusVisualStyle="{x:Null}"
     Focusable="False"
     FontFamily="Segoe UI Semibold"
+    Loaded="UserControl_Loaded"
     RenderOptions.BitmapScalingMode="HighQuality"
     UseLayoutRounding="True"
     mc:Ignorable="d">
+    <UserControl.InputBindings>
+        <KeyBinding Key="Esc" Command="{Binding BackCommand}" />
+    </UserControl.InputBindings>
     <DockPanel>
         <Border
             Padding="10"
@@ -24,7 +28,7 @@
             <Button
                 Grid.Column="2"
                 Width="150"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Right"
                 Command="{Binding BackCommand}"
                 Content="Back" />
         </Border>
@@ -154,7 +158,10 @@
                             <Label Grid.Column="0" VerticalAlignment="Center">
                                 Search:
                             </Label>
-                            <TextBox Grid.Column="2" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Delay=150}" />
+                            <TextBox
+                                x:Name="searchLanguagesTextBox"
+                                Grid.Column="2"
+                                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Delay=150}" />
                         </Grid>
 
                         <DataGrid
