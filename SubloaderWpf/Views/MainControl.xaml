@@ -85,51 +85,6 @@
                 </StackPanel>
             </Border>
         </Grid>
-        <Grid
-            x:Name="connectionModal"
-            Panel.ZIndex="10000"
-            Focusable="False"
-            IsVisibleChanged="connectionModal_IsVisibleChanged"
-            Visibility="{Binding IsConnectionModalOpen, Converter={StaticResource BoolToVisibilityConverter}}">
-            <Grid.Background>
-                <SolidColorBrush Opacity="0.35" Color="#222" />
-            </Grid.Background>
-            <Border
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Center"
-                Background="{StaticResource MainBackgroundColor}"
-                BorderBrush="{StaticResource MainBorderColor}"
-                BorderThickness="0,1">
-                <Border.Effect>
-                    <DropShadowEffect
-                        BlurRadius="8"
-                        Direction="0"
-                        Opacity="0.3" />
-                </Border.Effect>
-                <StackPanel
-                    Width="300"
-                    Margin="0,10"
-                    Background="{StaticResource MainBackgroundColor}"
-                    Orientation="Vertical">
-                    <TextBlock
-                        Margin="0,0,0,0"
-                        HorizontalAlignment="Center"
-                        Text="Unable to establish a connection to Opensubtitles API." />
-                    <TextBlock
-                        Margin="0,0,0,10"
-                        HorizontalAlignment="Center"
-                        Text="Check your internet connection." />
-                    <Button
-                        x:Name="retryButton"
-                        Width="100"
-                        Click="Retry_Button_Click"
-                        Command="{Binding CheckConnectionCommand}"
-                        Content="Retry"
-                        PreviewLostKeyboardFocus="retryButton_PreviewLostKeyboardFocus" />
-                    <themes:Spinner x:Name="retrySpinner" Visibility="Collapsed" />
-                </StackPanel>
-            </Border>
-        </Grid>
         <DockPanel Focusable="False">
             <Grid Grid.Row="3" DockPanel.Dock="Bottom">
                 <Grid.ColumnDefinitions>

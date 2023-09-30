@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Media;
-using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -25,7 +24,6 @@ public class MainViewModel : ObservableEntity
     private bool isSearchModalOpen;
     private string lastSearchedText;
     private string statusText;
-    private bool isConnectionModalOpen;
     private bool isLoading;
     private ObservableCollection<SubtitleEntry> subtitleList;
 
@@ -60,25 +58,6 @@ public class MainViewModel : ObservableEntity
 
     public ICommand DownloadCommand => new RelayCommand(Download);
 
-    public ICommand CheckConnectionCommand => new RelayCommand(StartCheckConnectionTask);
-
-    public void StartCheckConnectionTask()
-    {
-        _ = Task.Run(async () =>
-        {
-            var pingSuccess = await CanConnectToOsAPI();
-
-            if (pingSuccess)
-            {
-                IsConnectionModalOpen = false;
-            }
-            else
-            {
-                IsConnectionModalOpen = true;
-            }
-        });
-    }
-
     public bool IsSearchModalOpen
     {
         get => isSearchModalOpen;
@@ -91,12 +70,8 @@ public class MainViewModel : ObservableEntity
         set => Set(() => IsLoading, ref isLoading, value);
     }
 
-    public bool IsConnectionModalOpen
-    {
-        get => isConnectionModalOpen;
-        set => Set(() => IsConnectionModalOpen, ref isConnectionModalOpen, value);
-    }
     public ICommand OpenSearchModalCommand => new RelayCommand(() => IsSearchModalOpen = true);
+
     public ICommand RefreshCommand => new RelayCommand(Refresh);
 
     public SearchFormViewModel SearchForm { get; set; }
@@ -177,8 +152,6 @@ public class MainViewModel : ObservableEntity
 
     public void GoToSettings()
     {
-        StartCheckConnectionTask();
-
         var settingsControl = new SettingsViewModel(_navigator, _openSubtitlesService, _settings);
         _navigator.GoToControl(settingsControl);
     }
@@ -203,8 +176,6 @@ public class MainViewModel : ObservableEntity
         }
         IsLoading = true;
         SubtitleList = null;
-
-        StartCheckConnectionTask();
 
         IsSearchModalOpen = false;
         CurrentPath = null;
@@ -246,7 +217,6 @@ public class MainViewModel : ObservableEntity
         }
         IsLoading = true;
 
-        StartCheckConnectionTask();
         Application.Current.MainWindow.Activate();
         StatusText = "Searching subtitles...";
         SubtitleList = null;
@@ -300,24 +270,5 @@ public class MainViewModel : ObservableEntity
                 IsLoading = false;
             }
         });
-    }
-
-    public static async Task<bool> CanConnectToOsAPI()
-    {
-        try
-        {
-            using var ping = new Ping();
-            var reply = await ping.SendPingAsync("api.opensubtitles.com", 2500);
-
-            if (reply != null && reply.Status == IPStatus.Success)
-            {
-                return true; // Internet connection is available.
-            }
-        }
-        catch (PingException)
-        {
-        }
-
-        return false; // No internet connection.
     }
 }
