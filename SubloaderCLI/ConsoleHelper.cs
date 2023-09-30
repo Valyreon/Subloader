@@ -18,6 +18,15 @@ public static class ConsoleHelper
         Console.ForegroundColor = tmp;
     }
 
+    public static void WriteLine(string label, string value, ConsoleColor labelColor = ConsoleColor.Cyan)
+    {
+        var tmp = Console.ForegroundColor;
+        Console.ForegroundColor = labelColor;
+        Console.Write(label);
+        Console.ForegroundColor = tmp;
+        Console.WriteLine(value);
+    }
+
     public static void WriteMessageForFile(string fileName, string message, ConsoleColor fileColor = ConsoleColor.Green)
     {
         var tmp = Console.ForegroundColor;

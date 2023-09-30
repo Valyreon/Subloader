@@ -64,8 +64,6 @@ public class DirectoryCommand : ICommand
 
         var session = string.IsNullOrWhiteSpace(username) ? new() : await Helper.Login(username);
 
-        
-
         var extensions = exts.Split('|').Select(e => "." + e).ToList();
 
         Console.WriteLine("Scanning files...");

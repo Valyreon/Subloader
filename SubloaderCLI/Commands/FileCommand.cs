@@ -12,16 +12,36 @@ public class FileCommand : ICommand
 
         var languageOption = new Option<string>(
         aliases: new string[] { "--lang", "-l" },
-        () => "eng",
+        () => "en",
         description: "Specify desired language of the subtitle.");
+
+        var usernameOption = new Option<string>(
+            aliases: new string[] { "--user", "--username", "-u" },
+            description: "If specified, you will be prompted to enter your password. " +
+            "Command will login and use your token for the entire operation after which it will log you out.");
 
         var fileDownload = new Command("file", "Download subtitle for single file based on hash.")
         {
             pathOption,
-            languageOption
+            languageOption,
+            usernameOption
         };
 
-        fileDownload.SetHandler((FileInfo path, string language) => Helper.DownloadSubtitlesForFile(path, language), pathOption, languageOption);
+        fileDownload.SetHandler((FileInfo path, string language, string username) => DownloadSubtitlesForFile(path, language, username), pathOption, languageOption, usernameOption);
+
         return fileDownload;
+    }
+
+    private static async Task DownloadSubtitlesForFile(FileInfo path, string language, string username)
+    {
+        if (!path.Exists)
+        {
+            ConsoleHelper.WriteLine("Specified file does not exist.");
+            return;
+        }
+
+        var session = string.IsNullOrWhiteSpace(username) ? new() : await Helper.Login(username);
+
+        await Helper.DownloadSubtitlesForFile(path, language, session: session);
     }
 }

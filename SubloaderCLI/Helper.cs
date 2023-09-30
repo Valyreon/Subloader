@@ -10,7 +10,7 @@ public static class Helper
     {
         try
         {
-            using var client = new OpenSubtitlesClient(Constants.APIKey, session.Token);
+            using var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token);
             var results = await client.SearchAsync(path.FullName, new SearchParameters
             {
                 Languages = new List<string> { language }
@@ -53,11 +53,11 @@ public static class Helper
                 {
                     session.RemainingDownloads = downloadInfo.Remaining;
                 }
-                ConsoleHelper.WriteMessageForFile(path.Name, "Subtitle downloaded.");
+                ConsoleHelper.WriteLine(path.Name, "Subtitle downloaded.", ConsoleColor.Green);
                 return true;
             }
 
-            ConsoleHelper.WriteMessageForFile(path.Name, "No valid subtitles found.");
+            ConsoleHelper.WriteMessageForFile(path.Name, "No valid subtitles found.", ConsoleColor.Red);
         }
         catch (Exception ex)
         {
@@ -120,12 +120,10 @@ public static class Helper
             // Handle backspace (remove the last character).
             if (keyInfo.Key == ConsoleKey.Backspace && password.Length > 0)
             {
-                Console.Write("\b \b");
                 password = password[0..^1];
             }
             else if (keyInfo.Key != ConsoleKey.Enter)
             {
-                Console.Write("*");
                 password += keyInfo.KeyChar;
             }
         }
@@ -161,8 +159,9 @@ public static class Helper
         };
 
         ConsoleHelper.WriteLine("Login success.", ConsoleColor.Green);
-        Console.WriteLine("Remaining downloads: " + session.RemainingDownloads);
-        Console.WriteLine("Level: " + session.Level);
+        ConsoleHelper.WriteLine("Remaining downloads: ", session.RemainingDownloads.ToString(), ConsoleColor.Magenta);
+        ConsoleHelper.WriteLine("Level: ", session.Level,  ConsoleColor.Magenta);
+        Console.WriteLine();
 
         return session;
     }
