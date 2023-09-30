@@ -211,7 +211,7 @@ public class SettingsViewModel : ObservableEntity
             var isLatestVersion = await service.IsLatestVersionAsync(App.VersionTag);
             IsCheckingForUpdates = false;
 
-            if (!isLatestVersion)
+            if (isLatestVersion)
             {
                 MessageBox.Show("You have the latest version!", "Update Check");
             }
