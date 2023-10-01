@@ -238,6 +238,7 @@ public class MainViewModel : ObservableEntity
 
     public void Refresh()
     {
+        currentSort = SortBy.Default;
         if (CurrentPath != null)
         {
             ProcessFileAsync();
