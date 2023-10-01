@@ -89,7 +89,7 @@ public static class Helper
             type => typeof(ICommand).IsAssignableFrom(type) && !type.IsInterface);
 
         // Create instances of implementing types
-        var instances = new List<ICommand>();
+        var instances = new List<ICommand>(5);
 
         foreach (var implementingType in implementingTypes)
         {

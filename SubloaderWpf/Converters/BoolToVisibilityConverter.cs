@@ -12,24 +12,14 @@ public class BoolToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo language)
     {
-        if (targetType != typeof(Visibility))
-        {
-            throw new InvalidOperationException("The target must be a VisibilityProperty");
-        }
-
-        var reverse = false;
-        if (parameter is string paramStr && !bool.TryParse(paramStr, out reverse))
-        {
-            throw new ArgumentException("Parameter must be string 'true' or 'false'.");
-        }
-
-        if (value is bool boolValue)
-        {
-            boolValue = reverse ? !boolValue : boolValue;
-        }
-        else
+        if (value is not bool boolValue)
         {
             return Visibility.Collapsed;
+        }
+
+        if (parameter is string paramStr && bool.TryParse(paramStr, out var reverse))
+        {
+            boolValue = reverse ? !boolValue : boolValue;
         }
 
         return boolValue ? Visibility.Visible : Visibility.Collapsed;

@@ -8,6 +8,7 @@ using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
 using SubloaderWpf.Utilities;
+using SubloaderWpf.ViewModels;
 
 namespace SubloaderWpf.Services;
 
@@ -24,11 +25,9 @@ public class OpenSubtitlesService : IOpenSubtitlesService
     {
         using var osClient = GetClient();
 
-        var fileId = subtitle.Model.Information.Files.First().FileId.Value;
-
         var downloadParameters = new DownloadParameters
         {
-            FileId = fileId,
+            FileId = subtitle.FileId,
             SubFormat = _settings.PreferredFormat
         };
 
@@ -36,7 +35,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         var extension = Path.GetExtension(downloadInfo.FileName);
 
         var destination = string.IsNullOrWhiteSpace(savePath)
-            ? GetDestinationPath(videoPath, subtitle.Model.Information.Language, extension)
+            ? GetDestinationPath(videoPath, subtitle.LanguageCode, extension)
             : savePath;
 
         File.WriteAllBytes(destination, await GetRawFileAsync(downloadInfo.Link));
@@ -64,23 +63,26 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         return await newClient.GetLanguagesAsync();
     }
 
-    public async Task<IEnumerable<SubtitleEntry>> GetSubtitlesForFileAsync(string filePath)
+    public async Task<(IEnumerable<SubtitleEntry> Items, int CurrentPage, int TotalPages)> GetSubtitlesForFileAsync(string filePath, int currentPage = 1)
     {
         using var newClient = GetClient();
 
         var parameters = _settings.DefaultSearchParameters with
         {
-            Languages = _settings.WantedLanguages.Select(l => l.Code)
+            Languages = _settings.WantedLanguages,
+            Page = currentPage
         };
 
         var result = await newClient.SearchAsync(filePath, parameters);
 
         // order by levenshtein distance
         var laven = new Levenshtein(Path.GetFileNameWithoutExtension(filePath));
-        return result.Items.Select(i => new SubtitleEntry(i, _settings.WantedLanguages))
+        var items = result.Items.Select(i => new SubtitleEntry(i, SettingsViewModel.AllLanguages))
             .Select(ResultItem => (ResultItem, laven.DistanceFrom(ResultItem.Name)))
             .OrderBy(i => i.Item2)
             .Select(i => i.ResultItem);
+
+        return (items, result.Page, result.TotalPages);
     }
 
     public async Task<User> LoginAsync(string username, string password)
@@ -115,11 +117,19 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         }
     }
 
-    public async Task<IEnumerable<SubtitleEntry>> SearchSubtitlesAsync(string token, int? episodeNumber = null, int? seasonNumber = null, int? year = null, FileTypeFilter? filter = null, int? imdbId = null, int? parentImdbId = null)
+    public async Task<(IEnumerable<SubtitleEntry> Items, int CurrentPage, int TotalPages)> SearchSubtitlesAsync(
+        string token,
+        int? episodeNumber = null,
+        int? seasonNumber = null,
+        int? year = null,
+        FileTypeFilter? filter = null,
+        int? imdbId = null,
+        int? parentImdbId = null,
+        int currentPage = 1)
     {
         var parameters = _settings.DefaultSearchParameters with
         {
-            Languages = _settings.WantedLanguageCodes,
+            Languages = _settings.WantedLanguages,
             OnlyMovieHashMatch = false,
             Query = token,
             EpisodeNumber = episodeNumber,
@@ -128,13 +138,14 @@ public class OpenSubtitlesService : IOpenSubtitlesService
             Type = filter,
             ImdbId = imdbId,
             ParentImdbId = parentImdbId,
+            Page = currentPage
         };
 
         using var newClient = GetClient();
 
         var result = await newClient.SearchAsync(parameters);
 
-        return result.Items.Select(c => new SubtitleEntry(c, _settings.WantedLanguages));
+        return (result.Items.Select(c => new SubtitleEntry(c, SettingsViewModel.AllLanguages)), result.Page, result.TotalPages);
     }
 
     private static async Task<byte[]> GetRawFileAsync(string url)

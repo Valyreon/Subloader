@@ -14,21 +14,9 @@
                 CornerRadius="0" />
             <Image
                 Grid.Column="1"
-                Width="8"
-                Height="10">
-                <Image.Source>
-                    <DrawingImage>
-                        <DrawingImage.Drawing>
-                            <DrawingGroup>
-                                <DrawingGroup.Transform>
-                                    <TranslateTransform X="0" Y="960" />
-                                </DrawingGroup.Transform>
-                                <GeometryDrawing Brush="{StaticResource MainDarkColor}" Geometry="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z" />
-                            </DrawingGroup>
-                        </DrawingImage.Drawing>
-                    </DrawingImage>
-                </Image.Source>
-            </Image>
+                Width="10"
+                Height="10"
+                Source="{StaticResource ChevronDown}" />
         </Grid>
         <!--<ControlTemplate.Triggers>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">

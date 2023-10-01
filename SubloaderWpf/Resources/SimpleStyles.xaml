@@ -2,6 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Converters="clr-namespace:SubloaderWpf.Converters"
+    xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
     xmlns:d="http://schemas.microsoft.com/expression/interactivedesigner/2006"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -10,19 +11,124 @@
     <Converters:ReverseBoolConverter x:Key="ReverseBoolConverter" />
     <Converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter" />
     <Converters:MultiplyConverter x:Key="MultiplyConverter" />
+    <Converters:PageParamsToVisibilityMultiConverter x:Key="PageParamsToVisibilityMultiConverter" />
 
-    <SolidColorBrush x:Key="MainDarkColor" Color="#333" />
-    <SolidColorBrush x:Key="MainBorderColor" Color="#a6a6a6" />
-    <SolidColorBrush x:Key="MainBackgroundColor" Color="#e8e8e8" />
-    <SolidColorBrush x:Key="LighterBorderColor" Color="#bbb" />
-    <SolidColorBrush x:Key="AccentColor" Color="CornflowerBlue" />
-    <SolidColorBrush x:Key="MediumLightAccentColor" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.2}" />
-    <SolidColorBrush x:Key="LighterAccentColor" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.9}" />
-    <SolidColorBrush x:Key="MediumAccentColor" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
+    <SolidColorBrush
+        x:Key="MainDarkColor"
+        PresentationOptions:Freeze="True"
+        Color="#333" />
+    <SolidColorBrush
+        x:Key="MainBorderColor"
+        PresentationOptions:Freeze="True"
+        Color="#a6a6a6" />
+    <SolidColorBrush
+        x:Key="MainBackgroundColor"
+        PresentationOptions:Freeze="True"
+        Color="#e8e8e8" />
+    <SolidColorBrush
+        x:Key="LighterBorderColor"
+        PresentationOptions:Freeze="True"
+        Color="#bbb" />
+    <SolidColorBrush
+        x:Key="AccentColor"
+        PresentationOptions:Freeze="True"
+        Color="CornflowerBlue" />
+    <SolidColorBrush
+        x:Key="MediumLightAccentColor"
+        PresentationOptions:Freeze="True"
+        Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.2}" />
+    <SolidColorBrush
+        x:Key="LighterAccentColor"
+        PresentationOptions:Freeze="True"
+        Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.9}" />
+    <SolidColorBrush
+        x:Key="MediumAccentColor"
+        PresentationOptions:Freeze="True"
+        Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
 
-    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.15}" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
-    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
+    <SolidColorBrush
+        x:Key="{x:Static SystemColors.HighlightBrushKey}"
+        PresentationOptions:Freeze="True"
+        Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.15}" />
+    <SolidColorBrush
+        x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+        PresentationOptions:Freeze="True"
+        Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
+    <SolidColorBrush
+        x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+        PresentationOptions:Freeze="True"
+        Color="White" />
+
+    <DrawingImage x:Key="ChevronDown">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0" Y="960" />
+                </DrawingGroup.Transform>
+                <GeometryDrawing
+                    PresentationOptions:Freeze="True"
+                    Brush="{StaticResource MainDarkColor}"
+                    Geometry="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <Style TargetType="{x:Type ListBox}">
+        <Setter Property="AlternationCount" Value="2" />
+        <Setter Property="BorderBrush" Value="{StaticResource MainBorderColor}" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Template">
+                        <!--  Revert the Template in Windows 10 to match the Windows 7 template that used "SystemColors.HighlightBrushKey" and such  -->
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <Border
+                                    x:Name="itemBorder"
+                                    Height="24"
+                                    Padding="{TemplateBinding Padding}"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="#e5e5e5"
+                                    BorderThickness="0,0,0,1"
+                                    SnapsToDevicePixels="true">
+                                    <ContentPresenter
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter TargetName="itemBorder" Property="Background" Value="{StaticResource AccentColor}" />
+                                        <Setter Property="Foreground" Value="White" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="true" />
+                                            <Condition Property="Selector.IsSelectionActive" Value="false" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter TargetName="itemBorder" Property="Background" Value="Gray" />
+                                        <Setter Property="Foreground" Value="White" />
+                                    </MultiTrigger>
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Foreground" Value="Gray" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter Property="Control.Background" Value="White" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Control.Background" Value="#f5f5f5" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <Style TargetType="{x:Type CheckBox}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
@@ -58,7 +164,10 @@
                                                 <DrawingGroup.Transform>
                                                     <TranslateTransform X="0" Y="960" />
                                                 </DrawingGroup.Transform>
-                                                <GeometryDrawing Brush="{StaticResource AccentColor}" Geometry="M395-252.826 192.391-456.435l80.435-80.435L395-415.131 688.609-707.74l80.435 80.87L395-252.826Z" />
+                                                <GeometryDrawing
+                                                    PresentationOptions:Freeze="True"
+                                                    Brush="{StaticResource AccentColor}"
+                                                    Geometry="M395-252.826 192.391-456.435l80.435-80.435L395-415.131 688.609-707.74l80.435 80.87L395-252.826Z" />
                                             </DrawingGroup>
                                         </DrawingImage.Drawing>
                                     </DrawingImage>
@@ -104,7 +213,7 @@
         <Setter Property="HorizontalGridLinesBrush" Value="#e5e5e5" />
         <Setter Property="VerticalGridLinesBrush" Value="#e5e5e5" />
         <Setter Property="IsReadOnly" Value="True" />
-        <Setter Property="BorderBrush" Value="#bbb" />
+        <Setter Property="BorderBrush" Value="{StaticResource MainBorderColor}" />
         <Setter Property="CanUserReorderColumns" Value="False" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CanUserResizeColumns" Value="True" />
@@ -351,7 +460,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="textBoxBorder" Property="Opacity" Value="0.56" />
+                            <Setter Property="Focusable" Value="False" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter TargetName="textBoxBorder" Property="BorderBrush" Value="{DynamicResource MediumLightAccentColor}" />

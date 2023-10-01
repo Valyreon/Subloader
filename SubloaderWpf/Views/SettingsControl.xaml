@@ -12,7 +12,7 @@
     Focusable="False"
     FontFamily="Segoe UI Semibold"
     Loaded="UserControl_Loaded"
-    RenderOptions.BitmapScalingMode="HighQuality"
+    RenderOptions.BitmapScalingMode="LowQuality"
     UseLayoutRounding="True"
     mc:Ignorable="d">
     <UserControl.InputBindings>
@@ -47,8 +47,6 @@
                     </Border>
                 </TabItem.Header>
                 <DockPanel>
-
-
                     <Grid Margin="0,0,0,10" DockPanel.Dock="Bottom">
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -93,95 +91,78 @@
                     <Grid Margin="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
-                            <ColumnDefinition Width="6" />
-                            <ColumnDefinition Width="40" />
-                            <ColumnDefinition Width="6" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="36" />
-                            <RowDefinition />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="6" />
-                            <RowDefinition Height="40" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <DataGrid
-                            x:Name="wantedLanguageList"
-                            Grid.Row="0"
-                            Grid.RowSpan="6"
-                            Grid.Column="0"
-                            ItemsSource="{Binding WantedLanguageList, Mode=TwoWay}"
-                            SelectedItem="{Binding SelectedWantedLanguage}">
-                            <DataGrid.InputBindings>
-                                <MouseBinding Command="{Binding DeleteCommand}" MouseAction="LeftDoubleClick" />
-                            </DataGrid.InputBindings>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn
-                                    Width="15*"
-                                    Binding="{Binding Name}"
-                                    ElementStyle="{StaticResource ColumnElementStyle}"
-                                    Header="Chosen languages" />
-                            </DataGrid.Columns>
-                        </DataGrid>
 
-                        <Button
-                            Grid.Row="2"
-                            Grid.Column="2"
-                            Width="40"
-                            Height="40"
-                            Command="{Binding AddCommand}"
-                            Content="3"
-                            FontFamily="Marlett"
-                            FontSize="20"
-                            IsEnabled="{Binding IsLanguageSelected, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button
-                            Grid.Row="4"
-                            Grid.Column="2"
-                            Width="40"
-                            Height="40"
-                            Command="{Binding DeleteCommand}"
-                            Content="4"
-                            FontFamily="Marlett"
-                            FontSize="20"
-                            IsEnabled="{Binding IsWantedLanguageSelected, UpdateSourceTrigger=PropertyChanged}" />
+                        <DockPanel VerticalAlignment="Stretch">
+                            <Label Margin="0,0,0,2" DockPanel.Dock="Top">Wanted languages:</Label>
+                            <ListBox
+                                x:Name="wantedLanguageList"
+                                VerticalAlignment="Stretch"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding WantedLanguageList, Mode=TwoWay}"
+                                SelectedItem="{Binding SelectedWantedLanguage}">
+                                <ListBox.InputBindings>
+                                    <MouseBinding Command="{Binding DeleteCommand}" MouseAction="LeftDoubleClick" />
+                                </ListBox.InputBindings>
+                            </ListBox>
+                        </DockPanel>
 
-                        <Grid Grid.Row="0" Grid.Column="4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="5" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="30" />
-                            </Grid.RowDefinitions>
-                            <Label Grid.Column="0" VerticalAlignment="Center">
-                                Search:
-                            </Label>
-                            <TextBox
-                                x:Name="searchLanguagesTextBox"
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="5,0"
+                            VerticalAlignment="Center">
+                            <Button
+                                Grid.Row="2"
                                 Grid.Column="2"
-                                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Delay=150}" />
-                        </Grid>
+                                Width="40"
+                                Height="40"
+                                Margin="0,0,0,10"
+                                Command="{Binding AddCommand}"
+                                Content="3"
+                                FontFamily="Marlett"
+                                FontSize="20"
+                                IsEnabled="{Binding IsLanguageSelected, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="4"
+                                Grid.Column="2"
+                                Width="40"
+                                Height="40"
+                                Command="{Binding DeleteCommand}"
+                                Content="4"
+                                FontFamily="Marlett"
+                                FontSize="20"
+                                IsEnabled="{Binding IsWantedLanguageSelected, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
 
-                        <DataGrid
-                            x:Name="unselectedLanguageList"
-                            Grid.Row="1"
-                            Grid.RowSpan="6"
-                            Grid.Column="4"
-                            ItemsSource="{Binding LanguageList, Mode=TwoWay}"
-                            SelectedItem="{Binding SelectedLanguage}">
-                            <DataGrid.InputBindings>
-                                <MouseBinding Command="{Binding AddCommand}" MouseAction="LeftDoubleClick" />
-                            </DataGrid.InputBindings>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn
-                                    Width="15*"
-                                    Binding="{Binding Name}"
-                                    ElementStyle="{StaticResource ColumnElementStyle}"
-                                    Header="Languages" />
-                            </DataGrid.Columns>
-                        </DataGrid>
+                        <DockPanel Grid.Column="2">
+                            <DockPanel Margin="0,0,0,5" DockPanel.Dock="Top">
+                                <Label
+                                    Margin="0,0,5,0"
+                                    VerticalAlignment="Center"
+                                    DockPanel.Dock="Left">
+                                    Search:
+                                </Label>
+                                <TextBox x:Name="searchLanguagesTextBox" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Delay=150}" />
+                            </DockPanel>
+
+                            <ListBox
+                                x:Name="unselectedLanguageList"
+                                Grid.Row="1"
+                                Grid.RowSpan="6"
+                                Grid.Column="4"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding LanguageList, Mode=TwoWay}"
+                                SelectedItem="{Binding SelectedLanguage}">
+                                <ListBox.InputBindings>
+                                    <MouseBinding Command="{Binding AddCommand}" MouseAction="LeftDoubleClick" />
+                                </ListBox.InputBindings>
+                            </ListBox>
+                        </DockPanel>
                     </Grid>
                 </DockPanel>
             </TabItem>

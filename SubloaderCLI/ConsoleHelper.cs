@@ -22,7 +22,7 @@ public static class ConsoleHelper
     {
         var tmp = Console.ForegroundColor;
         Console.ForegroundColor = labelColor;
-        Console.Write(label);
+        Console.Write(label + ": ");
         Console.ForegroundColor = tmp;
         Console.WriteLine(value);
     }

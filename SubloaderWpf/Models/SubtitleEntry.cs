@@ -9,12 +9,17 @@ public class SubtitleEntry : ObservableEntity
 {
     public SubtitleEntry(Subtitle item, IEnumerable<SubtitleLanguage> allLanguages)
     {
-        Model = item;
-        Language = allLanguages.SingleOrDefault(l => string.Equals(l.Code, Model.Information.Language, System.StringComparison.InvariantCultureIgnoreCase))?.Name;
+        IsHashMatch = item.Information.IsHashMatch == true;
+        FileId = item.Information.Files[0].FileId.Value;
+        Name = item.Information.Release;
+        var lang = allLanguages.SingleOrDefault(l => string.Equals(l.Code, item.Information.Language, System.StringComparison.InvariantCultureIgnoreCase));
+        Language = lang?.Name;
+        LanguageCode = lang?.Code;
     }
 
     public string Language { get; }
-    public bool IsHashMatch => Model.Information.IsHashMatch == true;
-    public Subtitle Model { get; }
-    public string Name => Model.Information.Release;
+    public string LanguageCode { get; }
+    public bool IsHashMatch { get; }
+    public int FileId { get; }
+    public string Name { get; }
 }

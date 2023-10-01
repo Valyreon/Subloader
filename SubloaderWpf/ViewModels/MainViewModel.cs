@@ -26,6 +26,8 @@ public class MainViewModel : ObservableEntity
     private string statusText;
     private bool isLoading;
     private ObservableCollection<SubtitleEntry> subtitleList;
+    private int currentPage;
+    private int totalPages;
 
     public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
     {
@@ -51,6 +53,8 @@ public class MainViewModel : ObservableEntity
             currentPath = value;
             if (currentPath != null)
             {
+                CurrentPage = 1;
+                TotalPages = 1;
                 ProcessFileAsync();
             }
         }
@@ -70,14 +74,48 @@ public class MainViewModel : ObservableEntity
         set => Set(() => IsLoading, ref isLoading, value);
     }
 
+    public int CurrentPage
+    {
+        get => currentPage;
+        set => Set(() => CurrentPage, ref currentPage, value);
+    }
+
+    public int TotalPages
+    {
+        get => totalPages;
+        set => Set(() => TotalPages, ref totalPages, value);
+    }
+
     public ICommand OpenSearchModalCommand => new RelayCommand(() => IsSearchModalOpen = true);
 
     public ICommand RefreshCommand => new RelayCommand(Refresh);
 
     public SearchFormViewModel SearchForm { get; set; }
 
-
     public ICommand SearchCommand => new RelayCommand(Search);
+
+    private void Search()
+    {
+        CurrentPage = 1;
+        TotalPages = 1;
+        SearchPage(CurrentPage);
+    }
+
+    public ICommand NextPageCommand => new RelayCommand(NextPage);
+
+    private void NextPage()
+    {
+        ++CurrentPage;
+        Refresh();
+    }
+
+    public ICommand PreviousPageCommand => new RelayCommand(PreviousPage);
+
+    private void PreviousPage()
+    {
+        --CurrentPage;
+        Refresh();
+    }
 
     public SubtitleEntry SelectedItem { get; set; }
     public ICommand SettingsCommand => new RelayCommand(GoToSettings);
@@ -164,11 +202,11 @@ public class MainViewModel : ObservableEntity
         }
         else if (!string.IsNullOrWhiteSpace(SearchForm.Text))
         {
-            Search();
+            SearchPage(CurrentPage);
         }
     }
 
-    public async void Search()
+    public async void SearchPage(int currentPage)
     {
         if (IsLoading)
         {
@@ -197,15 +235,16 @@ public class MainViewModel : ObservableEntity
         StatusText = "Searching subtitles...";
         await RunAndHandleAsync(async () =>
         {
-            var results = await _openSubtitlesService.SearchSubtitlesAsync(
+            var result = await _openSubtitlesService.SearchSubtitlesAsync(
                 SearchForm.Text,
                 SearchForm.Episode,
                 SearchForm.Season,
                 SearchForm.Year,
                 SearchForm.Type,
                 SearchForm.ImdbId,
-                SearchForm.ParentImdbId);
-            ProcessResults(results);
+                SearchForm.ParentImdbId,
+                currentPage);
+            ProcessResults(result.Items, result.CurrentPage, result.TotalPages);
         });
     }
 
@@ -222,14 +261,17 @@ public class MainViewModel : ObservableEntity
         SubtitleList = null;
         await RunAndHandleAsync(async () =>
         {
-            var results = await _openSubtitlesService.GetSubtitlesForFileAsync(CurrentPath);
-            ProcessResults(results);
+            var result = await _openSubtitlesService.GetSubtitlesForFileAsync(CurrentPath, CurrentPage);
+            ProcessResults(result.Items, result.CurrentPage, result.TotalPages);
         });
     }
 
-    private void ProcessResults(IEnumerable<SubtitleEntry> results)
+    private void ProcessResults(IEnumerable<SubtitleEntry> results, int currentPage, int totalPages)
     {
         IsLoading = false;
+
+        CurrentPage = currentPage;
+        TotalPages = totalPages;
 
         if (results == null)
         {

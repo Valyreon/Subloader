@@ -13,18 +13,19 @@ public interface IOpenSubtitlesService
 
     Task<IEnumerable<SubtitleLanguage>> GetLanguagesAsync();
 
-    Task<IEnumerable<SubtitleEntry>> GetSubtitlesForFileAsync(string filePath);
+    Task<(IEnumerable<SubtitleEntry> Items, int CurrentPage, int TotalPages)> GetSubtitlesForFileAsync(string filePath, int currentPage = 1);
 
     Task<User> LoginAsync(string username, string password);
 
     Task<bool> LogoutAsync();
 
-    Task<IEnumerable<SubtitleEntry>> SearchSubtitlesAsync(
+    Task<(IEnumerable<SubtitleEntry> Items, int CurrentPage, int TotalPages)> SearchSubtitlesAsync(
         string token,
         int? episodeNumber = null,
         int? seasonNumber = null,
         int? year = null,
         FileTypeFilter? filter = null,
         int? imdbId = null,
-        int? parentImdbId = null);
+        int? parentImdbId = null,
+        int currentPage = 0);
 }

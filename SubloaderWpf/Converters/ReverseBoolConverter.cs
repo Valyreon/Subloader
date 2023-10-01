@@ -8,11 +8,6 @@ public class ReverseBoolConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo language)
     {
-        if (targetType != typeof(bool))
-        {
-            throw new InvalidOperationException("The target must be a bool property");
-        }
-
         if (value is bool boolValue)
         {
             return !boolValue;

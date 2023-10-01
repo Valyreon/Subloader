@@ -16,7 +16,7 @@
     d:DataContext="{d:DesignInstance Type=viewmodels:TheWindowViewModel}"
     Background="#e8e8e8"
     FontFamily="Segoe UI Semibold"
-    RenderOptions.BitmapScalingMode="HighQuality"
+    RenderOptions.BitmapScalingMode="LowQuality"
     ResizeMode="CanMinimize"
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextHintingMode="Auto"

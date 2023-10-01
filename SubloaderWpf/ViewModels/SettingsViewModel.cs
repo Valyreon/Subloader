@@ -49,6 +49,12 @@ public class SettingsViewModel : ObservableEntity
 
     public static IEnumerable<SubtitleLanguage> AllLanguages { get; set; }
 
+    static SettingsViewModel()
+    {
+        var manager = new ResourceManager("SubloaderWpf.Resources.Resources", typeof(TheWindow).Assembly);
+        AllLanguages = JsonSerializer.Deserialize<IEnumerable<SubtitleLanguage>>(manager.GetString("LanguagesList"));
+    }
+
     public SettingsViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
     {
         this.navigator = navigator;
@@ -58,15 +64,9 @@ public class SettingsViewModel : ObservableEntity
 
         Formats = new List<string> { "srt", "sub", "mpl", "webvtt", "dfxp", "txt" };
 
-        if (AllLanguages == null)
-        {
-            var manager = new ResourceManager("SubloaderWpf.Resources.Resources", typeof(TheWindow).Assembly);
-            AllLanguages = JsonSerializer.Deserialize<IEnumerable<SubtitleLanguage>>(manager.GetString("LanguagesList"));
-        }
-
         if (_settings.WantedLanguages?.Any() == true)
         {
-            WantedLanguageList = new ObservableCollection<SubtitleLanguage>(_settings.WantedLanguageCodes.Select(x => AllLanguages.SingleOrDefault(l => l.Code == x)));
+            WantedLanguageList = new ObservableCollection<SubtitleLanguage>(_settings.WantedLanguages.Select(x => AllLanguages.SingleOrDefault(l => l.Code == x)));
             LanguageList = new ObservableCollection<SubtitleLanguage>(AllLanguages.Except(WantedLanguageList));
         }
         else
@@ -219,7 +219,7 @@ public class SettingsViewModel : ObservableEntity
             {
                 var result = MessageBox.Show("New version of Subloader is available. Do you want to download now?", "Update available", MessageBoxButton.YesNo);
 
-                if(result == MessageBoxResult.Yes)
+                if (result == MessageBoxResult.Yes)
                 {
                     Process.Start(new ProcessStartInfo("https://github.com/Valyreon/Subloader/releases/latest") { UseShellExecute = true });
                 }
@@ -333,7 +333,14 @@ public class SettingsViewModel : ObservableEntity
         {
             var selected = SelectedLanguage;
             LanguageList.Remove(selected);
-            WantedLanguageList.Add(selected);
+
+            var index = 0;
+            while (index < WantedLanguageList.Count && string.CompareOrdinal(selected.Name, WantedLanguageList[index].Name) > 0)
+            {
+                index++;
+            }
+
+            WantedLanguageList.Insert(index, selected);
 
             if (!LanguageList.Any())
             {
@@ -348,8 +355,14 @@ public class SettingsViewModel : ObservableEntity
         {
             var selected = SelectedWantedLanguage;
             WantedLanguageList.Remove(selected);
-            LanguageList.Add(selected);
-            LanguageList = new(LanguageList.OrderBy(x => x.Name));
+
+            var index = 0;
+            while (index < LanguageList.Count && string.CompareOrdinal(selected.Name, LanguageList[index].Name) > 0)
+            {
+                index++;
+            }
+
+            LanguageList.Insert(index, selected);
         }
     }
 
@@ -403,7 +416,7 @@ public class SettingsViewModel : ObservableEntity
         _settings.AllowMultipleDownloads = allowMultipleDownloads;
         _settings.DownloadToSubsFolder = downloadToSubsFolder;
         _settings.OverwriteSameLanguageSub = overwriteSameLanguageSubs;
-        _settings.WantedLanguages = WantedLanguageList.ToList();
+        _settings.WantedLanguages = WantedLanguageList.Select(l => l.Code).ToList();
         _settings.DefaultSearchParameters.ForeignPartsOnly = (Filter)ForeignPartsSelectedIndex;
         _settings.DefaultSearchParameters.HearingImpaired = (Filter)HearingImpairedSelectedIndex;
         _settings.DefaultSearchParameters.IncludeOnlyFromTrustedSources = OnlyFromTrustedSources;

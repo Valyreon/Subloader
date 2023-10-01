@@ -13,7 +13,7 @@ internal static class DictionaryValueExtensions
         var properties = type.GetProperties()
             .Where(prop => prop.GetValue(obj) != null && prop.GetCustomAttribute<DictionaryValueAttribute>() != null);
 
-        var result = new Dictionary<string, string>();
+        var result = new Dictionary<string, string>(10);
 
         if (!properties.Any())
         {

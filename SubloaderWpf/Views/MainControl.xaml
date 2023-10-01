@@ -6,6 +6,7 @@
     xmlns:attachedProperties="clr-namespace:SubloaderWpf.AttachedProperties"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:themes="clr-namespace:SubloaderWpf.Themes"
     xmlns:viewmodels="clr-namespace:SubloaderWpf.ViewModels"
     x:Name="TheControl"
@@ -16,7 +17,7 @@
     DragDrop.Drop="OnDropFile"
     FontFamily="Segoe UI Semibold"
     Loaded="TheControl_Loaded"
-    RenderOptions.BitmapScalingMode="HighQuality"
+    RenderOptions.BitmapScalingMode="LowQuality"
     UseLayoutRounding="True"
     mc:Ignorable="d">
     <UserControl.InputBindings>
@@ -132,13 +133,80 @@
                 BorderBrush="{StaticResource LighterBorderColor}"
                 BorderThickness="0,0,0,1"
                 DockPanel.Dock="Bottom">
-                <TextBlock
-                    Margin="0,5"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="{StaticResource MainDarkColor}"
-                    Text="{Binding StatusText, UpdateSourceTrigger=PropertyChanged}"
-                    TextAlignment="Center" />
+                <DockPanel>
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="5,0,10,0"
+                        DockPanel.Dock="Right"
+                        Orientation="Horizontal">
+                        <StackPanel.Visibility>
+                            <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
+                                <Binding Path="CurrentPage" />
+                                <Binding Path="TotalPages" />
+                            </MultiBinding>
+                        </StackPanel.Visibility>
+                        <Button
+                            Width="20"
+                            Height="20"
+                            Padding="0,0"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Command="{Binding PreviousPageCommand}">
+                            <Image
+                                Width="10"
+                                Height="10"
+                                Source="{StaticResource ChevronDown}" />
+                            <Button.RenderTransform>
+                                <RotateTransform Angle="90" CenterX="10" CenterY="10" />
+                            </Button.RenderTransform>
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
+                                    <MultiBinding.ConverterParameter>
+                                        <sys:Boolean>False</sys:Boolean>
+                                    </MultiBinding.ConverterParameter>
+                                    <Binding Path="CurrentPage" />
+                                    <Binding Path="TotalPages" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                        </Button>
+                        <TextBlock Margin="5,0" VerticalAlignment="Center">
+                            <Run>Page</Run>
+                            <Run Text="{Binding CurrentPage}" />
+                            <Run>of</Run>
+                            <Run Text="{Binding TotalPages}" />
+                        </TextBlock>
+                        <Button
+                            Width="20"
+                            Height="20"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Command="{Binding NextPageCommand}">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
+                                    <MultiBinding.ConverterParameter>
+                                        <sys:Boolean>True</sys:Boolean>
+                                    </MultiBinding.ConverterParameter>
+                                    <Binding Path="CurrentPage" />
+                                    <Binding Path="TotalPages" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                            <Image
+                                Width="10"
+                                Height="10"
+                                Source="{StaticResource ChevronDown}" />
+                            <Button.RenderTransform>
+                                <RotateTransform Angle="-90" CenterX="10" CenterY="10" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock
+                        Margin="0,5"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource MainDarkColor}"
+                        Text="{Binding StatusText, UpdateSourceTrigger=PropertyChanged}"
+                        TextAlignment="Center" />
+                </DockPanel>
             </Border>
             <Grid>
                 <themes:Spinner
@@ -161,13 +229,13 @@
                     </DataGrid.InputBindings>
                     <DataGrid.Columns>
                         <DataGridTextColumn
-                            Width="15*"
+                            Width="3*"
                             Binding="{Binding Name}"
                             DisplayIndex="0"
                             ElementStyle="{StaticResource ColumnElementStyle}"
                             Header="Subtitle" />
                         <DataGridTextColumn
-                            Width="5*"
+                            Width="*"
                             Binding="{Binding Language}"
                             DisplayIndex="1"
                             ElementStyle="{StaticResource ColumnElementStyle}"

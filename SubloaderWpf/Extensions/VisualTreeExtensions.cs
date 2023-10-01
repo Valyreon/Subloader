@@ -8,7 +8,7 @@ public static class VisualTreeExtensions
     // Define an extension method to get all child elements of a certain type.
     public static List<T> GetChildrenOfType<T>(this DependencyObject parent) where T : DependencyObject
     {
-        var children = new List<T>();
+        var children = new List<T>(5);
 
         // Get the number of child elements.
         var count = VisualTreeHelper.GetChildrenCount(parent);
