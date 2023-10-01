@@ -77,10 +77,8 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
         // order by levenshtein distance
         var laven = new Levenshtein(Path.GetFileNameWithoutExtension(filePath));
-        var items = result.Items.Select(i => new SubtitleEntry(i, SettingsViewModel.AllLanguages))
-            .Select(ResultItem => (ResultItem, laven.DistanceFrom(ResultItem.Name)))
-            .OrderBy(i => i.Item2)
-            .Select(i => i.ResultItem);
+        var items = result.Items.Select(i => new SubtitleEntry(i, laven.DistanceFrom(i.Information.Release), SettingsViewModel.AllLanguages.Values))
+            .OrderBy(i => i.LevenshteinDistance);
 
         return (items, result.Page, result.TotalPages);
     }
@@ -145,7 +143,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
         var result = await newClient.SearchAsync(parameters);
 
-        return (result.Items.Select(c => new SubtitleEntry(c, SettingsViewModel.AllLanguages)), result.Page, result.TotalPages);
+        return (result.Items.Select(c => new SubtitleEntry(c, 0, SettingsViewModel.AllLanguages.Values)), result.Page, result.TotalPages);
     }
 
     private static async Task<byte[]> GetRawFileAsync(string url)

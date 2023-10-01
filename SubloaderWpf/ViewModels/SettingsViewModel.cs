@@ -47,12 +47,12 @@ public class SettingsViewModel : ObservableEntity
     private bool isLoggingOut;
     private bool isCheckingForUpdates;
 
-    public static IEnumerable<SubtitleLanguage> AllLanguages { get; set; }
+    public static IReadOnlyDictionary<string, SubtitleLanguage> AllLanguages { get; set; }
 
     static SettingsViewModel()
     {
         var manager = new ResourceManager("SubloaderWpf.Resources.Resources", typeof(TheWindow).Assembly);
-        AllLanguages = JsonSerializer.Deserialize<IEnumerable<SubtitleLanguage>>(manager.GetString("LanguagesList"));
+        AllLanguages = JsonSerializer.Deserialize<IEnumerable<SubtitleLanguage>>(manager.GetString("LanguagesList")).ToDictionary(x => x.Code);
     }
 
     public SettingsViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
@@ -66,12 +66,12 @@ public class SettingsViewModel : ObservableEntity
 
         if (_settings.WantedLanguages?.Any() == true)
         {
-            WantedLanguageList = new ObservableCollection<SubtitleLanguage>(_settings.WantedLanguages.Select(x => AllLanguages.SingleOrDefault(l => l.Code == x)));
-            LanguageList = new ObservableCollection<SubtitleLanguage>(AllLanguages.Except(WantedLanguageList));
+            WantedLanguageList = new ObservableCollection<SubtitleLanguage>(_settings.WantedLanguages.Select(x => AllLanguages[x]));
+            LanguageList = new ObservableCollection<SubtitleLanguage>(AllLanguages.Values.Except(WantedLanguageList));
         }
         else
         {
-            LanguageList = new ObservableCollection<SubtitleLanguage>(AllLanguages);
+            LanguageList = new ObservableCollection<SubtitleLanguage>(AllLanguages.Values);
         }
 
         alwaysOnTop = _settings.KeepWindowOnTop;
@@ -273,7 +273,7 @@ public class SettingsViewModel : ObservableEntity
         set
         {
             searchText = value;
-            LanguageList = new(AllLanguages.Where(x => x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Any(w => w.Code == x.Code)));
+            LanguageList = new(AllLanguages.Values.Where(x => x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Any(w => w.Code == x.Code)));
             Set(() => SearchText, ref searchText, value);
         }
     }

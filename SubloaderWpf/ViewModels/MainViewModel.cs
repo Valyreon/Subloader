@@ -15,6 +15,13 @@ using SubloaderWpf.Mvvm;
 
 namespace SubloaderWpf.ViewModels;
 
+public enum SortBy
+{
+    Default,
+    Language,
+    Release
+}
+
 public class MainViewModel : ObservableEntity
 {
     private readonly INavigator _navigator;
@@ -28,6 +35,9 @@ public class MainViewModel : ObservableEntity
     private ObservableCollection<SubtitleEntry> subtitleList;
     private int currentPage;
     private int totalPages;
+
+    private bool isAscending;
+    private SortBy currentSort = SortBy.Default;
 
     public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
     {
@@ -55,6 +65,7 @@ public class MainViewModel : ObservableEntity
             {
                 CurrentPage = 1;
                 TotalPages = 1;
+                currentSort = SortBy.Default;
                 ProcessFileAsync();
             }
         }
@@ -98,6 +109,7 @@ public class MainViewModel : ObservableEntity
     {
         CurrentPage = 1;
         TotalPages = 1;
+        currentSort = SortBy.Default;
         SearchPage(CurrentPage);
     }
 
@@ -154,6 +166,36 @@ public class MainViewModel : ObservableEntity
         }
     }
 
+    public void SortByLanguage()
+    {
+        if (currentSort == SortBy.Language)
+        {
+            isAscending = !isAscending;
+        }
+        else
+        {
+            isAscending = true;
+            currentSort = SortBy.Language;
+        }
+
+        ProcessResults(SubtitleList, CurrentPage, TotalPages);
+    }
+
+    public void SortByRelease()
+    {
+        if (currentSort == SortBy.Release)
+        {
+            isAscending = !isAscending;
+        }
+        else
+        {
+            isAscending = true;
+            currentSort = SortBy.Release;
+        }
+
+        ProcessResults(SubtitleList, CurrentPage, TotalPages);
+    }
+
     public async void Download()
     {
         if (SelectedItem == null)
@@ -167,7 +209,7 @@ public class MainViewModel : ObservableEntity
             var saveFileDialog = new SaveFileDialog()
             {
                 Filter = $"All files (*.*) |*.*|Subtitle files|*.{_settings.PreferredFormat}",
-                FileName = Path.ChangeExtension(SelectedItem.Name, _settings.PreferredFormat)
+                FileName = Path.ChangeExtension(SelectedItem.Release, _settings.PreferredFormat)
             };
 
             if (saveFileDialog.ShowDialog() == true)
@@ -276,16 +318,27 @@ public class MainViewModel : ObservableEntity
         if (results == null)
         {
             StatusText = "Server error. Try refreshing.";
+            return;
         }
         else if (!results.Any())
         {
             StatusText = "No subtitles found.";
+            return;
         }
-        else
+
+        SubtitleList = currentSort switch
         {
-            SubtitleList = new ObservableCollection<SubtitleEntry>(results);
-            StatusText = "Use double-click to download.";
-        }
+            SortBy.Default => new ObservableCollection<SubtitleEntry>(results),
+            SortBy.Language => new ObservableCollection<SubtitleEntry>(isAscending
+                ? results.OrderBy(s => s.Language).ThenBy(s => s.LevenshteinDistance)
+                : results.OrderByDescending(s => s.Language).ThenBy(s => s.LevenshteinDistance)),
+            SortBy.Release => new ObservableCollection<SubtitleEntry>(isAscending
+                ? results.OrderBy(s => s.Release)
+                : results.OrderByDescending(s => s.Release)),
+            _ => throw new NotImplementedException(),
+        };
+
+        StatusText = "Use double-click to download.";
 
     }
 

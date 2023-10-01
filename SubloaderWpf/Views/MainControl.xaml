@@ -221,6 +221,7 @@
                     BorderBrush="{StaticResource MainBorderColor}"
                     BorderThickness="0,0,0,1"
                     Foreground="{StaticResource MainDarkColor}"
+                    GridViewColumnHeader.Click="resultsDataGrid_Click"
                     IsEnabled="{Binding IsLoading, Converter={StaticResource ReverseBoolConverter}}"
                     ItemsSource="{Binding SubtitleList}"
                     SelectedItem="{Binding SelectedItem}"
@@ -229,8 +230,8 @@
                         <GridView>
                             <GridViewColumn
                                 Width="433"
-                                DisplayMemberBinding="{Binding Name}"
-                                Header="Name" />
+                                DisplayMemberBinding="{Binding Release}"
+                                Header="Release" />
                             <GridViewColumn
                                 Width="130"
                                 DisplayMemberBinding="{Binding Language}"

@@ -7,19 +7,21 @@ namespace SubloaderWpf.Models;
 
 public class SubtitleEntry : ObservableEntity
 {
-    public SubtitleEntry(Subtitle item, IEnumerable<SubtitleLanguage> allLanguages)
+    public SubtitleEntry(Subtitle item, int levenDistance, IEnumerable<SubtitleLanguage> allLanguages)
     {
         IsHashMatch = item.Information.IsHashMatch == true;
         FileId = item.Information.Files[0].FileId.Value;
-        Name = item.Information.Release;
+        Release = item.Information.Release;
         var lang = allLanguages.SingleOrDefault(l => string.Equals(l.Code, item.Information.Language, System.StringComparison.InvariantCultureIgnoreCase));
         Language = lang?.Name;
         LanguageCode = lang?.Code;
+        LevenshteinDistance = levenDistance;
     }
 
     public string Language { get; }
     public string LanguageCode { get; }
     public bool IsHashMatch { get; }
     public int FileId { get; }
-    public string Name { get; }
+    public string Release { get; }
+    public int LevenshteinDistance { get; }
 }

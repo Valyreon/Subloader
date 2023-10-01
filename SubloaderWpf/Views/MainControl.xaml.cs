@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -64,5 +65,22 @@ public partial class MainControl : UserControl
     private void ListViewItem_DoubleClick(object sender, MouseButtonEventArgs e)
     {
         ((MainViewModel)DataContext).Download();
+    }
+
+    private void resultsDataGrid_Click(object sender, RoutedEventArgs e)
+    {
+        var headerClicked = e.OriginalSource as GridViewColumnHeader;
+
+        if (headerClicked.Content is string str)
+        {
+            if(str == "Release")
+            {
+                ((MainViewModel)DataContext).SortByRelease();
+            }
+            else if(str == "Language")
+            {
+                ((MainViewModel)DataContext).SortByLanguage();
+            }
+        }
     }
 }
