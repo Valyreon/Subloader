@@ -327,7 +327,7 @@ public class SettingsViewModel : ObservableEntity
 
     public ObservableCollection<SubtitleLanguage> WantedLanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
 
-    private void Add()
+    public void Add()
     {
         while (SelectedLanguage != null)
         {
@@ -349,7 +349,7 @@ public class SettingsViewModel : ObservableEntity
         }
     }
 
-    private void Delete()
+    public void Delete()
     {
         while (SelectedWantedLanguage != null)
         {

@@ -34,4 +34,14 @@ public partial class SettingsControl : UserControl
         searchLanguagesTextBox.Focus();
         Keyboard.Focus(searchLanguagesTextBox);
     }
+
+    private void NotSelectedLanguages_DoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        ((SettingsViewModel)DataContext).Add();
+    }
+
+    private void SelectedLanguages_DoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        ((SettingsViewModel)DataContext).Delete();
+    }
 }

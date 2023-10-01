@@ -60,4 +60,9 @@ public partial class MainControl : UserControl
             e.Handled = true;
         }
     }
+
+    private void ListViewItem_DoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        ((MainViewModel)DataContext).Download();
+    }
 }

@@ -106,9 +106,11 @@
                                 DisplayMemberPath="Name"
                                 ItemsSource="{Binding WantedLanguageList, Mode=TwoWay}"
                                 SelectedItem="{Binding SelectedWantedLanguage}">
-                                <ListBox.InputBindings>
-                                    <MouseBinding Command="{Binding DeleteCommand}" MouseAction="LeftDoubleClick" />
-                                </ListBox.InputBindings>
+                                <ListBox.ItemContainerStyle>
+                                    <Style BasedOn="{StaticResource LanguageListBoxItemStyle}" TargetType="ListBoxItem">
+                                        <EventSetter Event="PreviewMouseDoubleClick" Handler="SelectedLanguages_DoubleClick" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
                             </ListBox>
                         </DockPanel>
 
@@ -158,9 +160,11 @@
                                 DisplayMemberPath="Name"
                                 ItemsSource="{Binding LanguageList, Mode=TwoWay}"
                                 SelectedItem="{Binding SelectedLanguage}">
-                                <ListBox.InputBindings>
-                                    <MouseBinding Command="{Binding AddCommand}" MouseAction="LeftDoubleClick" />
-                                </ListBox.InputBindings>
+                                <ListBox.ItemContainerStyle>
+                                    <Style BasedOn="{StaticResource LanguageListBoxItemStyle}" TargetType="ListBoxItem">
+                                        <EventSetter Event="PreviewMouseDoubleClick" Handler="NotSelectedLanguages_DoubleClick" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
                             </ListBox>
                         </DockPanel>
                     </Grid>

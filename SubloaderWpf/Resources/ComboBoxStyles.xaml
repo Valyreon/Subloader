@@ -18,20 +18,14 @@
                 Height="10"
                 Source="{StaticResource ChevronDown}" />
         </Grid>
-        <!--<ControlTemplate.Triggers>
+        <ControlTemplate.Triggers>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
-                <Setter TargetName="Border" Property="Background" Value="#808080" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource AccentColor}" />
             </Trigger>
             <Trigger Property="ToggleButton.IsChecked" Value="true">
-                <Setter TargetName="Border" Property="Background" Value="#E0E0E0" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource AccentColor}" />
             </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter TargetName="Border" Property="Background" Value="#EEEEEE" />
-                <Setter TargetName="Border" Property="BorderBrush" Value="#AAAAAA" />
-                <Setter Property="Foreground" Value="#888888" />
-                <Setter TargetName="Arrow" Property="Fill" Value="#888888" />
-            </Trigger>
-        </ControlTemplate.Triggers>-->
+        </ControlTemplate.Triggers>
     </ControlTemplate>
 
     <Style x:Key="{x:Type ComboBox}" TargetType="{x:Type ComboBox}">

@@ -210,54 +210,83 @@
             </Border>
             <Grid>
                 <themes:Spinner
-                    Width="50"
-                    Height="50"
+                    Width="45"
+                    Height="45"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Panel.ZIndex="1000"
                     Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <DataGrid
+                <ListView
                     x:Name="resultsDataGrid"
+                    BorderBrush="{StaticResource MainBorderColor}"
                     BorderThickness="0,0,0,1"
+                    Foreground="{StaticResource MainDarkColor}"
                     IsEnabled="{Binding IsLoading, Converter={StaticResource ReverseBoolConverter}}"
                     ItemsSource="{Binding SubtitleList}"
                     SelectedItem="{Binding SelectedItem}"
                     SelectionMode="Single">
-                    <DataGrid.InputBindings>
-                        <MouseBinding Command="{Binding DownloadCommand}" MouseAction="LeftDoubleClick" />
-                        <KeyBinding Key="Return" Command="{Binding DownloadCommand}" />
-                    </DataGrid.InputBindings>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn
-                            Width="3*"
-                            Binding="{Binding Name}"
-                            DisplayIndex="0"
-                            ElementStyle="{StaticResource ColumnElementStyle}"
-                            Header="Subtitle" />
-                        <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Language}"
-                            DisplayIndex="1"
-                            ElementStyle="{StaticResource ColumnElementStyle}"
-                            Header="Language"
-                            SortDirection="Ascending" />
-                    </DataGrid.Columns>
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn
+                                Width="433"
+                                DisplayMemberBinding="{Binding Name}"
+                                Header="Name" />
+                            <GridViewColumn
+                                Width="130"
+                                DisplayMemberBinding="{Binding Language}"
+                                Header="Language" />
+                        </GridView>
+                    </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <EventSetter Event="PreviewMouseDoubleClick" Handler="ListViewItem_DoubleClick" />
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
+                            <Setter Property="Height" Value="24" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="BorderThickness" Value="0,0,0,1" />
+                            <Setter Property="BorderBrush" Value="#e5e5e5" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <Border
+                                            x:Name="Bd"
+                                            Margin="0"
+                                            Padding="0"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}">
+                                            <GridViewRowPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                        </Border>
+
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsHashMatch}" Value="True">
                                     <Setter Property="FontWeight" Value="Bold" />
                                 </DataTrigger>
-                                <Trigger Property="AlternationIndex" Value="1">
+                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                                     <Setter Property="Background" Value="#f5f5f5" />
                                 </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="{DynamicResource LighterAccentColor}" />
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource AccentColor}" />
+                                    <Setter Property="Foreground" Value="White" />
                                 </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="true" />
+                                        <Condition Property="Selector.IsSelectionActive" Value="false" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" Value="Gray" />
+                                    <Setter Property="Foreground" Value="White" />
+                                </MultiTrigger>
                             </Style.Triggers>
+
                         </Style>
-                    </DataGrid.RowStyle>
-                </DataGrid>
+                    </ListView.ItemContainerStyle>
+                </ListView>
             </Grid>
         </DockPanel>
     </Grid>
