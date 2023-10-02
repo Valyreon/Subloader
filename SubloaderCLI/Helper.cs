@@ -35,7 +35,9 @@ public static class Helper
             }
 
             var leven = new Levenshtein(Path.GetFileNameWithoutExtension(path.Name));
-            var levenResults = results.Items.Select(ResultItem => (ResultItem, leven.DistanceFrom(ResultItem.Information.Release))).OrderBy(i => i.Item2).Select(i => i.ResultItem);
+            var levenResults = results.Items.Select(ResultItem => (ResultItem, leven.DistanceFrom(ResultItem.Information.Release)))
+                .OrderBy(i => i.Item2)
+                .Select(i => i.ResultItem);
             foreach (var item in levenResults)
             {
                 var downloadInfo = await client.GetDownloadInfoAsync(item.Information.Files[0].FileId.Value);
@@ -159,7 +161,6 @@ public static class Helper
         };
 
         ConsoleHelper.WriteLine("Login success.", ConsoleColor.Green);
-        ConsoleHelper.WriteLine("Remaining downloads: ", session.RemainingDownloads.ToString(), ConsoleColor.Magenta);
         ConsoleHelper.WriteLine("Level: ", session.Level,  ConsoleColor.Magenta);
         Console.WriteLine();
 

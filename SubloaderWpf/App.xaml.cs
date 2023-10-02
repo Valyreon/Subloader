@@ -12,7 +12,7 @@ public partial class App : Application
 {
     private static Mutex mutex;
     public static readonly string VersionTag = "v1.6.0";
-    public static string APIKey { get; private set; } = "idMNeWNRIKVKlGiP8zjNyG80a4AqKYBd"; 
+    public static string APIKey { get; private set; } = "";
     public static InstanceMediator InstanceMediator { get; private set; }
     public string PathArg { get; set; }
 
