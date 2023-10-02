@@ -7,6 +7,7 @@
     <ApplicationIcon>subtitles_ebF_icon.ico</ApplicationIcon>
     <StartupObject>SubloaderWpf.App</StartupObject>
     <Configurations>Debug;Release;Portable Release;Portable Debug</Configurations>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
