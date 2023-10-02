@@ -36,7 +36,8 @@ public static class Helper
 
             var leven = new Levenshtein(Path.GetFileNameWithoutExtension(path.Name));
             var levenResults = results.Items.Select(ResultItem => (ResultItem, leven.DistanceFrom(ResultItem.Information.Release)))
-                .OrderBy(i => i.Item2)
+                .OrderBy(i => i.ResultItem.Information.IsHashMatch == true ? 0 : 1)
+                .ThenBy(i => i.Item2)
                 .Select(i => i.ResultItem);
             foreach (var item in levenResults)
             {

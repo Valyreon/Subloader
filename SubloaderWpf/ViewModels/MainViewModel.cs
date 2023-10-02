@@ -353,7 +353,7 @@ public class MainViewModel : ObservableEntity
             }
             catch (RequestFailedException ex)
             {
-                StatusText = ex.Message?.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0];
+                StatusText = ex.Message?.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0] ?? "Something went wrong.";
                 SystemSounds.Hand.Play();
             }
             catch (Exception)
