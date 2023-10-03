@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <LangVersion>latest</LangVersion>
@@ -8,6 +8,19 @@
   
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Include="Styles\**" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <None Remove="icon.ico" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\icon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

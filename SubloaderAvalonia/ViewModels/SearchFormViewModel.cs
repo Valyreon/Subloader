@@ -1,5 +1,6 @@
 using System;
 using System.Reactive;
+using System.Text.RegularExpressions;
 using OpenSubtitlesSharp;
 using ReactiveUI;
 
@@ -7,6 +8,8 @@ namespace SubloaderAvalonia.ViewModels;
 
 public class SearchFormViewModel : ViewModelBase
 {
+    private static readonly Regex numRegex = new(@"^\d*$");
+
     private readonly Action searchAction;
     public int? Episode { get; set; }
 
@@ -60,7 +63,7 @@ public class SearchFormViewModel : ViewModelBase
         get => episodeText;
         set
         {
-            if (episodeText != value)
+            if (episodeText != value && numRegex.IsMatch(value))
             {
                 episodeText = value;
                 this.RaisePropertyChanged(nameof(EpisodeText));
@@ -79,7 +82,7 @@ public class SearchFormViewModel : ViewModelBase
         get => seasonText;
         set
         {
-            if (seasonText != value)
+            if (seasonText != value && numRegex.IsMatch(value))
             {
                 seasonText = value;
                 this.RaisePropertyChanged(nameof(SeasonText));
@@ -98,7 +101,7 @@ public class SearchFormViewModel : ViewModelBase
         get => yearText;
         set
         {
-            if (yearText != value)
+            if (yearText != value && numRegex.IsMatch(value))
             {
                 yearText = value;
                 this.RaisePropertyChanged(nameof(YearText));
@@ -117,7 +120,7 @@ public class SearchFormViewModel : ViewModelBase
         get => imdbIdText;
         set
         {
-            if (imdbIdText != value)
+            if (imdbIdText != value && numRegex.IsMatch(value))
             {
                 imdbIdText = value;
                 this.RaisePropertyChanged(nameof(ImdbIdText));
@@ -136,7 +139,7 @@ public class SearchFormViewModel : ViewModelBase
         get => parentImdbIdText;
         set
         {
-            if (parentImdbIdText != value)
+            if (parentImdbIdText != value && numRegex.IsMatch(value))
             {
                 parentImdbIdText = value;
                 this.RaisePropertyChanged(nameof(ParentImdbIdText));

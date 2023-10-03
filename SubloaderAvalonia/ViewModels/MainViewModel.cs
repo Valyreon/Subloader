@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using OpenSubtitlesSharp;
@@ -165,7 +166,9 @@ public class MainViewModel : ViewModelBase
 
         try
         {
-            var files = await desktop.MainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            var topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 FileTypeFilter = new List<FilePickerFileType> {
                 new FilePickerFileType("Video files")

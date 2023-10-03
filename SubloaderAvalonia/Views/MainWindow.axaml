@@ -16,7 +16,7 @@
     x:DataType="vm:MainWindowViewModel"
     Background="#e8e8e8"
     CanResize="False"
-    Icon="/Assets/avalonia-logo.ico"
+    Icon="/Assets/icon.ico"
     Topmost="{Binding AlwaysOnTop}"
     UseLayoutRounding="True"
     WindowStartupLocation="CenterScreen"

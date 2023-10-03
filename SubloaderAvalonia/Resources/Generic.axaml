@@ -5,12 +5,14 @@
     xmlns:vm="clr-namespace:SubloaderAvalonia.ViewModels">
     <ControlTheme x:Key="{x:Type Button}" TargetType="Button">
         <Setter Property="FontSize" Value="12" />
+        <Setter Property="Height" Value="30" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Border
                     x:Name="border"
+                    Height="{TemplateBinding Height}"
                     Background="White"
                     BorderBrush="{StaticResource MainBorderColor}"
                     BorderThickness="1">

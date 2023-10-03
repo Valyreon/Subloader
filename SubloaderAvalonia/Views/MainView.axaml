@@ -11,6 +11,7 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="vm:MainViewModel"
+    Loaded="TheControl_Loaded"
     mc:Ignorable="d">
     <Design.DataContext>
         <vm:MainViewModel />
@@ -38,7 +39,9 @@
                 Padding="15"
                 Background="#f2f2f2"
                 BorderBrush="{StaticResource MainBorderColor}"
-                BorderThickness="0,1">
+                BorderThickness="0,1"
+                BoxShadow="5 5 10 2 Blue"
+                Classes="Shadow">
                 <!--<Border.Effect>
                     <DropShadowEffect
                         BlurRadius="8"
@@ -62,7 +65,6 @@
                         <Button
                             Grid.Column="3"
                             Command="{Binding CloseSearchModalCommand}"
-                            CommandParameter="no"
                             Content="Cancel" />
                     </Grid>
                 </StackPanel>
@@ -90,6 +92,7 @@
                     Command="{Binding ChooseFileCommand}"
                     Content="File" />
                 <Button
+                    x:Name="openSearchModalButton"
                     Grid.Column="1"
                     Margin="0,0,10,0"
                     HorizontalAlignment="Stretch"
@@ -202,6 +205,7 @@
                     Panel.ZIndex="1000"
                     IsVisible="{Binding IsLoading}" />-->
                 <ListBox
+                    x:Name="listBox"
                     MaxWidth="580"
                     Margin="0"
                     Padding="0"
@@ -213,7 +217,7 @@
                     SelectionMode="Single">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Height="25">
+                            <Grid Height="25" DoubleTapped="Handle_ListBox_DoubleTap">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="430" />
                                     <ColumnDefinition Width="140" />
