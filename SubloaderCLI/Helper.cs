@@ -162,7 +162,7 @@ public static class Helper
         };
 
         ConsoleHelper.WriteLine("Login success.", ConsoleColor.Green);
-        ConsoleHelper.WriteLine("Level: ", session.Level,  ConsoleColor.Magenta);
+        ConsoleHelper.WriteLine("Level", session.Level,  ConsoleColor.Magenta);
         Console.WriteLine();
 
         return session;

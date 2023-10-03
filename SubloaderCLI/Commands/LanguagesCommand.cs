@@ -40,7 +40,7 @@ public class LanguagesCommand : ICommand
 
         foreach(var lang in languages)
         {
-            ConsoleHelper.WriteLine(lang.Code += ": ", lang.Name, ConsoleColor.Green);
+            ConsoleHelper.WriteLine(lang.Code, lang.Name, ConsoleColor.Green);
         }
     }
 }

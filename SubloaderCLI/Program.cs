@@ -7,7 +7,7 @@ using SubloaderCLI;
 var rootCommand = new RootCommand(
     "Subloader CLI application. It uses OpenSubtitles REST API to download subs for your video files.");
 
-foreach(var command in Helper.GetImplementedCommands().Select(c => c.BuildCommand()))
+foreach (var command in Helper.GetImplementedCommands().Select(c => c.BuildCommand()))
 {
     rootCommand.AddCommand(command);
 }
@@ -15,7 +15,7 @@ foreach(var command in Helper.GetImplementedCommands().Select(c => c.BuildComman
 var parser = new CommandLineBuilder(rootCommand)
     .UseExceptionHandler((e, context) =>
     {
-        if(e is RequestFailedException rfe)
+        if (e is RequestFailedException rfe)
         {
             ConsoleHelper.WriteLine(rfe.Message, ConsoleColor.Red);
         }
@@ -36,15 +36,6 @@ var parser = new CommandLineBuilder(rootCommand)
     .UseHelp()
     .Build();
 
-try
-{
-    var result = await parser.InvokeAsync(args);
-    Console.WriteLine();
-    return result;
-}
-catch(RequestFailedException osException)
-{
-    ConsoleHelper.WriteExceptionMessage(osException.Message);
-}
-
-return 0;
+var result = await parser.InvokeAsync(args);
+Console.WriteLine();
+return result;
