@@ -1,0 +1,91 @@
+<UserControl
+    x:Class="SubloaderAvalonia.Views.SearchFormView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:view="clr-namespace:SubloaderAvalonia.Views"
+    xmlns:vm="clr-namespace:SubloaderAvalonia.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:SearchFormViewModel"
+    mc:Ignorable="d">
+    <StackPanel>
+        <TextBox
+            x:Name="searchTextBox"
+            Height="30"
+            Margin="0,0,0,10"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            FontSize="15"
+            Text="{Binding Text}"
+            Watermark="Search" />
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Column="1"
+                Width="80"
+                Margin="5,0">
+                <Label Content="Type: " Target="{Binding ElementName=searchTypeComboBox}" />
+                <ComboBox x:Name="searchTypeComboBox" SelectedIndex="{Binding SearchTypeSelectedIndex, Mode=TwoWay}">
+                    <ComboBoxItem Content="Movie" />
+                    <ComboBoxItem Content="Episode" />
+                    <ComboBoxItem Content="All" />
+                </ComboBox>
+            </StackPanel>
+            <StackPanel
+                Grid.Column="2"
+                Width="50"
+                Margin="5,0"
+                IsEnabled="{Binding AreTvShowFiltersEnabled, Mode=TwoWay}">
+                <Label Content="Season: " Target="{Binding ElementName=searchSeasonTextBox}" />
+                <TextBox x:Name="searchSeasonTextBox" Text="{Binding SeasonText}" />
+            </StackPanel>
+            <StackPanel
+                Grid.Column="3"
+                Width="50"
+                Margin="5,0"
+                IsEnabled="{Binding AreTvShowFiltersEnabled, Mode=TwoWay}">
+                <Label Content="Episode: " Target="{Binding ElementName=searchEpisodeTextBox}" />
+                <TextBox x:Name="searchEpisodeTextBox" Text="{Binding EpisodeText}" />
+            </StackPanel>
+            <StackPanel
+                Grid.Column="4"
+                Width="60"
+                Margin="5,0">
+                <Label Content="Year: " Target="{Binding ElementName=searchYearTextBox}" />
+                <TextBox x:Name="searchYearTextBox" Text="{Binding YearText}" />
+            </StackPanel>
+        </Grid>
+        <Grid Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Column="1"
+                Width="80"
+                Margin="5,0">
+                <Label Content="IMDb ID: " Target="{Binding ElementName=searchImdbIdTextBox}" />
+                <TextBox x:Name="searchImdbIdTextBox" Text="{Binding ImdbIdText}" />
+            </StackPanel>
+            <StackPanel
+                Grid.Column="2"
+                Width="88"
+                Margin="5,0"
+                IsEnabled="{Binding AreTvShowFiltersEnabled, Mode=TwoWay}">
+                <Label Content="Parent IMDb ID: " Target="{Binding ElementName=searchParentImdbIdTextBox}" />
+                <TextBox x:Name="searchParentImdbIdTextBox" Text="{Binding ParentImdbIdText}" />
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

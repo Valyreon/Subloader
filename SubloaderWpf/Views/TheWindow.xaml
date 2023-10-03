@@ -28,7 +28,5 @@
     <Window.Resources>
         <ResourceDictionary Source="DataTemplate.xaml" />
     </Window.Resources>
-    <Border Focusable="False">
-        <ContentControl Content="{Binding CurrentControl}" Focusable="False" />
-    </Border>
+    <ContentControl Content="{Binding CurrentControl}" Focusable="False" />
 </Window>

@@ -1,0 +1,36 @@
+<Window
+    x:Class="SubloaderAvalonia.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:view="clr-namespace:SubloaderAvalonia.Views"
+    xmlns:vm="using:SubloaderAvalonia.ViewModels"
+    Title="Subloader"
+    Width="580"
+    Height="600"
+    MinWidth="580"
+    MinHeight="600"
+    MaxWidth="580"
+    MaxHeight="600"
+    x:DataType="vm:MainWindowViewModel"
+    Background="#e8e8e8"
+    CanResize="False"
+    Icon="/Assets/avalonia-logo.ico"
+    Topmost="{Binding AlwaysOnTop}"
+    UseLayoutRounding="True"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.DataTemplates>
+        <DataTemplate DataType="{x:Type vm:MainViewModel}">
+            <view:MainView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+            <view:SettingsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SearchFormViewModel}">
+            <view:SearchFormView />
+        </DataTemplate>
+    </Window.DataTemplates>
+    <ContentControl Content="{Binding CurrentControl}" Focusable="False" />
+</Window>

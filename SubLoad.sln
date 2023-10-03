@@ -16,6 +16,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSubtitlesSharp", "OpenS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSubtitlesSharp.Tests", "OpenSubtitlesSharp.Tests\OpenSubtitlesSharp.Tests.csproj", "{20E158EF-0408-4154-8136-ADC4F127592E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SubloaderAvalonia", "SubloaderAvalonia\SubloaderAvalonia.csproj", "{71839B7C-FE84-4AED-94A9-5B6B894D0633}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SubloaderAvalonia.Desktop", "SubloaderAvalonia.Desktop\SubloaderAvalonia.Desktop.csproj", "{BB2A1F8A-0922-4259-9DEB-F7C2B232AC29}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +60,22 @@ Global
 		{20E158EF-0408-4154-8136-ADC4F127592E}.Portable Release|Any CPU.Build.0 = Release|Any CPU
 		{20E158EF-0408-4154-8136-ADC4F127592E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20E158EF-0408-4154-8136-ADC4F127592E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71839B7C-FE84-4AED-94A9-5B6B894D0633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71839B7C-FE84-4AED-94A9-5B6B894D0633}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71839B7C-FE84-4AED-94A9-5B6B894D0633}.Portable Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71839B7C-FE84-4AED-94A9-5B6B894D0633}.Portable Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71839B7C-FE84-4AED-94A9-5B6B894D0633}.Portable Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71839B7C-FE84-4AED-94A9-5B6B894D0633}.Portable Release|Any CPU.Build.0 = Release|Any CPU
+		{71839B7C-FE84-4AED-94A9-5B6B894D0633}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71839B7C-FE84-4AED-94A9-5B6B894D0633}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB2A1F8A-0922-4259-9DEB-F7C2B232AC29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB2A1F8A-0922-4259-9DEB-F7C2B232AC29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB2A1F8A-0922-4259-9DEB-F7C2B232AC29}.Portable Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB2A1F8A-0922-4259-9DEB-F7C2B232AC29}.Portable Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB2A1F8A-0922-4259-9DEB-F7C2B232AC29}.Portable Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB2A1F8A-0922-4259-9DEB-F7C2B232AC29}.Portable Release|Any CPU.Build.0 = Release|Any CPU
+		{BB2A1F8A-0922-4259-9DEB-F7C2B232AC29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB2A1F8A-0922-4259-9DEB-F7C2B232AC29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

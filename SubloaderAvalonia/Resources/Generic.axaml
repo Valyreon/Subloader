@@ -1,0 +1,36 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cmp="clr-namespace:SubloaderAvalonia.CustomComponents"
+    xmlns:vm="clr-namespace:SubloaderAvalonia.ViewModels">
+    <ControlTheme x:Key="{x:Type Button}" TargetType="Button">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border
+                    x:Name="border"
+                    Background="White"
+                    BorderBrush="{StaticResource MainBorderColor}"
+                    BorderThickness="1">
+                    <ContentPresenter
+                        x:Name="PART_ContentPresenter"
+                        Margin="10,5"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="{TemplateBinding Content}" />
+                    <Border.Styles>
+                        <Style Selector="Border:pointerover">
+                            <Setter Property="BorderBrush" Value="{StaticResource AccentColor}" />
+                            <Setter Property="Background" Value="{StaticResource LighterAccentColor}" />
+                        </Style>
+                        <Style Selector="Button:pressed Border#border">
+                            <Setter Property="BorderThickness" Value="2" />
+                        </Style>
+                    </Border.Styles>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

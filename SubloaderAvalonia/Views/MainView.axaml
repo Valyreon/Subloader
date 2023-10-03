@@ -1,37 +1,27 @@
 <UserControl
-    x:Class="SubloaderWpf.Views.MainControl"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Class="SubloaderAvalonia.Views.MainView"
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Converters="clr-namespace:SubloaderWpf.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:themes="clr-namespace:SubloaderWpf.Themes"
-    xmlns:viewmodels="clr-namespace:SubloaderWpf.ViewModels"
-    x:Name="TheControl"
-    d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
-    AllowDrop="True"
-    Background="#e8e8e8"
-    DragDrop.DragOver="OnDragOverFile"
-    DragDrop.Drop="OnDropFile"
-    FontFamily="Segoe UI Semibold"
-    Loaded="TheControl_Loaded"
-    RenderOptions.BitmapScalingMode="LowQuality"
-    UseLayoutRounding="True"
+    xmlns:themes="clr-namespace:SubloaderAvalonia.CustomComponents"
+    xmlns:view="clr-namespace:SubloaderAvalonia.Views"
+    xmlns:vm="clr-namespace:SubloaderAvalonia.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:MainViewModel"
     mc:Ignorable="d">
-    <UserControl.InputBindings>
-        <KeyBinding Key="F5" Command="{Binding RefreshCommand}" />
-        <KeyBinding Key="Return" Command="{Binding OpenSearchModalCommand}" />
-        <KeyBinding Key="Esc" Command="{Binding CloseSearchModalCommand}" />
-    </UserControl.InputBindings>
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
 
     <Grid Focusable="False">
         <Grid
             x:Name="searchModal"
             Panel.ZIndex="5000"
             Focusable="False"
-            IsVisibleChanged="searchModal_IsVisibleChanged"
-            Visibility="{Binding IsSearchModalOpen, Converter={StaticResource BoolToVisibilityConverter}}">
+            IsVisible="{Binding IsSearchModalOpen}">
             <Grid.Background>
                 <SolidColorBrush Opacity="0.35" Color="#222" />
             </Grid.Background>
@@ -49,12 +39,12 @@
                 Background="#f2f2f2"
                 BorderBrush="{StaticResource MainBorderColor}"
                 BorderThickness="0,1">
-                <Border.Effect>
+                <!--<Border.Effect>
                     <DropShadowEffect
                         BlurRadius="8"
                         Direction="0"
                         Opacity="0.3" />
-                </Border.Effect>
+                </Border.Effect>-->
                 <StackPanel>
                     <ContentControl x:Name="searchFormContent" Content="{Binding SearchForm}" />
                     <Grid>
@@ -73,57 +63,59 @@
                             Grid.Column="3"
                             Command="{Binding CloseSearchModalCommand}"
                             CommandParameter="no"
-                            Content="Cancel"
-                            PreviewLostKeyboardFocus="CancelButton_PreviewLostKeyboardFocus" />
+                            Content="Cancel" />
                     </Grid>
                 </StackPanel>
             </Border>
         </Grid>
         <DockPanel Focusable="False">
-            <Grid Grid.Row="3" DockPanel.Dock="Bottom">
+            <Grid
+                Grid.Row="3"
+                Margin="10"
+                DockPanel.Dock="Bottom">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="10" />
                     <RowDefinition Height="30" />
-                    <RowDefinition Height="10" />
                 </Grid.RowDefinitions>
                 <Button
-                    Grid.Row="1"
-                    Grid.Column="1"
+                    Grid.Column="0"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
                     Command="{Binding ChooseFileCommand}"
                     Content="File" />
                 <Button
-                    Grid.Row="1"
-                    Grid.Column="3"
+                    Grid.Column="1"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
                     Command="{Binding OpenSearchModalCommand}"
                     Content="Search"
                     IsDefault="True" />
                 <Button
-                    Grid.Row="1"
-                    Grid.Column="5"
+                    Grid.Column="2"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
                     Command="{Binding RefreshCommand}"
                     Content="Refresh"
-                    IsEnabled="{Binding IsLoading, Converter={StaticResource ReverseBoolConverter}}" />
+                    IsEnabled="{Binding !IsLoading}" />
                 <Button
-                    Grid.Row="1"
-                    Grid.Column="7"
+                    Grid.Column="3"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
                     Command="{Binding SettingsCommand}"
                     Content="Settings" />
             </Grid>
             <Border
                 Grid.Row="1"
                 HorizontalAlignment="Stretch"
-                BorderBrush="{StaticResource LighterBorderColor}"
+                BorderBrush="{StaticResource MainBorderColor}"
                 BorderThickness="0,0,0,1"
                 DockPanel.Dock="Bottom">
                 <DockPanel>
@@ -132,12 +124,12 @@
                         Margin="5,0,10,0"
                         DockPanel.Dock="Right"
                         Orientation="Horizontal">
-                        <StackPanel.Visibility>
+                        <StackPanel.IsVisible>
                             <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
                                 <Binding Path="CurrentPage" />
                                 <Binding Path="TotalPages" />
                             </MultiBinding>
-                        </StackPanel.Visibility>
+                        </StackPanel.IsVisible>
                         <Button
                             Width="20"
                             Height="20"
@@ -152,7 +144,7 @@
                             <Button.RenderTransform>
                                 <RotateTransform Angle="90" CenterX="10" CenterY="10" />
                             </Button.RenderTransform>
-                            <Button.Visibility>
+                            <Button.IsVisible>
                                 <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
                                     <MultiBinding.ConverterParameter>
                                         <sys:Boolean>False</sys:Boolean>
@@ -160,7 +152,7 @@
                                     <Binding Path="CurrentPage" />
                                     <Binding Path="TotalPages" />
                                 </MultiBinding>
-                            </Button.Visibility>
+                            </Button.IsVisible>
                         </Button>
                         <TextBlock Margin="5,0" VerticalAlignment="Center">
                             <Run>Page</Run>
@@ -174,7 +166,7 @@
                             VerticalAlignment="Center"
                             HorizontalContentAlignment="Center"
                             Command="{Binding NextPageCommand}">
-                            <Button.Visibility>
+                            <Button.IsVisible>
                                 <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
                                     <MultiBinding.ConverterParameter>
                                         <sys:Boolean>True</sys:Boolean>
@@ -182,7 +174,7 @@
                                     <Binding Path="CurrentPage" />
                                     <Binding Path="TotalPages" />
                                 </MultiBinding>
-                            </Button.Visibility>
+                            </Button.IsVisible>
                             <Image
                                 Width="10"
                                 Height="10"
@@ -196,91 +188,97 @@
                         Margin="0,5"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Foreground="{StaticResource MainDarkColor}"
-                        Text="{Binding StatusText, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding StatusText}"
                         TextAlignment="Center" />
                 </DockPanel>
             </Border>
             <Grid>
-                <themes:Spinner
-                    Width="45"
-                    Height="45"
+                <!--
+<themes:Spinner
+                    Width="50"
+                    Height="50"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Panel.ZIndex="1000"
-                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <ListView
-                    x:Name="resultsDataGrid"
+                    IsVisible="{Binding IsLoading}" />-->
+                <ListBox
+                    MaxWidth="580"
+                    Margin="0"
+                    Padding="0"
                     BorderBrush="{StaticResource MainBorderColor}"
                     BorderThickness="0,0,0,1"
-                    Foreground="{StaticResource MainDarkColor}"
-                    GridViewColumnHeader.Click="resultsDataGrid_Click"
-                    IsEnabled="{Binding IsLoading, Converter={StaticResource ReverseBoolConverter}}"
+                    ItemsSource="{Binding SubtitleList}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                    SelectedItem="{Binding SelectedItem}"
+                    SelectionMode="Single">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="25">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="430" />
+                                    <ColumnDefinition Width="140" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Margin="3,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Classes.HashMatch="{Binding IsHashMatch}"
+                                    FontSize="12"
+                                    Text="{Binding Release}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="3,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Classes.HashMatch="{Binding IsHashMatch}"
+                                    FontSize="12"
+                                    Text="{Binding Language}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="BorderBrush" Value="{StaticResource LighterBorderColor}" />
+                            <Setter Property="BorderThickness" Value="0,0,0,1" />
+                        </Style>
+                        <Style Selector="ListBoxItem TextBlock.HashMatch">
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Style>
+                        <Style Selector="ListBoxItem:nth-child(odd)">
+                            <Setter Property="Background" Value="#f5f5f5" />
+                        </Style>
+                        <Style Selector="ListBoxItem:selected">
+                            <Setter Property="Background" Value="Red" />
+                        </Style>
+                        <Style Selector="ListBoxItem:pointerover Border">
+                            <Setter Property="Background" Value="{StaticResource LighterAccentColor}" />
+                        </Style>
+                    </ListBox.Styles>
+                </ListBox>
+                <!--
+                <DataGrid
+                    x:Name="resultsDataGrid"
+                    BorderThickness="0,0,0,1"
+                    IsEnabled="{Binding !IsLoading}"
                     ItemsSource="{Binding SubtitleList}"
                     SelectedItem="{Binding SelectedItem}"
                     SelectionMode="Single">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn
-                                Width="433"
-                                DisplayMemberBinding="{Binding Release}"
-                                Header="Release" />
-                            <GridViewColumn
-                                Width="130"
-                                DisplayMemberBinding="{Binding Language}"
-                                Header="Language" />
-                        </GridView>
-                    </ListView.View>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <EventSetter Event="PreviewMouseDoubleClick" Handler="ListViewItem_DoubleClick" />
-                            <Setter Property="Background" Value="White" />
-                            <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
-                            <Setter Property="Height" Value="24" />
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Margin" Value="0" />
-                            <Setter Property="BorderThickness" Value="0,0,0,1" />
-                            <Setter Property="BorderBrush" Value="#e5e5e5" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <Border
-                                            x:Name="Bd"
-                                            Margin="0"
-                                            Padding="0"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="{TemplateBinding BorderThickness}">
-                                            <GridViewRowPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                        </Border>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="3*"
+                            Binding="{Binding Release}"
+                            DisplayIndex="0"
+                            FontSize="12"
+                            Header="Release" />
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Language}"
+                            DisplayIndex="1"
+                            FontSize="12"
+                            Header="Language" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                -->
 
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsHashMatch}" Value="True">
-                                    <Setter Property="FontWeight" Value="Bold" />
-                                </DataTrigger>
-                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                    <Setter Property="Background" Value="#f5f5f5" />
-                                </Trigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="{StaticResource AccentColor}" />
-                                    <Setter Property="Foreground" Value="White" />
-                                </Trigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="true" />
-                                        <Condition Property="Selector.IsSelectionActive" Value="false" />
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background" Value="Gray" />
-                                    <Setter Property="Foreground" Value="White" />
-                                </MultiTrigger>
-                            </Style.Triggers>
-
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
             </Grid>
         </DockPanel>
     </Grid>

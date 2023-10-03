@@ -1,0 +1,30 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Converters="using:SubloaderAvalonia.Converters">
+    <Converters:PageParamsToVisibilityMultiConverter x:Key="PageParamsToVisibilityMultiConverter" />
+
+    <SolidColorBrush x:Key="MainDarkColor" Color="#323232" />
+    <SolidColorBrush x:Key="MainBorderColor" Color="#bfbfbf" />
+    <SolidColorBrush x:Key="MainBackgroundColor" Color="#e8e8e8" />
+    <SolidColorBrush x:Key="LighterBorderColor" Color="#ddd" />
+    <SolidColorBrush x:Key="AccentColor" Color="#6495ED" />
+    <SolidColorBrush x:Key="MediumLightAccentColor" Color="#9abaf3" />
+    <SolidColorBrush x:Key="LighterAccentColor" Color="#eff4fd" />
+    <SolidColorBrush x:Key="MediumAccentColor" Color="#bbd0f7" />
+
+    <Color x:Key="SystemAccentColor">#6495ED</Color>
+    <Color x:Key="SystemAccentColorLight1">#eff4fd</Color>
+    <Color x:Key="SystemAccentColorDark1">#bbd0f7</Color>
+
+    <DrawingImage x:Key="ChevronDown">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0" Y="960" />
+                </DrawingGroup.Transform>
+                <GeometryDrawing Brush="{StaticResource MainDarkColor}" Geometry="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+</ResourceDictionary>
