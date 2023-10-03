@@ -79,41 +79,37 @@
             </Border>
         </Grid>
         <DockPanel Focusable="False">
-            <Grid
+            <StackPanel
                 Grid.Row="3"
                 Margin="10"
-                DockPanel.Dock="Bottom">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30" />
-                </Grid.RowDefinitions>
+                DockPanel.Dock="Bottom"
+                Orientation="Horizontal">
                 <Button
                     Grid.Column="0"
+                    Width="129"
+                    Margin="0,0,10,0"
                     Command="{Binding ChooseFileCommand}"
                     Content="File" />
                 <Button
                     Grid.Column="2"
+                    Width="129"
+                    Margin="0,0,10,0"
                     Command="{Binding OpenSearchModalCommand}"
                     Content="Search"
                     IsDefault="True" />
                 <Button
                     Grid.Column="4"
+                    Width="129"
+                    Margin="0,0,10,0"
                     Command="{Binding RefreshCommand}"
                     Content="Refresh"
                     IsEnabled="{Binding IsLoading, Converter={StaticResource ReverseBoolConverter}}" />
                 <Button
                     Grid.Column="6"
+                    Width="129"
                     Command="{Binding SettingsCommand}"
                     Content="Settings" />
-            </Grid>
+            </StackPanel>
             <Border
                 Grid.Row="1"
                 HorizontalAlignment="Stretch"
