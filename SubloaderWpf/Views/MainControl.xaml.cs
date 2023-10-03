@@ -38,18 +38,14 @@ public partial class MainControl : UserControl
 
     private async void searchModal_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (e.NewValue is bool visibility && visibility)
+        searchTextBoxChild ??= searchFormContent.GetFirstDescendantOfType<TextBox>();
+        if (searchTextBoxChild != null && e.NewValue is bool visibility && visibility)
         {
             // seems like focus will not work if the control
             // is not drawn (finished processing the visibility change
             await Task.Delay(15);
             searchTextBoxChild.Focus();
         }
-    }
-
-    private void TheControl_Loaded(object sender, RoutedEventArgs e)
-    {
-        searchTextBoxChild = searchFormContent.GetFirstDescendantOfType<TextBox>();
     }
 
     private void CancelButton_PreviewLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)

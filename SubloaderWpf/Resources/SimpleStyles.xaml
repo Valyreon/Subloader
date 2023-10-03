@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/interactivedesigner/2006"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <Converters:ColorBrightnessConverter x:Key="ColorConverter" />
     <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     <Converters:ReverseBoolConverter x:Key="ReverseBoolConverter" />
     <Converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter" />
@@ -36,24 +35,24 @@
     <SolidColorBrush
         x:Key="MediumLightAccentColor"
         PresentationOptions:Freeze="True"
-        Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.2}" />
+        Color="#9abaf3" />
     <SolidColorBrush
         x:Key="LighterAccentColor"
         PresentationOptions:Freeze="True"
-        Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.9}" />
+        Color="#eff4fd" />
     <SolidColorBrush
         x:Key="MediumAccentColor"
         PresentationOptions:Freeze="True"
-        Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
+        Color="#bbd0f7" />
 
     <SolidColorBrush
         x:Key="{x:Static SystemColors.HighlightBrushKey}"
         PresentationOptions:Freeze="True"
-        Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.15}" />
+        Color="{Binding Source={StaticResource LighterAccentColor}, Path=Color}" />
     <SolidColorBrush
         x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
         PresentationOptions:Freeze="True"
-        Color="{Binding Source={StaticResource AccentColor}, Path=Color, Converter={StaticResource ColorConverter}, ConverterParameter=0.5}" />
+        Color="{Binding Source={StaticResource MediumAccentColor}, Path=Color}" />
     <SolidColorBrush
         x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
         PresentationOptions:Freeze="True"
@@ -499,7 +498,7 @@
     </Style>
 
     <Style TargetType="{x:Type TextBox}">
-        <Setter Property="Height" Value="30" />
+        <Setter Property="Height" Value="28" />
         <Setter Property="Padding" Value="2,0" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template">

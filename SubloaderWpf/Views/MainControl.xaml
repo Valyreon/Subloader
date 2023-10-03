@@ -15,7 +15,6 @@
     DragDrop.DragOver="OnDragOverFile"
     DragDrop.Drop="OnDropFile"
     FontFamily="Segoe UI Semibold"
-    Loaded="TheControl_Loaded"
     RenderOptions.BitmapScalingMode="LowQuality"
     UseLayoutRounding="True"
     mc:Ignorable="d">
@@ -80,9 +79,11 @@
             </Border>
         </Grid>
         <DockPanel Focusable="False">
-            <Grid Grid.Row="3" DockPanel.Dock="Bottom">
+            <Grid
+                Grid.Row="3"
+                Margin="10"
+                DockPanel.Dock="Bottom">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="10" />
                     <ColumnDefinition Width="*" />
@@ -90,33 +91,26 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="10" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="10" />
                     <RowDefinition Height="30" />
-                    <RowDefinition Height="10" />
                 </Grid.RowDefinitions>
                 <Button
-                    Grid.Row="1"
-                    Grid.Column="1"
+                    Grid.Column="0"
                     Command="{Binding ChooseFileCommand}"
                     Content="File" />
                 <Button
-                    Grid.Row="1"
-                    Grid.Column="3"
+                    Grid.Column="2"
                     Command="{Binding OpenSearchModalCommand}"
                     Content="Search"
                     IsDefault="True" />
                 <Button
-                    Grid.Row="1"
-                    Grid.Column="5"
+                    Grid.Column="4"
                     Command="{Binding RefreshCommand}"
                     Content="Refresh"
                     IsEnabled="{Binding IsLoading, Converter={StaticResource ReverseBoolConverter}}" />
                 <Button
-                    Grid.Row="1"
-                    Grid.Column="7"
+                    Grid.Column="6"
                     Command="{Binding SettingsCommand}"
                     Content="Settings" />
             </Grid>
@@ -277,7 +271,6 @@
                                     <Setter Property="Foreground" Value="White" />
                                 </MultiTrigger>
                             </Style.Triggers>
-
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>

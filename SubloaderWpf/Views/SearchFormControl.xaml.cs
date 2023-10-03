@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -60,5 +61,12 @@ public partial class SearchFormControl : UserControl
     private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e)
     {
         textboxPlaceholder.Visibility = string.IsNullOrWhiteSpace(searchTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+    {
+        await Task.Delay(25);
+        searchTextBox.Focus();
+        Keyboard.Focus(searchTextBox);
     }
 }

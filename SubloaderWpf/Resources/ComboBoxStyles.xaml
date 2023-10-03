@@ -34,7 +34,7 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
-        <Setter Property="Height" Value="30" />
+        <Setter Property="Height" Value="28" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Template">
             <Setter.Value>

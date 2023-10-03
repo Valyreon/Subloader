@@ -9,6 +9,7 @@
     d:DataContext="{d:DesignInstance Type=viewmodels:SearchFormViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    Loaded="UserControl_Loaded"
     mc:Ignorable="d">
     <StackPanel>
         <Grid>

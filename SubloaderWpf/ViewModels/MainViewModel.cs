@@ -38,6 +38,7 @@ public class MainViewModel : ObservableEntity
 
     private bool isAscending;
     private SortBy currentSort = SortBy.Default;
+    private SearchFormViewModel searchForm;
 
     public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
     {
@@ -47,7 +48,6 @@ public class MainViewModel : ObservableEntity
 
         StatusText = "Open a video file.";
         CurrentPath = (Application.Current as App).PathArg;
-        SearchForm = new SearchFormViewModel(Search);
 
         App.InstanceMediator.ReceivedArgument += arg => CurrentPath = arg;
     }
@@ -97,11 +97,15 @@ public class MainViewModel : ObservableEntity
         set => Set(() => TotalPages, ref totalPages, value);
     }
 
-    public ICommand OpenSearchModalCommand => new RelayCommand(() => IsSearchModalOpen = true);
+    public ICommand OpenSearchModalCommand => new RelayCommand(() =>
+    {
+        SearchForm ??= new SearchFormViewModel(Search);
+        IsSearchModalOpen = true;
+    });
 
     public ICommand RefreshCommand => new RelayCommand(Refresh);
 
-    public SearchFormViewModel SearchForm { get; set; }
+    public SearchFormViewModel SearchForm { get => searchForm; set => Set(() => SearchForm, ref searchForm, value); }
 
     public ICommand SearchCommand => new RelayCommand(Search);
 
