@@ -209,6 +209,9 @@
                     ItemsSource="{Binding SubtitleList}"
                     SelectedItem="{Binding SelectedItem}"
                     SelectionMode="Single">
+                    <ListView.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding DownloadCommand}" />
+                    </ListView.InputBindings>
                     <ListView.View>
                         <GridView>
                             <GridViewColumn

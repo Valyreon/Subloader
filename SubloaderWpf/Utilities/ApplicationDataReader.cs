@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using SubloaderWpf.Models;
@@ -33,8 +32,11 @@ public static class ApplicationDataReader
         catch (Exception)
         {
         }
+        finally
+        {
+            semaphore.Release();
 
-        semaphore.Release();
+        }
     }
 
     public static async Task<ApplicationSettings> LoadSettingsAsync()
@@ -47,14 +49,17 @@ public static class ApplicationDataReader
         }
 
         await semaphore.WaitAsync();
-        var text = await File.ReadAllTextAsync(path);
-        semaphore.Release();
         try
         {
+            var text = await File.ReadAllTextAsync(path);
             return JsonSerializer.Deserialize<ApplicationSettings>(text).Initialize();
         }
         catch (Exception)
         {
+        }
+        finally
+        {
+            semaphore.Release();
         }
 
         return new ApplicationSettings().Initialize();
@@ -70,14 +75,17 @@ public static class ApplicationDataReader
         }
 
         semaphore.Wait();
-        var text = File.ReadAllText(path);
-        semaphore.Release();
         try
         {
+            var text = File.ReadAllText(path);
             return JsonSerializer.Deserialize<ApplicationSettings>(text).Initialize();
         }
         catch (Exception)
         {
+        }
+        finally
+        {
+            semaphore.Release();
         }
 
         return new ApplicationSettings().Initialize();

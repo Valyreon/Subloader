@@ -362,7 +362,7 @@ public class MainViewModel : ObservableEntity
             }
             catch (Exception)
             {
-                StatusText = "Something went wrong.";
+                StatusText = "Something went wrong. Please try again.";
                 SystemSounds.Hand.Play();
             }
             finally
