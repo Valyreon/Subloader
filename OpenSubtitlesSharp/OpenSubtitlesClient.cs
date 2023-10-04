@@ -13,6 +13,12 @@ using OpenSubtitlesSharp.Services;
 
 namespace OpenSubtitlesSharp;
 
+public enum BaseUrlType
+{
+    Default,
+    VIP
+}
+
 public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
 {
     #region REGEXs
@@ -24,6 +30,8 @@ public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
 
     #endregion REGEXs
 
+    private static readonly string _defaultBaseUrl = "https://api.opensubtitles.com/api/v1/";
+    private static readonly string _vipBaseUrl = "https://vip-api.opensubtitles.com/api/v1/";
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
@@ -34,22 +42,18 @@ public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
     private readonly string _baseUrl = "https://api.opensubtitles.com/api/v1/";
     private readonly HttpClient _client;
 
-    public OpenSubtitlesClient(string apiKey, string jwtToken = null, string baseUrl = null)
+    public OpenSubtitlesClient(string apiKey, string jwtToken = null, BaseUrlType baseUrlType = BaseUrlType.Default)
     {
         if (string.IsNullOrWhiteSpace(apiKey))
         {
             throw new ArgumentNullException(nameof(apiKey), "API Key has to be specified.");
         }
 
-        if (!string.IsNullOrWhiteSpace(baseUrl) && baseUrl != "api.opensubtitles.com" && baseUrl != "vip-api.opensubtitles.com")
+        _baseUrl = baseUrlType switch
         {
-            throw new ArgumentException(nameof(baseUrl), "Invalid base url value. Use the one provided by login endpoint.");
-        }
-
-        if (!string.IsNullOrWhiteSpace(baseUrl))
-        {
-            _baseUrl = $"https://{baseUrl}/api/v1/";
-        }
+            BaseUrlType.VIP => _vipBaseUrl,
+            _ => _defaultBaseUrl
+        };
 
         Token = jwtToken;
         _fileSystemService = new FileSystemService();

@@ -159,7 +159,10 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
     private OpenSubtitlesClient GetClient()
     {
-        return new OpenSubtitlesClient(App.APIKey, _settings.LoggedInUser?.Token, _settings.LoggedInUser?.BaseUrl);
+        return new OpenSubtitlesClient(
+            App.APIKey,
+            _settings.LoggedInUser?.Token,
+            _settings.LoggedInUser?.IsVIP == true ? BaseUrlType.VIP : BaseUrlType.Default);
     }
 
     private string GetDestinationPath(string CurrentPath, string languageCode, string format)

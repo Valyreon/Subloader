@@ -24,7 +24,7 @@ public static class ApplicationDataReader
 #if DEBUG
                 , new JsonSerializerOptions { WriteIndented = true }
 #else
-                , new JsonSerializerOptions { WriteIndented = false, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault }
+                , new JsonSerializerOptions { WriteIndented = false }
 #endif
                 );
             await File.WriteAllTextAsync(path, json);

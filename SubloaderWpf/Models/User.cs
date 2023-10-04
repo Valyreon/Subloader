@@ -6,7 +6,6 @@ namespace SubloaderWpf.Models;
 public class User : ObservableEntity
 {
     public int AllowedDownloads { get; set; }
-    public string BaseUrl { get; set; }
     public bool IsVIP { get; set; }
     public string Level { get; set; }
     public string Token { get; set; }

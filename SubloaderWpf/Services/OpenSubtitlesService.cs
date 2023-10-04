@@ -96,7 +96,6 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         return new User
         {
             Token = info.Token,
-            BaseUrl = info.BaseUrl,
             AllowedDownloads = info.User.AllowedDownloads,
             IsVIP = info.User.Vip,
             Level = info.User.Level,
@@ -163,7 +162,10 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
     private OpenSubtitlesClient GetClient()
     {
-        return new OpenSubtitlesClient(App.APIKey, _settings.Value.LoggedInUser?.Token, _settings.Value.LoggedInUser?.BaseUrl);
+        return new OpenSubtitlesClient(
+            App.APIKey,
+            _settings.Value.LoggedInUser?.Token,
+            _settings.Value.LoggedInUser?.IsVIP == true ? BaseUrlType.VIP : BaseUrlType.Default);
     }
 
     private string GetDestinationPath(string CurrentPath, string languageCode, string format)
