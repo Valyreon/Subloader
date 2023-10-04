@@ -5,7 +5,7 @@
 ![](https://img.shields.io/badge/License-MIT-blue.svg)
 ![](https://img.shields.io/badge/Release-1.6.0-blue.svg)
 
-**Subloader** is a simple and minimalistic software written in **C#** and **.NET 6** that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using REST API for searching and downloading subtitles.
+**Subloader** is a simple and minimalistic app written in **C#** and **.NET 6** that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using REST API for searching and downloading subtitles.
 
 Subloader searches subtitles by using a special file hash. This enables the user to get the best possible search results for their video file. **Installer** will also add an entry to **right click context menu** of **.avi**, **.mkv** and **.mp4** files for easy access.
 
@@ -47,13 +47,13 @@ After the search is complete, you can select a subtitle from the list and double
 
 When searching for subtitles by selecting the video file, **_the text of subtitle entries in the result table which have a matching movie hash will be bolded._** Also the initial sort of the subtitle entries will put the entries which have the most similar Release name to the video file name on top (sorted by Levenshtein distance).
 
-When you double-click an item in the table Subloader will download the subtitle. The name and location of the file depends on Settings, default (without options below checked) behaviour is to download subtitles into a file that is the same name as the video file with a different extension.
+The location of the downloaded subtitle for a video file will depend on the user's Settings.
 
 #### Login
 
-The new OpenSubtitles REST API **limits the number of allowed downloads based on the level of your account on their website**. You can find the details in the table **[here](https://www.opensubtitles.com/en/support_us/)** although the values listed there are not always up to date.
+The new OpenSubtitles REST API <span style="color:red">**limits the number of allowed downloads based on the level of your account on their website**</span>. You can find the details in the table **[here](https://www.opensubtitles.com/en/support_us/)** although the values listed there are not always up to date.
 
-For example, at the time of writing this, anonymous users are able to download 5 subtitle files daily and logged in users 20 files daily. Paying VIP users can download up to a 1000 files daily and use the VIP API endpoint, with other level in between.
+For example, at the time of writing this, anonymous users are able to download 5 subtitle files daily and logged in users 20 files daily. Paying **VIP users** can download up to **1000 files** daily and use the VIP API endpoint, with other levels in between.
 
 In the Settings > Login tab you will be able to login and see some details of your account:
 
@@ -61,11 +61,23 @@ In the Settings > Login tab you will be able to login and see some details of yo
 
 ### CLI Usage
 
+If you installed subloader CLI tool with the Installer, you will be able to run the tool from any directory by opening a Command Prompt/PowerShell window. Currently there are 3 commands:
 
+* **dir** - Download subtitles for all video files in the directory (can be recursive)
+* **file** - Download subtitle for a single file
+* **languages** - Used for finding appropriate language codes
+
+You can find all the commands and paramaters description by using -h or --help parameter. You can use it on root or specific command, for example:
+
+<p align="center"><img src="./Screenshots/terminalRootHelp.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
+
+and for a specific command:
+
+<p align="center"><img src="./Screenshots/terminalDirHelp.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
 
 ### Wiki
 
-You can find more details about the usage and implementation of Subloader on the **[Wiki pages](https://github.com/Valyreon/Subloader/wiki)**.
+You can find more details about the usage, settings and implementation of Subloader on the **[Wiki pages](https://github.com/Valyreon/Subloader/wiki)**.
 
 ### Acknowledgments
 
