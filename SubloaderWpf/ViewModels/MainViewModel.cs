@@ -303,7 +303,7 @@ public class MainViewModel : ObservableEntity
         }
         IsLoading = true;
 
-        Application.Current.MainWindow.Activate();
+        Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
         StatusText = "Searching subtitles...";
         SubtitleList = null;
         await RunAndHandleAsync(async () =>

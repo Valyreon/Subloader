@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -39,14 +40,6 @@ public class OpenSubtitlesService : IOpenSubtitlesService
             : savePath;
 
         File.WriteAllBytes(destination, await GetRawFileAsync(downloadInfo.Link));
-
-        if (_settings.Value.LoggedInUser != null)
-        {
-            _settings.Value.LoggedInUser.ResetTime = downloadInfo.ResetTimeUtc;
-            _settings.Value.LoggedInUser.RemainingDownloads = downloadInfo.Remaining;
-
-            _ = ApplicationDataReader.SaveSettingsAsync(_settings.Value);
-        }
 
         return downloadInfo;
     }
@@ -88,16 +81,20 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         using var client = GetClient();
         var info = await client.LoginAsync(username, password);
 
+        // parse the token for expiration timestamp
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.ReadJwtToken(info.Token);
+
         return new User
         {
             Token = info.Token,
             BaseUrl = info.BaseUrl,
             AllowedDownloads = info.User.AllowedDownloads,
-            RemainingDownloads = info.User.RemainingDownloads,
             IsVIP = info.User.Vip,
             Level = info.User.Level,
             UserId = info.User.UserId,
-            Username = username
+            Username = username,
+            TokenExpirationTimestamp = token.ValidTo
         };
     }
 

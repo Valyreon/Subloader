@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using SubloaderWpf.Models;
@@ -22,6 +23,8 @@ public static class ApplicationDataReader
             var json = JsonSerializer.Serialize(settings
 #if DEBUG
                 , new JsonSerializerOptions { WriteIndented = true }
+#else
+                , new JsonSerializerOptions { WriteIndented = false, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault }
 #endif
                 );
             await File.WriteAllTextAsync(path, json);

@@ -268,15 +268,8 @@
                                 <Run Text="{Binding User.AllowedDownloads, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </TextBlock>
                             <TextBlock Margin="0,0,0,5" HorizontalAlignment="Left">
-                                <Run Text="Remaining downloads:" />
-                                <Run Text="{Binding User.RemainingDownloads, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            </TextBlock>
-                            <TextBlock
-                                Margin="0,0,0,10"
-                                HorizontalAlignment="Left"
-                                Visibility="{Binding ResetTimer, Converter={StaticResource ObjectToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                <Run Text="Download counter resets in" />
-                                <Run Text="{Binding ResetTimer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <Run Text="Login valid until:" />
+                                <Run Text="{Binding User.TokenExpirationTimestampString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </TextBlock>
                             <Button
                                 Grid.Row="3"

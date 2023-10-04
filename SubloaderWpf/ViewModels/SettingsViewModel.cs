@@ -31,7 +31,6 @@ public class SettingsViewModel : ObservableEntity
     private bool onlyFromTrustedSources;
     private bool overwriteSameLanguageSubs;
     private string password;
-    private string resetTimer;
     private string searchText;
     private string selectedFormat;
     private SubtitleLanguage selectedLanguage;
@@ -84,12 +83,6 @@ public class SettingsViewModel : ObservableEntity
         User = _settings.LoggedInUser;
         Username = _settings.LoggedInUser?.Username;
         IsLoggedIn = _settings.LoggedInUser != null;
-
-        if (IsLoggedIn && User.ResetTime.HasValue && User.ResetTime.Value > DateTime.UtcNow)
-        {
-            var timeSpan = User.ResetTime.Value - DateTime.UtcNow;
-            ResetTimer = $"{timeSpan.Hours:D2} hours and {timeSpan.Minutes:D2} minutes";
-        }
 
         PropertyChanged += (e, v) => Save();
         WantedLanguageList.CollectionChanged += (e, v) => Save();
@@ -247,12 +240,6 @@ public class SettingsViewModel : ObservableEntity
     {
         get => password;
         set => Set(() => Password, ref password, value);
-    }
-
-    public string ResetTimer
-    {
-        get => resetTimer;
-        set => Set(() => ResetTimer, ref resetTimer, value);
     }
 
     public string SearchText

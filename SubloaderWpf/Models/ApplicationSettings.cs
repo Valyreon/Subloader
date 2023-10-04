@@ -22,9 +22,9 @@ public class ApplicationSettings
         PreferredFormat ??= "srt";
         WantedLanguages ??= new List<string>() { "en" };
 
-        if (LoggedInUser?.ResetTime.HasValue == true && LoggedInUser.ResetTime.Value <= DateTime.UtcNow)
+        if (LoggedInUser?.TokenExpirationTimestamp <= DateTime.Now)
         {
-            LoggedInUser.ResetTime = null;
+            LoggedInUser = null;
         }
 
         return this;

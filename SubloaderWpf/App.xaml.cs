@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Windows;
+using SubloaderWpf.Models;
 using SubloaderWpf.Services;
 using SubloaderWpf.Utilities;
 using SubloaderWpf.ViewModels;
@@ -16,15 +17,15 @@ public partial class App : Application
     public static InstanceMediator InstanceMediator { get; private set; }
     public string PathArg { get; set; }
 
-    protected override async void OnStartup(StartupEventArgs e)
+    protected override void OnStartup(StartupEventArgs e)
     {
         CheckMutex(e);
 
-        var settings = await ApplicationDataReader.LoadSettingsAsync();
-        var openSubtitlesService = new OpenSubtitlesService(settings);
+        var lazySettings = new Lazy<ApplicationSettings>(() => ApplicationDataReader.LoadSettings());
+        var openSubtitlesService = new OpenSubtitlesService(lazySettings);
         MainWindow = new TheWindow
         {
-            DataContext = new TheWindowViewModel(settings, openSubtitlesService)
+            DataContext = new TheWindowViewModel(lazySettings, openSubtitlesService)
         };
 
         MainWindow.Show();

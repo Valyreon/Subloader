@@ -9,9 +9,17 @@ public class User : ObservableEntity
     public string BaseUrl { get; set; }
     public bool IsVIP { get; set; }
     public string Level { get; set; }
-    public int RemainingDownloads { get; set; }
-    public DateTime? ResetTime { get; set; }
     public string Token { get; set; }
     public int UserId { get; set; }
     public string Username { get; set; }
+    public DateTime TokenExpirationTimestamp { get; set; }
+    public string TokenExpirationTimestampString
+    {
+        get
+        {
+            var localTime = TimeZoneInfo.ConvertTimeFromUtc(TokenExpirationTimestamp, TimeZoneInfo.Local);
+            return localTime.ToString("u")[..^1];
+        }
+        set => _ = value;
+    }
 }
