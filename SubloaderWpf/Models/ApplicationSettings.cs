@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using OpenSubtitlesSharp;
+using SubloaderWpf.Extensions;
 
 namespace SubloaderWpf.Models;
 
@@ -22,7 +23,7 @@ public class ApplicationSettings
         PreferredFormat ??= "srt";
         WantedLanguages ??= new List<string>() { "en" };
 
-        if (LoggedInUser?.TokenExpirationTimestamp <= DateTime.Now)
+        if (LoggedInUser != null && LoggedInUser.TokenExpirationUnixTimestamp <= DateTime.UtcNow.ToUnixTimestamp())
         {
             LoggedInUser = null;
         }

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Fastenshtein;
 using OpenSubtitlesSharp;
+using SubloaderWpf.Extensions;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
 using SubloaderWpf.Utilities;
@@ -81,9 +81,17 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         using var client = GetClient();
         var info = await client.LoginAsync(username, password);
 
-        // parse the token for expiration timestamp
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.ReadJwtToken(info.Token);
+        long unixTimestamp = 0;
+        try
+        {
+            var res = JwtParser.ParseClaimsFromJwt(info.Token).SingleOrDefault(c => c.Type == "exp");
+            unixTimestamp = long.Parse(res.Value);
+        }
+        catch(Exception)
+        {
+            unixTimestamp = DateTime.UtcNow.ToUnixTimestamp();
+        }
+        
 
         return new User
         {
@@ -94,7 +102,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
             Level = info.User.Level,
             UserId = info.User.UserId,
             Username = username,
-            TokenExpirationTimestamp = token.ValidTo
+            TokenExpirationUnixTimestamp = unixTimestamp
         };
     }
 
