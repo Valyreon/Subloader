@@ -27,7 +27,7 @@ Subloader requires **[.NET 6 Runtime](https://dotnet.microsoft.com/download)** t
 _I don't guarantee that the app will work properly on versions of Windows before Windows 10._
 
 #### Linux
-I am currently implementing the Subloader for Linux using Avalonia UI. Once I'm finished I will add a deb package and linux executable to the release.
+I am currently in the process of implementing the Subloader for Linux using Avalonia UI. Once I'm finished I will add a deb package and Linux executable to the release.
 
 ### Usage
 
@@ -48,6 +48,16 @@ After the search is complete, you can select a subtitle from the list and double
 When searching for subtitles by selecting the video file, **_the text of subtitle entries in the result table which have a matching movie hash will be bolded._** Also the initial sort of the subtitle entries will put the entries which have the most similar Release name to the video file name on top (sorted by Levenshtein distance).
 
 When you double-click an item in the table Subloader will download the subtitle. The name and location of the file depends on Settings, default (without options below checked) behaviour is to download subtitles into a file that is the same name as the video file with a different extension.
+
+#### Login
+
+The new OpenSubtitles REST API **limits the number of allowed downloads based on the level of your account on their website**. You can find the details in the table **[here](https://www.opensubtitles.com/en/support_us/)** although the values listed there are not always up to date.
+
+For example, at the time of writing this, anonymous users are able to download 5 subtitle files daily and logged in users 20 files daily. Paying VIP users can download up to a 1000 files daily and use the VIP API endpoint, with other level in between.
+
+In the Settings > Login tab you will be able to login and see some details of your account:
+
+<p align="center"><img src="./Screenshots/loggedInView.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
 
 ### CLI Usage
 
