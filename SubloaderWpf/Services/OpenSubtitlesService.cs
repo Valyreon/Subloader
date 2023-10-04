@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,15 +9,14 @@ using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
 using SubloaderWpf.Utilities;
-using SubloaderWpf.ViewModels;
 
 namespace SubloaderWpf.Services;
 
 public class OpenSubtitlesService : IOpenSubtitlesService
 {
-    private readonly ApplicationSettings _settings;
+    private readonly Lazy<ApplicationSettings> _settings;
 
-    public OpenSubtitlesService(ApplicationSettings settings)
+    public OpenSubtitlesService(Lazy<ApplicationSettings> settings)
     {
         _settings = settings;
     }
@@ -28,7 +28,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         var downloadParameters = new DownloadParameters
         {
             FileId = subtitle.FileId,
-            SubFormat = _settings.PreferredFormat
+            SubFormat = _settings.Value.PreferredFormat
         };
 
         var downloadInfo = await osClient.GetDownloadInfoAsync(downloadParameters);
@@ -40,12 +40,12 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
         File.WriteAllBytes(destination, await GetRawFileAsync(downloadInfo.Link));
 
-        if (_settings.LoggedInUser != null)
+        if (_settings.Value.LoggedInUser != null)
         {
-            _settings.LoggedInUser.ResetTime = downloadInfo.ResetTimeUtc;
-            _settings.LoggedInUser.RemainingDownloads = downloadInfo.Remaining;
+            _settings.Value.LoggedInUser.ResetTime = downloadInfo.ResetTimeUtc;
+            _settings.Value.LoggedInUser.RemainingDownloads = downloadInfo.Remaining;
 
-            _ = ApplicationDataReader.SaveSettingsAsync(_settings);
+            _ = ApplicationDataReader.SaveSettingsAsync(_settings.Value);
         }
 
         return downloadInfo;
@@ -67,9 +67,9 @@ public class OpenSubtitlesService : IOpenSubtitlesService
     {
         using var newClient = GetClient();
 
-        var parameters = _settings.DefaultSearchParameters with
+        var parameters = _settings.Value.DefaultSearchParameters with
         {
-            Languages = _settings.WantedLanguages,
+            Languages = _settings.Value.WantedLanguages,
             Page = currentPage
         };
 
@@ -77,7 +77,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
         // order by levenshtein distance
         var laven = new Levenshtein(Path.GetFileNameWithoutExtension(filePath));
-        var items = result.Items.Select(i => new SubtitleEntry(i, laven.DistanceFrom(i.Information.Release), SettingsViewModel.AllLanguages.Values))
+        var items = result.Items.Select(i => new SubtitleEntry(i, laven.DistanceFrom(i.Information.Release), StaticResources.AllLanguages))
             .OrderBy(i => i.LevenshteinDistance);
 
         return (items, result.Page, result.TotalPages);
@@ -125,9 +125,9 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         int? parentImdbId = null,
         int currentPage = 1)
     {
-        var parameters = _settings.DefaultSearchParameters with
+        var parameters = _settings.Value.DefaultSearchParameters with
         {
-            Languages = _settings.WantedLanguages,
+            Languages = _settings.Value.WantedLanguages,
             OnlyMovieHashMatch = false,
             Query = token,
             EpisodeNumber = episodeNumber,
@@ -143,7 +143,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
         var result = await newClient.SearchAsync(parameters);
 
-        return (result.Items.Select(c => new SubtitleEntry(c, 0, SettingsViewModel.AllLanguages.Values)), result.Page, result.TotalPages);
+        return (result.Items.Select(c => new SubtitleEntry(c, 0, StaticResources.AllLanguages)), result.Page, result.TotalPages);
     }
 
     private static async Task<byte[]> GetRawFileAsync(string url)
@@ -158,25 +158,25 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
     private OpenSubtitlesClient GetClient()
     {
-        return new OpenSubtitlesClient(App.APIKey, _settings.LoggedInUser?.Token, _settings.LoggedInUser?.BaseUrl);
+        return new OpenSubtitlesClient(App.APIKey, _settings.Value.LoggedInUser?.Token, _settings.Value.LoggedInUser?.BaseUrl);
     }
 
     private string GetDestinationPath(string CurrentPath, string languageCode, string format)
     {
         format = format.StartsWith(".") ? format[1..] : format;
 
-        var directoryPath = _settings.DownloadToSubsFolder
+        var directoryPath = _settings.Value.DownloadToSubsFolder
             ? Path.Combine(Path.GetDirectoryName(CurrentPath), "Subs")
             : Path.GetDirectoryName(CurrentPath);
 
         Directory.CreateDirectory(directoryPath);
 
-        if (_settings.AllowMultipleDownloads)
+        if (_settings.Value.AllowMultipleDownloads)
         {
             var fileNameWithoutPathOrExtension = Path.GetFileNameWithoutExtension(CurrentPath);
             var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{languageCode}.{format}");
 
-            if (!_settings.OverwriteSameLanguageSub && File.Exists(path))
+            if (!_settings.Value.OverwriteSameLanguageSub && File.Exists(path))
             {
                 var counter = 1;
                 while (File.Exists(path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.({counter}).{languageCode}.{format}")))

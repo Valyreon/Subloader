@@ -57,6 +57,29 @@ public static class ApplicationDataReader
         return new ApplicationSettings().Initialize();
     }
 
+    public static ApplicationSettings LoadSettings()
+    {
+        var path = GetConfigPath();
+
+        if (!File.Exists(path))
+        {
+            return new ApplicationSettings().Initialize();
+        }
+
+        semaphore.Wait();
+        var text = File.ReadAllText(path);
+        semaphore.Release();
+        try
+        {
+            return JsonSerializer.Deserialize<ApplicationSettings>(text).Initialize();
+        }
+        catch (Exception)
+        {
+        }
+
+        return new ApplicationSettings().Initialize();
+    }
+
     private static string GetConfigPath()
     {
 #if PORTABLE_RELEASE

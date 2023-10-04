@@ -26,7 +26,7 @@ public class MainViewModel : ObservableEntity
 {
     private readonly INavigator _navigator;
     private readonly IOpenSubtitlesService _openSubtitlesService;
-    private readonly ApplicationSettings _settings;
+    private readonly Lazy<ApplicationSettings> _settings;
     private string currentPath;
     private bool isSearchModalOpen;
     private string lastSearchedText;
@@ -40,7 +40,7 @@ public class MainViewModel : ObservableEntity
     private SortBy currentSort = SortBy.Default;
     private SearchFormViewModel searchForm;
 
-    public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
+    public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, Lazy<ApplicationSettings> settings)
     {
         _navigator = navigator;
         _openSubtitlesService = openSubtitlesService;
@@ -212,8 +212,8 @@ public class MainViewModel : ObservableEntity
         {
             var saveFileDialog = new SaveFileDialog()
             {
-                Filter = $"All files (*.*) |*.*|Subtitle files|*.{_settings.PreferredFormat}",
-                FileName = Path.ChangeExtension(SelectedItem.Release, _settings.PreferredFormat)
+                Filter = $"All files (*.*) |*.*|Subtitle files|*.{_settings.Value.PreferredFormat}",
+                FileName = Path.ChangeExtension(SelectedItem.Release, _settings.Value.PreferredFormat)
             };
 
             if (saveFileDialog.ShowDialog() == true)
@@ -236,7 +236,7 @@ public class MainViewModel : ObservableEntity
 
     public void GoToSettings()
     {
-        var settingsControl = new SettingsViewModel(_navigator, _openSubtitlesService, _settings);
+        var settingsControl = new SettingsViewModel(_navigator, _openSubtitlesService, _settings.Value);
         _navigator.GoToControl(settingsControl);
     }
 

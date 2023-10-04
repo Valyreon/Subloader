@@ -1,19 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
 using SubloaderWpf.Mvvm;
-using SubloaderWpf.Utilities;
-using SubloaderWpf.Views;
-using System.Resources;
-using System.Text.Json;
-using System.Diagnostics;
 using SubloaderWpf.Services;
-using System.Windows;
+using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf.ViewModels;
 
@@ -47,14 +44,6 @@ public class SettingsViewModel : ObservableEntity
     private bool isLoggingOut;
     private bool isCheckingForUpdates;
 
-    public static IReadOnlyDictionary<string, SubtitleLanguage> AllLanguages { get; set; }
-
-    static SettingsViewModel()
-    {
-        var manager = new ResourceManager("SubloaderWpf.Resources.Resources", typeof(TheWindow).Assembly);
-        AllLanguages = JsonSerializer.Deserialize<IEnumerable<SubtitleLanguage>>(manager.GetString("LanguagesList")).ToDictionary(x => x.Code);
-    }
-
     public SettingsViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
     {
         this.navigator = navigator;
@@ -66,12 +55,12 @@ public class SettingsViewModel : ObservableEntity
 
         if (_settings.WantedLanguages?.Any() == true)
         {
-            WantedLanguageList = new ObservableCollection<SubtitleLanguage>(_settings.WantedLanguages.Select(x => AllLanguages[x]));
-            LanguageList = new ObservableCollection<SubtitleLanguage>(AllLanguages.Values.Except(WantedLanguageList));
+            WantedLanguageList = new ObservableCollection<SubtitleLanguage>(_settings.WantedLanguages.Select(x => StaticResources.AllLanguages.Single(l => l.Code == x.ToLowerInvariant())));
+            LanguageList = new ObservableCollection<SubtitleLanguage>(StaticResources.AllLanguages.Except(WantedLanguageList));
         }
         else
         {
-            LanguageList = new ObservableCollection<SubtitleLanguage>(AllLanguages.Values);
+            LanguageList = new ObservableCollection<SubtitleLanguage>(StaticResources.AllLanguages);
         }
 
         alwaysOnTop = _settings.KeepWindowOnTop;
@@ -273,7 +262,7 @@ public class SettingsViewModel : ObservableEntity
         set
         {
             searchText = value;
-            LanguageList = new(AllLanguages.Values.Where(x => x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Any(w => w.Code == x.Code)));
+            LanguageList = new(StaticResources.AllLanguages.Where(x => x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Any(w => w.Code == x.Code)));
             Set(() => SearchText, ref searchText, value);
         }
     }

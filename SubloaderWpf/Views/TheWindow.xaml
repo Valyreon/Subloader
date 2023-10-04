@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:view="clr-namespace:SubloaderWpf.Views"
     xmlns:viewmodels="clr-namespace:SubloaderWpf.ViewModels"
     x:Name="windowElement"
     Title="Subloader"
@@ -16,6 +17,7 @@
     d:DataContext="{d:DesignInstance Type=viewmodels:TheWindowViewModel}"
     Background="#e8e8e8"
     FontFamily="Segoe UI Semibold"
+    Loaded="Window_Loaded"
     RenderOptions.BitmapScalingMode="LowQuality"
     ResizeMode="CanMinimize"
     TextOptions.TextFormattingMode="Ideal"
@@ -26,7 +28,15 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Window.Resources>
-        <ResourceDictionary Source="DataTemplate.xaml" />
+        <DataTemplate DataType="{x:Type viewmodels:MainViewModel}">
+            <view:MainControl />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:SettingsViewModel}">
+            <view:SettingsControl />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:SearchFormViewModel}">
+            <view:SearchFormControl />
+        </DataTemplate>
     </Window.Resources>
     <ContentControl Content="{Binding CurrentControl}" Focusable="False" />
 </Window>

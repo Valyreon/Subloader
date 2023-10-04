@@ -1,3 +1,4 @@
+using System;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
 using SubloaderWpf.Mvvm;
@@ -8,18 +9,17 @@ namespace SubloaderWpf.ViewModels;
 public class TheWindowViewModel : ObservableEntity, INavigator
 {
     private readonly IOpenSubtitlesService _openSubtitlesService;
-    private readonly ApplicationSettings _settings;
+    private readonly Lazy<ApplicationSettings> _settings;
     private bool alwaysOnTop;
     private object currentControl;
     private object previousControl = null;
 
-    public TheWindowViewModel(ApplicationSettings settings, IOpenSubtitlesService openSubtitlesService)
+    public TheWindowViewModel(Lazy<ApplicationSettings> settings, IOpenSubtitlesService openSubtitlesService)
     {
         CurrentControl = new MainViewModel(this, openSubtitlesService, settings);
         _settings = settings;
         _openSubtitlesService = openSubtitlesService;
-        AlwaysOnTop = _settings.KeepWindowOnTop;
-        ApplicationDataReader.Saved += () => AlwaysOnTop = _settings.KeepWindowOnTop;
+        ApplicationDataReader.Saved += () => AlwaysOnTop = _settings.Value.KeepWindowOnTop;
         _openSubtitlesService = openSubtitlesService;
     }
 
@@ -45,5 +45,10 @@ public class TheWindowViewModel : ObservableEntity, INavigator
     {
         CurrentControl = previousControl;
         previousControl = null;
+    }
+
+    public void Load()
+    {
+        AlwaysOnTop = _settings.Value.KeepWindowOnTop;
     }
 }
