@@ -367,6 +367,10 @@ public class SettingsViewModel : ObservableEntity
         {
             LoginErrorText = ex.Message;
         }
+        catch(Exception ex)
+        {
+            LoginErrorText = "Something went wrong. Please try again later.";
+        }
         finally
         {
             IsLoggingIn = false;
@@ -376,13 +380,11 @@ public class SettingsViewModel : ObservableEntity
     private async void Logout()
     {
         IsLoggingOut = true;
-        if (await _openSubtitlesService.LogoutAsync())
-        {
-            _settings.LoggedInUser = null;
-            IsLoggedIn = false;
-            User = null;
-            _ = ApplicationDataReader.SaveSettingsAsync(_settings);
-        }
+        await _openSubtitlesService.LogoutAsync();
+        _settings.LoggedInUser = null;
+        IsLoggedIn = false;
+        User = null;
+        _ = ApplicationDataReader.SaveSettingsAsync(_settings);
         IsLoggingOut = false;
     }
 
