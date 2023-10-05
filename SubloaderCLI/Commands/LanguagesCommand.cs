@@ -23,7 +23,7 @@ public class LanguagesCommand : ICommand
 
     private static async Task GetLanguagesAsync(string search)
     {
-        using var client = new OpenSubtitlesClient(Constants.APIKey);
+        using var client = new OpenSubtitlesClient(Constants.APIKey, null, false);
 
         var languages = await client.GetLanguagesAsync();
 

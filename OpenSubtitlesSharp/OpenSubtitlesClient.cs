@@ -74,7 +74,13 @@ public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
         //_client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
     }
 
-    internal OpenSubtitlesClient(HttpClient client, IFileSystemService fileSystemService, IMovieHasherService movieHasherService, string apiKey, string jwtToken = null) : this(apiKey, jwtToken)
+    public OpenSubtitlesClient(string apiKey, string jwtToken = null, bool isVip = false)
+        : this(apiKey, jwtToken, isVip ? BaseUrlType.VIP : BaseUrlType.Default)
+    {
+
+    }
+
+    internal OpenSubtitlesClient(HttpClient client, IFileSystemService fileSystemService, IMovieHasherService movieHasherService, string apiKey, string jwtToken = null) : this(apiKey, jwtToken, false)
     {
         _client = client;
         _client.BaseAddress = new Uri(_baseUrl);

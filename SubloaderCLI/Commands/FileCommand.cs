@@ -43,5 +43,7 @@ public class FileCommand : ICommand
         var session = string.IsNullOrWhiteSpace(username) ? new() : await Helper.Login(username);
 
         await Helper.DownloadSubtitlesForFile(path, language, session: session);
+
+        await Helper.Logout(session);
     }
 }

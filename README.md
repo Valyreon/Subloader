@@ -5,26 +5,24 @@
 ![](https://img.shields.io/badge/License-MIT-blue.svg)
 ![](https://img.shields.io/badge/Release-1.6.0-blue.svg)
 
-**Subloader** is a simple and minimalistic app written in **C#** and **.NET 6** that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using REST API for searching and downloading subtitles.
+**Subloader** is a simple and minimalistic application that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using REST API for searching and downloading subtitles.
 
 Subloader searches subtitles by using a special file hash. This enables the user to get the best possible search results for their video file. **Installer** will also add an entry to **right click context menu** of **.avi**, **.mkv** and **.mp4** files for easy access.
 
 The application now also includes a **Subloader CLI** tool that can search through a directory and download subtitles for all found video files. It is included in the installer.
 
-Search and download is provided by **[Opensubtitles](http://www.opensubtitles.com/)**. Big thanks to their team, please consider showing your appreciation by **[supporting them](https://www.opensubtitles.com/en/support_us/)**.
+This app was built with **.NET 6**, using **C#** and **WPF**. Search and download is provided by **[Opensubtitles API](http://www.opensubtitles.com/)**.
 
 ### Installation
 
 #### Windows
-Download the **[latest version of Subloader](https://github.com/Valyreon/Subloader/releases/latest)**, run the setup and that's it. You can now right click your video file and get your subtitles in a matter of seconds. Enjoy!
+Download the **[latest version of Subloader](https://github.com/Valyreon/Subloader/releases/latest)**, run the setup and choose desired components. You will be able to right click on your video file and get subtitles in a matter of seconds. Enjoy!
 
-There is also now a portable version of the subloader you can find in the link above. It will keep the config file in the same directory as the executable.
+There is also a portable version of the subloader you can find in the link above. It will keep the config file in the same directory as the executable.
 
 If the CLI component is selected, installer will also add a **subloader-cli** executable and add the Subloader installation directory to PATH environment variable.
 
 Subloader requires **[.NET 6 Runtime](https://dotnet.microsoft.com/download)** to run and this will probably be included with your Windows. If not, you will be prompted to download it on starting the app.
-
-_I don't guarantee that the app will work properly on versions of Windows before Windows 10._
 
 #### Linux
 I am currently in the process of implementing the Subloader for Linux using Avalonia UI. Once I'm finished I will add a deb package and Linux executable to the release.
@@ -39,7 +37,7 @@ Subloader can be opened from Start Menu, and then using the 'File' button you ca
 
 Note that only one instance of Subloader can be opened. If you search for a new video's subtitles from the context menu while Subloader is opened, the results will be shown in the already opened instance. That way you don't have to close the Subloader between searches.
 
-You can also search manually without file selection, by using the Search button and entering the search parameters.
+You can also search manually without file selection, by using the Search button and entering the search parameters:
 
 <p align="center"><img src="./Screenshots/searchView.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
 
@@ -69,11 +67,11 @@ If you installed subloader CLI tool with the Installer, you will be able to run 
 
 You can find all the commands and paramaters description by using -h or --help parameter. You can use it on root or specific command, for example:
 
-<p align="center"><img src="./Screenshots/terminalRootHelp.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
-
-and for a specific command:
-
 <p align="center"><img src="./Screenshots/terminalDirHelp.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
+
+Command run example:
+
+<p align="center"><img src="./Screenshots/dirRunCommand.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
 
 ### Wiki
 

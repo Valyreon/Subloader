@@ -13,7 +13,7 @@ foreach (var command in Helper.GetImplementedCommands().Select(c => c.BuildComma
 }
 
 var parser = new CommandLineBuilder(rootCommand)
-    .UseExceptionHandler((e, context) =>
+    .UseExceptionHandler((e, _) =>
     {
         if (e is RequestFailedException rfe)
         {
@@ -21,18 +21,12 @@ var parser = new CommandLineBuilder(rootCommand)
         }
         else
         {
-            Console.WriteLine(e.Message);
-            Console.WriteLine(e.StackTrace);
+            ConsoleHelper.WriteLine(e.Message);
+            ConsoleHelper.WriteLine(e.StackTrace);
         }
     }, errorExitCode: 1)
-    .UseEnvironmentVariableDirective()
-    .UseParseDirective()
-    .UseSuggestDirective()
-    .RegisterWithDotnetSuggest()
-    .UseTypoCorrections()
     .UseParseErrorReporting()
     .CancelOnProcessTermination()
-    .UseTypoCorrections()
     .UseHelp()
     .Build();
 

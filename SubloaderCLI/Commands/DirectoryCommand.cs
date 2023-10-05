@@ -1,4 +1,5 @@
 using System.CommandLine;
+using OpenSubtitlesSharp;
 using SubloaderCLI.Interfaces;
 
 namespace SubloaderCLI.Commands;
@@ -21,7 +22,7 @@ public class DirectoryCommand : ICommand
         var recursiveOption = new Option<bool>(
             aliases: new string[] { "--recursive", "-r" },
             () => true,
-            description: "Specify whether you want to download subtitles for all files in the directory tree or only root.");
+            description: "If true, subfolders will also be scanned for matching files.");
 
         var overwriteOption = new Option<bool>(
             aliases: new string[] { "--overwrite", "-o" },
@@ -31,7 +32,7 @@ public class DirectoryCommand : ICommand
         var extensionOption = new Option<string>(
             aliases: new string[] { "--ext", "-e" },
             () => "avi|mkv|mp4",
-            description: "Specify for which extensions to scan for. Separate extensions with '|'. Default value is 'avi|mkv|mp4'.");
+            description: "Specify for which video file extensions to scan for. Separate extensions with '|'.");
 
         var usernameOption = new Option<string>(
             aliases: new string[] { "--user", "--username", "-u" },
@@ -68,21 +69,31 @@ public class DirectoryCommand : ICommand
 
         Console.WriteLine("Scanning files...");
         var files = GetFilePaths(path.FullName, recursive, extensions, overwrite);
-        Console.WriteLine($"Found {files.Count} files. Starting downloads...");
-        foreach (var filePath in files)
-        {
-            var success = await Helper.DownloadSubtitlesForFile(new FileInfo(filePath), language, true, overwrite, session);
 
-            if (!success)
+        if(files.Count == 0)
+        {
+            Console.WriteLine("No matching files found for specified directory.");
+        }
+        else
+        {
+            Console.WriteLine($"Found {files.Count} files. Starting downloads...");
+            foreach (var filePath in files)
             {
-                return;
+                var success = await Helper.DownloadSubtitlesForFile(new FileInfo(filePath), language, true, overwrite, session);
+
+                if (!success)
+                {
+                    return;
+                }
+            }
+
+            if (session != null)
+            {
+                Console.WriteLine("Remaining downloads for today: " + session.RemainingDownloads);
             }
         }
 
-        if(session != null)
-        {
-            Console.WriteLine("Remaining downloads for today: " + session.RemainingDownloads);
-        }
+        await Helper.Logout(session);
     }
 
     private static IReadOnlyList<string> GetFilePaths(string sourcePath, bool recursiveScan, IReadOnlyList<string> extensions, bool overwrite)

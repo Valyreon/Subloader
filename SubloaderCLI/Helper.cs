@@ -10,7 +10,7 @@ public static class Helper
     {
         try
         {
-            using var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token);
+            using var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token, session.IsVIP);
             var results = await client.SearchAsync(path.FullName, new SearchParameters
             {
                 Languages = new List<string> { language }
@@ -45,7 +45,7 @@ public static class Helper
                 var extension = Path.GetExtension(downloadInfo.FileName);
                 var destination = Path.ChangeExtension(path.FullName, extension);
 
-                if(File.Exists(destination) && !overwrite)
+                if (File.Exists(destination) && !overwrite)
                 {
                     return true;
                 }
@@ -148,7 +148,7 @@ public static class Helper
             return null;
         }
 
-        using var client = new OpenSubtitlesClient(Constants.APIKey);
+        using var client = new OpenSubtitlesClient(Constants.APIKey, null, false);
         var loginInfo = await client.LoginAsync(username, password);
 
         var session = new Session
@@ -158,13 +158,26 @@ public static class Helper
             RemainingDownloads = loginInfo.User.RemainingDownloads,
             BaseUrl = loginInfo.BaseUrl,
             Level = loginInfo.User.Level,
-            AllowedDownloads = loginInfo.User.AllowedDownloads
+            AllowedDownloads = loginInfo.User.AllowedDownloads,
+            IsVIP = loginInfo.User.Vip
         };
 
         ConsoleHelper.WriteLine("Login success.", ConsoleColor.Green);
-        ConsoleHelper.WriteLine("Level", session.Level,  ConsoleColor.Magenta);
+        ConsoleHelper.WriteLine("Level", session.Level, ConsoleColor.Magenta);
         Console.WriteLine();
 
         return session;
+    }
+
+    public static async Task Logout(Session session)
+    {
+        if (session?.Token == null)
+        {
+            return;
+        }
+
+        using var client = new OpenSubtitlesClient(Constants.APIKey, session.Token, session.IsVIP);
+        await client.LogoutAsync();
+        ConsoleHelper.WriteLine($"Logged out.", ConsoleColor.Green);
     }
 }

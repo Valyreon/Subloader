@@ -7,4 +7,5 @@ public class Session
     public string Level { get; set; }
     public int AllowedDownloads { get; set; }
     public int RemainingDownloads { get; set; }
+    public bool IsVIP { get; set; }
 }
