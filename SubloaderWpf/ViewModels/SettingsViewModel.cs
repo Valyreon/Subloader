@@ -181,6 +181,9 @@ public class SettingsViewModel : ObservableEntity
 
     public ICommand LoginCommand => new RelayCommand(Login);
 
+    // 
+    public ICommand RegisterCommand => new RelayCommand(() => Process.Start(new ProcessStartInfo("https://www.opensubtitles.com/en/users/sign_up") { UseShellExecute = true }));
+
     public ICommand CheckForUpdatesCommand => new RelayCommand(CheckForUpdates);
 
     private async void CheckForUpdates()

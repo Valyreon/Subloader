@@ -319,17 +319,29 @@
                                 TextWrapping="Wrap"
                                 Visibility="{Binding LoginErrorText, Converter={StaticResource ObjectToVisibilityConverter}}" />
 
-                            <Button
+                            <StackPanel
                                 Grid.Row="3"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="3"
-                                Width="80"
-                                Margin="0,5"
                                 HorizontalAlignment="Center"
-                                Click="LoginButton_Click"
-                                Content="Login"
-                                IsDefault="True"
-                                Visibility="{Binding IsLoggingIn, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}" />
+                                Orientation="Horizontal"
+                                Visibility="{Binding IsLoggingIn, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}">
+                                <Button
+                                    Grid.ColumnSpan="3"
+                                    Width="80"
+                                    Margin="5,5"
+                                    HorizontalAlignment="Center"
+                                    Click="LoginButton_Click"
+                                    Content="Login"
+                                    IsDefault="True" />
+                                <Button
+                                    Grid.ColumnSpan="3"
+                                    Width="80"
+                                    Margin="5,5"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding RegisterCommand}"
+                                    Content="Register"
+                                    IsDefault="True" />
+                            </StackPanel>
+
 
                             <themes:Spinner
                                 Width="30"

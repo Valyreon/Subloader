@@ -69,8 +69,9 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         var result = await newClient.SearchAsync(filePath, parameters);
 
         // order by levenshtein distance
+        var wantedLanguages = StaticResources.AllLanguages.Where(l => _settings.Value.WantedLanguages.Contains(l.Code));
         var laven = new Levenshtein(Path.GetFileNameWithoutExtension(filePath));
-        var items = result.Items.Select(i => new SubtitleEntry(i, laven.DistanceFrom(i.Information.Release), StaticResources.AllLanguages))
+        var items = result.Items.Select(i => new SubtitleEntry(i, laven.DistanceFrom(i.Information.Release), wantedLanguages))
             .OrderBy(i => i.LevenshteinDistance);
 
         return (items, result.Page, result.TotalPages);
@@ -147,7 +148,8 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
         var result = await newClient.SearchAsync(parameters);
 
-        return (result.Items.Select(c => new SubtitleEntry(c, 0, StaticResources.AllLanguages)), result.Page, result.TotalPages);
+        var wantedLanguages = StaticResources.AllLanguages.Where(l => _settings.Value.WantedLanguages.Contains(l.Code));
+        return (result.Items.Select(c => new SubtitleEntry(c, 0, wantedLanguages)), result.Page, result.TotalPages);
     }
 
     private static async Task<byte[]> GetRawFileAsync(string url)
