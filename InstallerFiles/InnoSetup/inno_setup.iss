@@ -77,6 +77,9 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
+    // From the old installer
+    RegDeleteKeyIncludingSubkeys(HKLM, 'SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Subloader');
+
     if WizardIsComponentSelected('context_menu') then
     begin
       UpdateStatusLabel('Adding entry to context menu...');
