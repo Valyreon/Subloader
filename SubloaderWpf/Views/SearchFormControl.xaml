@@ -63,10 +63,7 @@
                 Margin="5,0"
                 IsEnabled="{Binding AreTvShowFiltersEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Label Content="Season: " Target="{Binding ElementName=searchSeasonTextBox}" />
-                <TextBox
-                    x:Name="searchSeasonTextBox"
-                    PreviewTextInput="PreviewNumberInput"
-                    Text="{Binding SeasonText}">
+                <TextBox x:Name="searchSeasonTextBox" Text="{Binding SeasonText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
                     </TextBox.InputBindings>
@@ -78,10 +75,7 @@
                 Margin="5,0"
                 IsEnabled="{Binding AreTvShowFiltersEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Label Content="Episode: " Target="{Binding ElementName=searchEpisodeTextBox}" />
-                <TextBox
-                    x:Name="searchEpisodeTextBox"
-                    PreviewTextInput="PreviewNumberInput"
-                    Text="{Binding EpisodeText}">
+                <TextBox x:Name="searchEpisodeTextBox" Text="{Binding EpisodeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
                     </TextBox.InputBindings>
@@ -92,10 +86,7 @@
                 Width="60"
                 Margin="5,0">
                 <Label Content="Year: " Target="{Binding ElementName=searchYearTextBox}" />
-                <TextBox
-                    x:Name="searchYearTextBox"
-                    PreviewTextInput="PreviewNumberInput"
-                    Text="{Binding YearText}">
+                <TextBox x:Name="searchYearTextBox" Text="{Binding YearText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
                     </TextBox.InputBindings>
@@ -114,10 +105,7 @@
                 Width="80"
                 Margin="5,0">
                 <Label Content="IMDb ID: " Target="{Binding ElementName=searchImdbIdTextBox}" />
-                <TextBox
-                    x:Name="searchImdbIdTextBox"
-                    PreviewTextInput="PreviewNumberInput"
-                    Text="{Binding ImdbIdText}">
+                <TextBox x:Name="searchImdbIdTextBox" Text="{Binding ImdbIdText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
                     </TextBox.InputBindings>
@@ -129,10 +117,7 @@
                 Margin="5,0"
                 IsEnabled="{Binding AreTvShowFiltersEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Label Content="Parent IMDb ID: " Target="{Binding ElementName=searchParentImdbIdTextBox}" />
-                <TextBox
-                    x:Name="searchParentImdbIdTextBox"
-                    PreviewTextInput="PreviewNumberInput"
-                    Text="{Binding ParentImdbIdText}">
+                <TextBox x:Name="searchParentImdbIdTextBox" Text="{Binding ParentImdbIdText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
                     </TextBox.InputBindings>

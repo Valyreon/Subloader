@@ -282,8 +282,8 @@
                                 Content="Logout"
                                 Visibility="{Binding IsLoggingOut, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}" />
                             <themes:Spinner
-                                Width="35"
-                                Height="35"
+                                Width="30"
+                                Height="30"
                                 Margin="0,5,0,0"
                                 Visibility="{Binding IsLoggingOut, Converter={StaticResource BoolToVisibilityConverter}}" />
                         </StackPanel>
@@ -294,11 +294,10 @@
 
                             <StackPanel Margin="0,0,0,10" Visibility="{Binding IsLoggingIn, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}">
                                 <Label Content="Username: " Target="{Binding ElementName=usernameTextBox}" />
-                                <TextBox x:Name="usernameTextBox" Text="{Binding Username}">
-                                    <TextBox.InputBindings>
-                                        <KeyBinding Key="Return" Command="{Binding LoginCommand}" />
-                                    </TextBox.InputBindings>
-                                </TextBox>
+                                <TextBox
+                                    x:Name="usernameTextBox"
+                                    PreviewKeyDown="loginTextBox_KeyDown"
+                                    Text="{Binding Username}" />
                             </StackPanel>
 
                             <StackPanel
@@ -309,11 +308,7 @@
                                     Grid.Row="1"
                                     Content="Password: "
                                     Target="{Binding ElementName=passwordTextBox}" />
-                                <PasswordBox x:Name="passwordTextBox" PasswordChanged="passwordTextBox_PasswordChanged">
-                                    <PasswordBox.InputBindings>
-                                        <KeyBinding Key="Return" Command="{Binding LoginCommand}" />
-                                    </PasswordBox.InputBindings>
-                                </PasswordBox>
+                                <PasswordBox x:Name="passwordTextBox" PreviewKeyDown="loginTextBox_KeyDown" />
                             </StackPanel>
 
                             <TextBlock
@@ -332,14 +327,13 @@
                                 Margin="0,5"
                                 HorizontalAlignment="Center"
                                 Click="LoginButton_Click"
-                                Command="{Binding LoginCommand}"
                                 Content="Login"
                                 IsDefault="True"
                                 Visibility="{Binding IsLoggingIn, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}" />
 
                             <themes:Spinner
-                                Width="35"
-                                Height="35"
+                                Width="30"
+                                Height="30"
                                 Margin="0,5,0,0"
                                 Visibility="{Binding IsLoggingIn, Converter={StaticResource BoolToVisibilityConverter}}" />
                         </StackPanel>
@@ -367,8 +361,8 @@
                         <Button Margin="0,0,0,10" Command="{Binding OpenProjectHomeCommand}">Project Home</Button>
                         <Button Command="{Binding CheckForUpdatesCommand}" Visibility="{Binding IsCheckingForUpdates, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}">Check for updates</Button>
                         <themes:Spinner
-                            Width="35"
-                            Height="35"
+                            Width="30"
+                            Height="30"
                             Visibility="{Binding IsCheckingForUpdates, Converter={StaticResource BoolToVisibilityConverter}}" />
                     </StackPanel>
                 </Border>

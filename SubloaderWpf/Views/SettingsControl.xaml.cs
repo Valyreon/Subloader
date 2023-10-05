@@ -15,18 +15,9 @@ public partial class SettingsControl : UserControl
         InitializeComponent();
     }
 
-    private async void LoginButton_Click(object sender, System.Windows.RoutedEventArgs e)
+    private void LoginButton_Click(object sender, System.Windows.RoutedEventArgs e)
     {
-        await Task.Delay(250);
-        passwordTextBox.Password = "";
-    }
-
-    private void passwordTextBox_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
-    {
-        if (DataContext != null)
-        {
-            ((SettingsViewModel)DataContext).Password = ((PasswordBox)sender).Password;
-        }
+        InvokeLogin();
     }
 
     private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -43,5 +34,21 @@ public partial class SettingsControl : UserControl
     private void SelectedLanguages_DoubleClick(object sender, MouseButtonEventArgs e)
     {
         ((SettingsViewModel)DataContext).Delete();
+    }
+
+    private void loginTextBox_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Return)
+        {
+            InvokeLogin();
+        }
+    }
+
+    private void InvokeLogin()
+    {
+        var viewModel = (SettingsViewModel)DataContext;
+        viewModel.Password = passwordTextBox.Password;
+        passwordTextBox.Password = string.Empty;
+        viewModel.LoginCommand.Execute(null);
     }
 }

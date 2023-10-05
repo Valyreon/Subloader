@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using OpenSubtitlesSharp;
 using SubloaderWpf.Mvvm;
@@ -7,6 +8,8 @@ namespace SubloaderWpf.ViewModels;
 
 public class SearchFormViewModel : ObservableEntity
 {
+    private static readonly Regex numRegex = new(@"^\d*$");
+
     private readonly Action searchAction;
     public int? Episode { get; set; }
 
@@ -60,7 +63,7 @@ public class SearchFormViewModel : ObservableEntity
         get => episodeText;
         set
         {
-            if (episodeText != value)
+            if (episodeText != value && numRegex.IsMatch(value))
             {
                 episodeText = value;
                 RaisePropertyChanged(() => EpisodeText);
@@ -79,7 +82,7 @@ public class SearchFormViewModel : ObservableEntity
         get => seasonText;
         set
         {
-            if (seasonText != value)
+            if (seasonText != value && numRegex.IsMatch(value))
             {
                 seasonText = value;
                 RaisePropertyChanged(() => SeasonText);
@@ -98,7 +101,7 @@ public class SearchFormViewModel : ObservableEntity
         get => yearText;
         set
         {
-            if (yearText != value)
+            if (yearText != value && numRegex.IsMatch(value))
             {
                 yearText = value;
                 RaisePropertyChanged(() => YearText);
@@ -117,7 +120,7 @@ public class SearchFormViewModel : ObservableEntity
         get => imdbIdText;
         set
         {
-            if (imdbIdText != value)
+            if (imdbIdText != value && numRegex.IsMatch(value))
             {
                 imdbIdText = value;
                 RaisePropertyChanged(() => ImdbIdText);
@@ -136,7 +139,7 @@ public class SearchFormViewModel : ObservableEntity
         get => parentImdbIdText;
         set
         {
-            if (parentImdbIdText != value)
+            if (parentImdbIdText != value && numRegex.IsMatch(value))
             {
                 parentImdbIdText = value;
                 RaisePropertyChanged(() => ParentImdbIdText);

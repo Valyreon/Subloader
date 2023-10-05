@@ -24,12 +24,6 @@ public partial class SearchFormControl : UserControl
         RegisterName(searchTextBox.Name, searchTextBox);
     }
 
-    private void PreviewNumberInput(object sender, TextCompositionEventArgs e)
-    {
-        var isMatch = numRegex.IsMatch(e.Text);
-        e.Handled = !isMatch;
-    }
-
     private static void SelectAllText(object sender, RoutedEventArgs e)
     {
         var textBox = e.OriginalSource as TextBox;
