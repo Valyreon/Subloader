@@ -1,2 +1,3 @@
 *.axaml linguist-detectable=false
 *.md linguist-detectable=false
+*.html linguist-detectable=false
