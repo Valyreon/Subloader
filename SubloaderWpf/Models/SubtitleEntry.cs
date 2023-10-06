@@ -1,26 +1,27 @@
-using System.ComponentModel;
-using SuppliersLibrary;
+using System.Collections.Generic;
+using System.Linq;
+using OpenSubtitlesSharp;
+using SubloaderWpf.Mvvm;
 
-namespace SubloaderWpf.Utilities
+namespace SubloaderWpf.Models;
+
+public class SubtitleEntry : ObservableEntity
 {
-    public class SubtitleEntry : INotifyPropertyChanged
+    public SubtitleEntry(Subtitle item, int levenDistance, IEnumerable<SubtitleLanguage> allLanguages)
     {
-        public SubtitleEntry(ISubtitleResultItem item)
-        {
-            Model = item;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public string Name => Model.Name;
-
-        public string Language => Model.Language;
-
-        public ISubtitleResultItem Model { get; }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+        IsHashMatch = item.Information.IsHashMatch == true;
+        FileId = item.Information.Files[0].FileId.Value;
+        Release = item.Information.Release;
+        var lang = allLanguages.SingleOrDefault(l => string.Equals(l.Code, item.Information.Language, System.StringComparison.InvariantCultureIgnoreCase));
+        Language = lang?.Name;
+        LanguageCode = lang?.Code;
+        LevenshteinDistance = levenDistance;
     }
+
+    public string Language { get; }
+    public string LanguageCode { get; }
+    public bool IsHashMatch { get; }
+    public int FileId { get; }
+    public string Release { get; }
+    public int LevenshteinDistance { get; }
 }

@@ -1,14 +1,21 @@
+using System.Threading.Tasks;
 using System.Windows;
 using SubloaderWpf.ViewModels;
 
-namespace SubloaderWpf.Views
+namespace SubloaderWpf.Views;
+
+public partial class TheWindow : Window
 {
-    public partial class TheWindow : Window
+    public TheWindow()
     {
-        public TheWindow()
+        InitializeComponent();
+    }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        if(DataContext is TheWindowViewModel viewModel)
         {
-            InitializeComponent();
-            DataContext = new TheWindowViewModel();
+            Task.Run(() => viewModel?.Load());
         }
     }
 }

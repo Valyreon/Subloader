@@ -444,3 +444,8 @@ dotnet_diagnostic.IDE0002.severity = warning
 dotnet_diagnostic.IDE0005.severity = warning
 dotnet_diagnostic.IDE0058.severity = none
 dotnet_diagnostic.IDE1006.severity = none
+
+dotnet_diagnostic.RCS1194.severity = none
+
+# IDE0160: Convert to file-scoped namespace
+csharp_style_namespace_declarations = file_scoped:warning

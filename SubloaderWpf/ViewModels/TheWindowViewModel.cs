@@ -1,42 +1,54 @@
+using System;
 using SubloaderWpf.Interfaces;
+using SubloaderWpf.Models;
+using SubloaderWpf.Mvvm;
 using SubloaderWpf.Utilities;
 
-namespace SubloaderWpf.ViewModels
+namespace SubloaderWpf.ViewModels;
+
+public class TheWindowViewModel : ObservableEntity, INavigator
 {
-    public class TheWindowViewModel : ViewModelBase, INavigator
+    private readonly IOpenSubtitlesService _openSubtitlesService;
+    private readonly Lazy<ApplicationSettings> _settings;
+    private bool alwaysOnTop;
+    private object currentControl;
+    private object previousControl = null;
+
+    public TheWindowViewModel(Lazy<ApplicationSettings> settings, IOpenSubtitlesService openSubtitlesService)
     {
-        private object previousControl = null;
+        CurrentControl = new MainViewModel(this, openSubtitlesService, settings);
+        _settings = settings;
+        _openSubtitlesService = openSubtitlesService;
+        ApplicationDataReader.Saved += () => AlwaysOnTop = _settings.Value.KeepWindowOnTop;
+        _openSubtitlesService = openSubtitlesService;
+    }
 
-        private object currentControl;
+    public bool AlwaysOnTop { get => alwaysOnTop; set => Set(() => AlwaysOnTop, ref alwaysOnTop, value); }
 
-        public TheWindowViewModel()
+    public object CurrentControl
+    {
+        get => currentControl;
+
+        private set
         {
-            CurrentControl = new MainViewModel(this);
-            SettingsParser.Saved += () => RaisePropertyChanged("AlwaysOnTop");
+            previousControl = currentControl;
+            Set(() => CurrentControl, ref currentControl, value);
         }
+    }
 
-        public bool AlwaysOnTop => App.Settings.KeepWindowOnTop;
+    public void GoToControl(object control)
+    {
+        CurrentControl = control;
+    }
 
-        public object CurrentControl
-        {
-            get => currentControl;
+    public void GoToPreviousControl()
+    {
+        CurrentControl = previousControl;
+        previousControl = null;
+    }
 
-            private set
-            {
-                previousControl = currentControl;
-                Set("CurrentControl", ref currentControl, value);
-            }
-        }
-
-        public void GoToControl(object control)
-        {
-            CurrentControl = control;
-        }
-
-        public void GoToPreviousControl()
-        {
-            CurrentControl = previousControl;
-            previousControl = null;
-        }
+    public void Load()
+    {
+        AlwaysOnTop = _settings.Value.KeepWindowOnTop;
     }
 }

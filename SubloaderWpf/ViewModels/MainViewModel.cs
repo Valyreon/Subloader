@@ -4,322 +4,371 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Media;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
+using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
-using SubloaderWpf.Utilities;
-using SuppliersLibrary;
-using SuppliersLibrary.Exceptions;
-using SuppliersLibrary.OpenSubtitles;
+using SubloaderWpf.Models;
+using SubloaderWpf.Mvvm;
 
-namespace SubloaderWpf.ViewModels
+namespace SubloaderWpf.ViewModels;
+
+public enum SortBy
 {
-    public class MainViewModel : ViewModelBase
+    Default,
+    Language,
+    Release
+}
+
+public class MainViewModel : ObservableEntity
+{
+    private readonly INavigator _navigator;
+    private readonly IOpenSubtitlesService _openSubtitlesService;
+    private readonly Lazy<ApplicationSettings> _settings;
+    private string currentPath;
+    private bool isSearchModalOpen;
+    private string lastSearchedText;
+    private string statusText;
+    private bool isLoading;
+    private ObservableCollection<SubtitleEntry> subtitleList;
+    private int currentPage;
+    private int totalPages;
+
+    private bool isAscending;
+    private SortBy currentSort = SortBy.Default;
+    private SearchFormViewModel searchForm;
+
+    public MainViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, Lazy<ApplicationSettings> settings)
     {
-        private readonly List<ISubtitleSupplier> suppliers = new();
-        private readonly INavigator navigator;
-        private string statusText;
-        private string currentPath;
-        private bool searchByName;
-        private bool searchByHash;
-        private bool isSearchModalOpen;
-        private string searchModalInputText;
-        private string lastSearchedText;
+        _navigator = navigator;
+        _openSubtitlesService = openSubtitlesService;
+        _settings = settings;
 
-        public MainViewModel(INavigator navigator)
+        StatusText = "Open a video file.";
+        CurrentPath = (Application.Current as App).PathArg;
+
+        App.InstanceMediator.ReceivedArgument += arg => CurrentPath = arg;
+    }
+
+    public ICommand ChooseFileCommand => new RelayCommand(ChooseFile);
+    public ICommand CloseSearchModalCommand => new RelayCommand(() => { IsSearchModalOpen = false; SearchForm.Text = lastSearchedText; });
+
+    public string CurrentPath
+    {
+        get => currentPath;
+        set
         {
-            this.navigator = navigator;
-
-            // Must first add suppliers before processing.
-            suppliers.Add(new OpenSubtitles());
-
-            searchByHash = App.Settings.IsByHashChecked;
-            searchByName = App.Settings.IsByNameChecked;
-
-            StatusText = "Open a video file.";
-            CurrentPath = (Application.Current as App).PathArg;
-
-            App.InstanceMediator.ReceivedArgument += arg => CurrentPath = arg;
-        }
-
-        public ObservableCollection<SubtitleEntry> SubtitleList { get; set; } = new ObservableCollection<SubtitleEntry>();
-
-        public SubtitleEntry SelectedItem { get; set; }
-
-        public string CurrentPath
-        {
-            get => currentPath;
-            set
+            currentPath = value;
+            if (currentPath != null)
             {
-                currentPath = value;
-                if (currentPath != null)
-                {
-                    ProcessFileAsync();
-                }
+                CurrentPage = 1;
+                TotalPages = 1;
+                currentSort = SortBy.Default;
+                ProcessFileAsync();
             }
         }
+    }
 
-        public string StatusText
+    public ICommand DownloadCommand => new RelayCommand(Download);
+
+    public bool IsSearchModalOpen
+    {
+        get => isSearchModalOpen;
+        set => Set(() => IsSearchModalOpen, ref isSearchModalOpen, value);
+    }
+
+    public bool IsLoading
+    {
+        get => isLoading;
+        set => Set(() => IsLoading, ref isLoading, value);
+    }
+
+    public int CurrentPage
+    {
+        get => currentPage;
+        set => Set(() => CurrentPage, ref currentPage, value);
+    }
+
+    public int TotalPages
+    {
+        get => totalPages;
+        set => Set(() => TotalPages, ref totalPages, value);
+    }
+
+    public ICommand OpenSearchModalCommand => new RelayCommand(() =>
+    {
+        SearchForm ??= new SearchFormViewModel(Search);
+        IsSearchModalOpen = true;
+    });
+
+    public ICommand RefreshCommand => new RelayCommand(Refresh);
+
+    public SearchFormViewModel SearchForm { get => searchForm; set => Set(() => SearchForm, ref searchForm, value); }
+
+    public ICommand SearchCommand => new RelayCommand(Search);
+
+    private void Search()
+    {
+        CurrentPage = 1;
+        TotalPages = 1;
+        currentSort = SortBy.Default;
+        SearchPage(CurrentPage);
+    }
+
+    public ICommand NextPageCommand => new RelayCommand(NextPage);
+
+    private void NextPage()
+    {
+        ++CurrentPage;
+        Refresh();
+    }
+
+    public ICommand PreviousPageCommand => new RelayCommand(PreviousPage);
+
+    private void PreviousPage()
+    {
+        --CurrentPage;
+        Refresh();
+    }
+
+    public SubtitleEntry SelectedItem { get; set; }
+    public ICommand SettingsCommand => new RelayCommand(GoToSettings);
+
+    public string StatusText
+    {
+        get => statusText;
+        set => Set(() => StatusText, ref statusText, value);
+    }
+
+    public ObservableCollection<SubtitleEntry> SubtitleList
+    {
+        get => subtitleList;
+        set => Set(() => SubtitleList, ref subtitleList, value);
+    }
+
+    public void ChooseFile()
+    {
+        var fileChooseDialog = new OpenFileDialog
         {
-            get => statusText;
+            Filter = "Video files |*.mp4; *.mkv; *.avi; *.wmv; *.mov; *.flv; *.webm; *.3gp; *.mpeg; *.ogv; *.rmvb; *.vob; *.mts; *.m2ts; *.wav; *.mpg;| AllFiles |*.*;",
+            CheckFileExists = true,
+            CheckPathExists = true,
+        };
 
-            set => Set(nameof(StatusText), ref statusText, value);
+        fileChooseDialog.ShowDialog();
+
+        try
+        {
+            var fileInfo = new FileInfo(fileChooseDialog.FileName);
+            SubtitleList = null;
+            CurrentPath = fileChooseDialog.FileName;
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    public void SortByLanguage()
+    {
+        if (currentSort == SortBy.Language)
+        {
+            isAscending = !isAscending;
+        }
+        else
+        {
+            isAscending = true;
+            currentSort = SortBy.Language;
         }
 
-        public bool IsSearchModalOpen
-        {
-            get => isSearchModalOpen;
+        ProcessResults(SubtitleList, CurrentPage, TotalPages);
+    }
 
-            set => Set(nameof(IsSearchModalOpen), ref isSearchModalOpen, value);
+    public void SortByRelease()
+    {
+        if (currentSort == SortBy.Release)
+        {
+            isAscending = !isAscending;
+        }
+        else
+        {
+            isAscending = true;
+            currentSort = SortBy.Release;
         }
 
-        public string SearchModalInputText
-        {
-            get => searchModalInputText;
+        ProcessResults(SubtitleList, CurrentPage, TotalPages);
+    }
 
-            set => Set(nameof(SearchModalInputText), ref searchModalInputText, value);
+    public async void Download()
+    {
+        if (SelectedItem == null)
+        {
+            return;
         }
 
-        public bool SearchByName
+        string destination = null;
+        if (string.IsNullOrWhiteSpace(CurrentPath))
         {
-            get => searchByName;
-
-            set
+            var saveFileDialog = new SaveFileDialog()
             {
-                Set(nameof(SearchByName), ref searchByName, value);
-                App.Settings.IsByNameChecked = value;
-                SettingsParser.Save(App.Settings);
-            }
-        }
-
-        public bool SearchByHash
-        {
-            get => searchByHash;
-
-            set
-            {
-                Set(nameof(SearchByHash), ref searchByHash, value);
-                App.Settings.IsByHashChecked = value;
-                SettingsParser.Save(App.Settings);
-            }
-        }
-
-        public ICommand ChooseFileCommand => new RelayCommand(ChooseFile);
-
-        public ICommand RefreshCommand => new RelayCommand(Refresh);
-
-        public ICommand SettingsCommand => new RelayCommand(GoToSettings);
-
-        public ICommand DownloadCommand => new RelayCommand(Download);
-
-        public ICommand SearchCommand => new RelayCommand(Search);
-
-        public ICommand OpenSearchModalCommand => new RelayCommand(() => IsSearchModalOpen = true);
-
-        public ICommand CloseSearchModalCommand => new RelayCommand(() => { IsSearchModalOpen = false; SearchModalInputText = lastSearchedText; });
-
-        public async void Search()
-        {
-            IsSearchModalOpen = false;
-            CurrentPath = null;
-            if(string.IsNullOrWhiteSpace(SearchModalInputText))
-            {
-                return;
-            }
-
-            lastSearchedText = SearchModalInputText;
-            await GetResults(false);
-        }
-
-        public void ChooseFile()
-        {
-            var fileChooseDialog = new OpenFileDialog
-            {
-                Filter = "Video files |*.wmv; *.3g2; *.3gp; *.3gp2; *.3gpp; *.amv; *.asf;  *.avi; *.bin; " +
-                          "*.cue; *.divx; *.dv; *.flv; *.gxf; *.iso; *.m1v; *.m2v; *.m2t; *.m2ts; *.m4v; " +
-                          " *.mkv; *.mov; *.mp2; *.mp2v; *.mp4; *.mp4v; *.mpa; *.mpe; *.mpeg; *.mpeg1; " +
-                          "*.mpeg2; *.mpeg4; *.mpg; *.mpv2; *.mts; *.nsv; *.nuv; *.ogg; *.ogm; *.ogv; " +
-                          "*.ogx; *.ps; *.rec; *.rm; *.rmvb; *.tod; *.ts; *.tts; *.vob; *.vro; *.webm; *.dat; ",
-                CheckFileExists = true,
-                CheckPathExists = true,
+                Filter = $"All files (*.*) |*.*|Subtitle files|*.{_settings.Value.PreferredFormat}",
+                FileName = Path.ChangeExtension(SelectedItem.Release, _settings.Value.PreferredFormat)
             };
 
-            fileChooseDialog.ShowDialog();
-
-            try
+            if (saveFileDialog.ShowDialog() == true)
             {
-                var fileInfo = new FileInfo(fileChooseDialog.FileName);
-                SubtitleList.Clear();
-                CurrentPath = fileChooseDialog.FileName;
+                destination = saveFileDialog.FileName;
             }
-            catch (Exception)
-            {
-            }
-        }
-
-        public void GoToSettings()
-        {
-            var settingsControl = new SettingsViewModel(navigator);
-            navigator.GoToControl(settingsControl);
-        }
-
-        public async void Refresh()
-        {
-            if (CurrentPath != null)
-            {
-                await Task.Run(() => ProcessFileAsync());
-            }
-            else if(!string.IsNullOrWhiteSpace(SearchModalInputText))
-            {
-                Search();
-            }
-        }
-
-        public async void Download()
-        {
-            if (SelectedItem == null)
+            else
             {
                 return;
             }
+        }
 
+        StatusText = "Downloading...";
+        await RunAndHandleAsync(async () =>
+        {
+            var info = await _openSubtitlesService.DownloadSubtitleAsync(SelectedItem, CurrentPath, destination);
+            StatusText = $"Subtitle downloaded. Remaining today: " + info.Remaining;
+        });
+    }
+
+    public void GoToSettings()
+    {
+        var settingsControl = new SettingsViewModel(_navigator, _openSubtitlesService, _settings.Value);
+        _navigator.GoToControl(settingsControl);
+    }
+
+    public void Refresh()
+    {
+        currentSort = SortBy.Default;
+        if (CurrentPath != null)
+        {
+            ProcessFileAsync();
+        }
+        else if (!string.IsNullOrWhiteSpace(SearchForm.Text))
+        {
+            SearchPage(CurrentPage);
+        }
+    }
+
+    public async void SearchPage(int currentPage)
+    {
+        if (IsLoading)
+        {
+            return;
+        }
+        IsLoading = true;
+        SubtitleList = null;
+
+        IsSearchModalOpen = false;
+        CurrentPath = null;
+        if (string.IsNullOrWhiteSpace(SearchForm.Text) &&
+            !SearchForm.Episode.HasValue &&
+            !SearchForm.Season.HasValue &&
+            !SearchForm.Year.HasValue &&
+            !SearchForm.ImdbId.HasValue &&
+            !SearchForm.ParentImdbId.HasValue)
+        {
+            StatusText = "Not enough parameters";
+            IsLoading = false;
+            return;
+        }
+
+        lastSearchedText = SearchForm.Text;
+
+        Application.Current.MainWindow.Activate();
+        StatusText = "Searching subtitles...";
+        await RunAndHandleAsync(async () =>
+        {
+            var result = await _openSubtitlesService.SearchSubtitlesAsync(
+                SearchForm.Text,
+                SearchForm.Episode,
+                SearchForm.Season,
+                SearchForm.Year,
+                SearchForm.Type,
+                SearchForm.ImdbId,
+                SearchForm.ParentImdbId,
+                currentPage);
+            ProcessResults(result.Items, result.CurrentPage, result.TotalPages);
+        });
+    }
+
+    private async void ProcessFileAsync()
+    {
+        if (IsLoading)
+        {
+            return;
+        }
+        IsLoading = true;
+
+        Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
+        StatusText = "Searching subtitles...";
+        SubtitleList = null;
+        await RunAndHandleAsync(async () =>
+        {
+            var result = await _openSubtitlesService.GetSubtitlesForFileAsync(CurrentPath, CurrentPage);
+            ProcessResults(result.Items, result.CurrentPage, result.TotalPages);
+        });
+    }
+
+    private void ProcessResults(IEnumerable<SubtitleEntry> results, int currentPage, int totalPages)
+    {
+        IsLoading = false;
+
+        CurrentPage = currentPage;
+        TotalPages = totalPages;
+
+        if (results == null)
+        {
+            StatusText = "Server error. Try refreshing.";
+            return;
+        }
+        else if (!results.Any())
+        {
+            StatusText = "No subtitles found.";
+            return;
+        }
+
+        SubtitleList = currentSort switch
+        {
+            SortBy.Default => new ObservableCollection<SubtitleEntry>(results),
+            SortBy.Language => new ObservableCollection<SubtitleEntry>(isAscending
+                ? results.OrderBy(s => s.Language).ThenBy(s => s.LevenshteinDistance)
+                : results.OrderByDescending(s => s.Language).ThenBy(s => s.LevenshteinDistance)),
+            SortBy.Release => new ObservableCollection<SubtitleEntry>(isAscending
+                ? results.OrderBy(s => s.Release)
+                : results.OrderByDescending(s => s.Release)),
+            _ => throw new NotImplementedException(),
+        };
+
+        StatusText = "Use double-click to download.";
+
+    }
+
+    private Task RunAndHandleAsync(Func<Task> func)
+    {
+        return Task.Run(async () =>
+        {
             try
             {
-                StatusText = "Downloading...";
-                await Task.Run(() =>
-                {
-                    Thread.Sleep(20);
-                    string destination;
-                    if(string.IsNullOrWhiteSpace(CurrentPath))
-                    {
-                        var saveFileDialog = new SaveFileDialog()
-                        {
-                            FileName = SelectedItem.Name
-                        };
-
-                        if (saveFileDialog.ShowDialog() == true)
-                        {
-                            destination = saveFileDialog.FileName;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        destination = GetDestinationPath();
-                    }
-
-                    SelectedItem.Model.Download(destination);
-                });
-
-                StatusText = "Subtitle downloaded.";
+                await func();
+            }
+            catch (RequestFailedException ex)
+            {
+                StatusText = ex.Message?.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0] ?? "Something went wrong.";
+                SystemSounds.Hand.Play();
             }
             catch (Exception)
             {
-                StatusText = "Error while downloading.";
+                StatusText = "Something went wrong. Please try again.";
                 SystemSounds.Hand.Play();
             }
-        }
-
-        private async void ProcessFileAsync()
-        {
-            await GetResults(true);
-        }
-
-        private async Task<IList<SubtitleEntry>> SearchSuppliers(bool forFile = true)
-        {
-            var result = new List<SubtitleEntry>();
-            foreach (var supplier in suppliers)
+            finally
             {
-                var results = forFile ? await supplier.SearchForFileAsync(currentPath, new object[] { SearchByHash, SearchByName })
-                                      : await supplier.SearchAsync(SearchModalInputText);
-                foreach (var item in results)
-                {
-                    var settings = App.Settings;
-                    if (settings.WantedLanguages == null ||
-                        !settings.WantedLanguages.Any() ||
-                        settings.WantedLanguages.Where((subLang) => subLang.Name == item.Language).Any())
-                    {
-                        result.Add(new SubtitleEntry(item));
-                    }
-                }
+                IsLoading = false;
             }
-
-            return result;
-        }
-
-        private async Task GetResults(bool fileSearch)
-        {
-            try
-            {
-                // try to focus window
-                Application.Current.Dispatcher.Invoke(() => Application.Current.MainWindow.Activate());
-
-                StatusText = "Searching subtitles...";
-                Application.Current.Dispatcher.Invoke(() => SubtitleList.Clear());
-                var results = await SearchSuppliers(fileSearch);
-                if (results == null)
-                {
-                    StatusText = "Server error. Try refreshing.";
-                }
-                else if (results.Count == 0)
-                {
-                    StatusText = "No subtitles found.";
-                }
-                else
-                {
-                    foreach (var x in results)
-                    {
-                        Application.Current.Dispatcher.Invoke(() => SubtitleList.Add(x));
-                        await Task.Delay(20);
-                    }
-
-                    StatusText = "Use double-click to download.";
-                }
-            }
-            catch (ServerFailException ex)
-            {
-                StatusText = ex.Message;
-                SystemSounds.Hand.Play();
-            }
-            catch (BadFileException ex)
-            {
-                StatusText = ex.Message;
-                SystemSounds.Hand.Play();
-            }
-        }
-
-        private string GetDestinationPath()
-        {
-            var directoryPath = App.Settings.DownloadToSubsFolder
-                ? Path.Combine(Path.GetDirectoryName(CurrentPath), "Subs")
-                : Path.GetDirectoryName(CurrentPath);
-
-            Directory.CreateDirectory(directoryPath);
-
-            if (App.Settings.AllowMultipleDownloads)
-            {
-                var fileNameWithoutPathOrExtension = Path.GetFileNameWithoutExtension(CurrentPath);
-                var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}");
-
-                if (!App.Settings.OverwriteSameLanguageSub && File.Exists(path))
-                {
-                    var counter = 1;
-                    while (File.Exists(
-                        path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.({counter}).{SelectedItem.Model.LanguageID}.{SelectedItem.Model.Format}")))
-                    {
-                        counter++;
-                    }
-                }
-
-                return path;
-            }
-
-            return Path.ChangeExtension(CurrentPath, SelectedItem.Model.Format);
-        }
+        });
     }
 }

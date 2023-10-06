@@ -1,0 +1,289 @@
+<UserControl
+    x:Class="SubloaderAvalonia.Views.MainView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:themes="clr-namespace:SubloaderAvalonia.CustomComponents"
+    xmlns:view="clr-namespace:SubloaderAvalonia.Views"
+    xmlns:vm="clr-namespace:SubloaderAvalonia.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:MainViewModel"
+    Loaded="TheControl_Loaded"
+    mc:Ignorable="d">
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <Grid Focusable="False">
+        <Grid
+            x:Name="searchModal"
+            Panel.ZIndex="5000"
+            Focusable="False"
+            IsVisible="{Binding IsSearchModalOpen}">
+            <Grid.Background>
+                <SolidColorBrush Opacity="0.35" Color="#222" />
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border
+                Grid.Row="1"
+                Padding="15"
+                Background="#f2f2f2"
+                BorderBrush="{StaticResource MainBorderColor}"
+                BorderThickness="0,1"
+                BoxShadow="5 5 10 2 Blue"
+                Classes="Shadow">
+                <!--<Border.Effect>
+                    <DropShadowEffect
+                        BlurRadius="8"
+                        Direction="0"
+                        Opacity="0.3" />
+                </Border.Effect>-->
+                <StackPanel>
+                    <ContentControl x:Name="searchFormContent" Content="{Binding SearchForm}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding SearchCommand}"
+                            Content="Search" />
+                        <Button
+                            Grid.Column="3"
+                            Command="{Binding CloseSearchModalCommand}"
+                            Content="Cancel" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+        <DockPanel Focusable="False">
+            <Grid
+                Grid.Row="3"
+                Margin="10"
+                DockPanel.Dock="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Button
+                    Grid.Column="0"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding ChooseFileCommand}"
+                    Content="File" />
+                <Button
+                    x:Name="openSearchModalButton"
+                    Grid.Column="1"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding OpenSearchModalCommand}"
+                    Content="Search"
+                    IsDefault="True" />
+                <Button
+                    Grid.Column="2"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding RefreshCommand}"
+                    Content="Refresh"
+                    IsEnabled="{Binding !IsLoading}" />
+                <Button
+                    Grid.Column="3"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding SettingsCommand}"
+                    Content="Settings" />
+            </Grid>
+            <Border
+                Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                BorderBrush="{StaticResource MainBorderColor}"
+                BorderThickness="0,0,0,1"
+                DockPanel.Dock="Bottom">
+                <DockPanel>
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="5,0,10,0"
+                        DockPanel.Dock="Right"
+                        Orientation="Horizontal">
+                        <StackPanel.IsVisible>
+                            <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
+                                <Binding Path="CurrentPage" />
+                                <Binding Path="TotalPages" />
+                            </MultiBinding>
+                        </StackPanel.IsVisible>
+                        <Button
+                            Width="20"
+                            Height="20"
+                            Padding="0,0"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Command="{Binding PreviousPageCommand}">
+                            <Image
+                                Width="10"
+                                Height="10"
+                                Source="{StaticResource ChevronDown}" />
+                            <Button.RenderTransform>
+                                <RotateTransform Angle="90" CenterX="10" CenterY="10" />
+                            </Button.RenderTransform>
+                            <Button.IsVisible>
+                                <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
+                                    <MultiBinding.ConverterParameter>
+                                        <sys:Boolean>False</sys:Boolean>
+                                    </MultiBinding.ConverterParameter>
+                                    <Binding Path="CurrentPage" />
+                                    <Binding Path="TotalPages" />
+                                </MultiBinding>
+                            </Button.IsVisible>
+                        </Button>
+                        <TextBlock Margin="5,0" VerticalAlignment="Center">
+                            <Run>Page</Run>
+                            <Run Text="{Binding CurrentPage}" />
+                            <Run>of</Run>
+                            <Run Text="{Binding TotalPages}" />
+                        </TextBlock>
+                        <Button
+                            Width="20"
+                            Height="20"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Command="{Binding NextPageCommand}">
+                            <Button.IsVisible>
+                                <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
+                                    <MultiBinding.ConverterParameter>
+                                        <sys:Boolean>True</sys:Boolean>
+                                    </MultiBinding.ConverterParameter>
+                                    <Binding Path="CurrentPage" />
+                                    <Binding Path="TotalPages" />
+                                </MultiBinding>
+                            </Button.IsVisible>
+                            <Image
+                                Width="10"
+                                Height="10"
+                                Source="{StaticResource ChevronDown}" />
+                            <Button.RenderTransform>
+                                <RotateTransform Angle="-90" CenterX="10" CenterY="10" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock
+                        Margin="0,5"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="{Binding StatusText}"
+                        TextAlignment="Center" />
+                </DockPanel>
+            </Border>
+            <Grid>
+                <!--
+<themes:Spinner
+                    Width="50"
+                    Height="50"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Panel.ZIndex="1000"
+                    IsVisible="{Binding IsLoading}" />-->
+                <ListBox
+                    x:Name="listBox"
+                    MaxWidth="580"
+                    Margin="0"
+                    Padding="0"
+                    BorderBrush="{StaticResource MainBorderColor}"
+                    BorderThickness="0,0,0,1"
+                    ItemsSource="{Binding SubtitleList}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                    SelectedItem="{Binding SelectedItem}"
+                    SelectionMode="Single">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="25" DoubleTapped="Handle_ListBox_DoubleTap">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="430" />
+                                    <ColumnDefinition Width="140" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Margin="3,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Classes.HashMatch="{Binding IsHashMatch}"
+                                    FontSize="12"
+                                    Text="{Binding Release}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="3,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Classes.HashMatch="{Binding IsHashMatch}"
+                                    FontSize="12"
+                                    Text="{Binding Language}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="BorderBrush" Value="{StaticResource LighterBorderColor}" />
+                            <Setter Property="BorderThickness" Value="0,0,0,1" />
+                        </Style>
+                        <Style Selector="ListBoxItem TextBlock.HashMatch">
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Style>
+                        <Style Selector="ListBoxItem:nth-child(odd)">
+                            <Setter Property="Background" Value="#f5f5f5" />
+                        </Style>
+                        <Style Selector="ListBoxItem:selected">
+                            <Setter Property="Background" Value="Red" />
+                        </Style>
+                        <Style Selector="ListBoxItem:pointerover Border">
+                            <Setter Property="Background" Value="{StaticResource LighterAccentColor}" />
+                        </Style>
+                    </ListBox.Styles>
+                </ListBox>
+                <!--
+                <DataGrid
+                    x:Name="resultsDataGrid"
+                    BorderThickness="0,0,0,1"
+                    IsEnabled="{Binding !IsLoading}"
+                    ItemsSource="{Binding SubtitleList}"
+                    SelectedItem="{Binding SelectedItem}"
+                    SelectionMode="Single">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="3*"
+                            Binding="{Binding Release}"
+                            DisplayIndex="0"
+                            FontSize="12"
+                            Header="Release" />
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding Language}"
+                            DisplayIndex="1"
+                            FontSize="12"
+                            Header="Language" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                -->
+
+            </Grid>
+        </DockPanel>
+    </Grid>
+</UserControl>

@@ -2,12 +2,13 @@
     x:Class="SubloaderWpf.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Exit="ApplicationExit"
-    StartupUri="Views/TheWindow.xaml">
+    Exit="ApplicationExit">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="SimpleStyles.xaml" />
+                <ResourceDictionary Source="Resources/SimpleStyles.xaml" />
+                <ResourceDictionary Source="Themes/Generic.xaml" />
+                <ResourceDictionary Source="Resources/ComboBoxStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

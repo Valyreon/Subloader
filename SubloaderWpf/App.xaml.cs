@@ -1,61 +1,75 @@
 using System;
 using System.Threading;
 using System.Windows;
+using SubloaderWpf.Models;
+using SubloaderWpf.Services;
 using SubloaderWpf.Utilities;
+using SubloaderWpf.ViewModels;
+using SubloaderWpf.Views;
 
-namespace SubloaderWpf
+namespace SubloaderWpf;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    private static Mutex mutex;
+    public static readonly string VersionTag = "v1.6.0";
+    public static string APIKey { get; private set; } = "";
+    public static InstanceMediator InstanceMediator { get; private set; }
+    public string PathArg { get; set; }
+
+    protected override void OnStartup(StartupEventArgs e)
     {
-        private static Mutex mutex;
-        public static InstanceMediator InstanceMediator { get; private set; }
+        CheckMutex(e);
 
-        public string PathArg { get; set; }
-
-        public static Settings Settings { get; } = SettingsParser.Load();
-
-        protected override void OnStartup(StartupEventArgs e)
+        var lazySettings = new Lazy<ApplicationSettings>(() => ApplicationDataReader.LoadSettings());
+        var openSubtitlesService = new OpenSubtitlesService(lazySettings);
+        MainWindow = new TheWindow
         {
-            if (e.Args.Length > 0)
-            {
-                PathArg = e.Args[0];
-            }
+            DataContext = new TheWindowViewModel(lazySettings, openSubtitlesService)
+        };
 
-            try
-            {
-                mutex = new Mutex(true, "valyreon.subloader", out var isOnlyInstance);
-                if (!isOnlyInstance)
-                {
-                    if (!string.IsNullOrWhiteSpace(PathArg))
-                    {
-                        InstanceMediator.SendArgumentToRunningInstance(PathArg);
-                    }
+        MainWindow.Show();
+    }
 
-                    Cleanup();
-                    Environment.Exit(0);
-                }
+    private void ApplicationExit(object sender, ExitEventArgs e)
+    {
+        Cleanup();
+    }
 
-                InstanceMediator = new InstanceMediator();
-                InstanceMediator.StartListening();
-            }
-            catch
-            {
-                Cleanup();
-            }
-
-            base.OnStartup(e);
+    private void CheckMutex(StartupEventArgs e)
+    {
+        if (e.Args.Length > 0)
+        {
+            PathArg = e.Args[0];
         }
 
-        private void ApplicationExit(object sender, ExitEventArgs e)
+        try
+        {
+            mutex = new Mutex(true, "valyreon.subloader", out var isOnlyInstance);
+            if (!isOnlyInstance)
+            {
+                if (!string.IsNullOrWhiteSpace(PathArg))
+                {
+                    InstanceMediator.SendArgumentToRunningInstance(PathArg);
+                }
+
+                Cleanup();
+                Environment.Exit(0);
+            }
+
+            InstanceMediator = new InstanceMediator();
+            InstanceMediator.StartListening();
+        }
+        catch
         {
             Cleanup();
         }
+    }
 
-        private void Cleanup()
-        {
-            InstanceMediator?.StopListening();
-            mutex?.ReleaseMutex();
-            mutex?.Dispose();
-        }
+    private static void Cleanup()
+    {
+        InstanceMediator?.StopListening();
+        mutex?.ReleaseMutex();
+        mutex?.Dispose();
     }
 }

@@ -3,61 +3,85 @@
 # Subloader
 ![](https://img.shields.io/badge/Price-Free-brightgreen.svg)
 ![](https://img.shields.io/badge/License-MIT-blue.svg)
-![](https://img.shields.io/badge/Release-1.5.1-blue.svg)
+![](https://img.shields.io/badge/Release-1.6.0-blue.svg)
 
-**Subloader** is a simple and minimalistic software written in **C#** and **.NET 6** that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using REST API for searching and downloading subtitles.
+**Subloader** is a simple and minimalistic application that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using REST API for searching and downloading subtitles.
 
-Subloader searches subtitles by using a special file hash. This enables the user to get the best possible search results for their video file. **Installer** will also add an entry to **right click context menu** of **.avi**, **.mkv** and **.mp4** files for easy access. User can also manually input strings to query the API. It will also follow Windows 10 accent color for UI main color.
+Subloader searches subtitles by using a special file hash. This enables the user to get the best possible search results for their video file. **Installer** will also add an entry to **right click context menu** of **.avi**, **.mkv** and **.mp4** files for easy access.
 
-Search and download is provided by **[Opensubtitles](http://www.opensubtitles.org/)**. Big thanks to their team, please consider showing your appreciation by **[supporting them](https://www.opensubtitles.org/en/support)**.
+The application now also includes a **Subloader CLI** tool that can search through a directory and download subtitles for all found video files. It is included in the installer.
+
+This app was built with **.NET 6**, using **C#** and **WPF**. Search and download is provided by **[Opensubtitles API](http://www.opensubtitles.com/)**.
 
 ### Installation
 
-Subloader requires **[.NET 6 Runtime](https://dotnet.microsoft.com/download)** to run. The runtime will probably be included on your Windows by default. It was developed in Visual Studio Community 2022.
+#### Windows
+Download the **[latest version of Subloader](https://github.com/Valyreon/Subloader/releases/latest)**, run the setup and choose desired components. You will be able to right click on your video file and get subtitles in a matter of seconds. Enjoy!
 
-Download the **[latest version of Subloader](https://github.com/Valyreon/Subloader/releases)**, run the setup and that's it. You can now right click your video file and get your subtitles in a matter of seconds. Enjoy!
+There is also a portable version of the subloader you can find in the link above. It will keep the config file in the same directory as the executable.
 
-#### Manual installation
+If the CLI component is selected, installer will also add a **subloader-cli** executable and add the Subloader installation directory to PATH environment variable.
 
-To compile Subloader yourself you don't have to install Visual Studio, just .NET 6 SDK. Go to the Subloader folder that contains the solution, open terminal and run:
+Subloader requires **[.NET 6 Runtime](https://dotnet.microsoft.com/download)** to run and this will probably be included with your Windows. If not, you will be prompted to download it on starting the app.
 
-```
-dotnet publish SubloaderWpf -p:PublishSingleFile=true --no-self-contained -r win-x64 -o .
-```
-
-This will output the compiled exe file in the current directory. Generated pdb files are not neccessary.
+#### Linux
+I am currently in the process of implementing the Subloader for Linux using Avalonia UI. Once I'm finished I will add a deb package and Linux executable to the release.
 
 ### Usage
 
-Subloader can be opened from Start Menu, and then using the 'Open' button you can choose a video file. Search will begin immediately. Installer will also add 'Find subtitles' menu in right click context menu of .avi, .mkv and .mp4 files for easy access. You can also search manually without file selection, by using the Search button, entering the title and/or relevant info and pressing Enter(or Search button in the modal window).
+<p align="center"><img src="./Screenshots/mainView.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
 
-After the search is complete, you can select a subtitle from the list and double-click it or press Enter to download. 
+Subloader can be opened from Start Menu, and then using the 'File' button you can choose a video file. Search will begin immediately. Installer will also add 'Find subtitles' menu in right click context menu of .avi, .mkv and .mp4 files for easy access:
 
-When you double-click an item in the table Subloader will download the subtitle. The name and location of the file depends on Settings, default (without options below checked) behaviour is to download subtitles into a file that is the same name as the video file with a different extension.
+<p align="center"><img src="./Screenshots/contextMenu.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
 
-Depending on the time of day, Opensubtitles server will sometimes be busy and you will get a 'Service temporarily unavailable'. In that case, try clicking 'Refresh' a few times.
+Note that only one instance of Subloader can be opened. If you search for a new video's subtitles from the context menu while Subloader is opened, the results will be shown in the already opened instance. That way you don't have to close the Subloader between searches.
 
-In **Settings** you can configure wanted **subtitle languages** as well as other options:
+You can also search manually without file selection, by using the Search button and entering the search parameters:
 
-* **Always on top** - When checked, Subloader will stay above other windows.
-* **Allow multiple downloads** - If this option is checked Subloader will allow downloading multiple subtitle files named *movie-title.lang-id.format*, for example: *matrix-reloaded.eng.srt*. If user downloads multiple subtitles from the same language, the files will be named *movie-name.(1).lang-id.format*.
-* **Download to Subs folder** - This option allows user to download subtitles into a separate Subs folder in the same directory as the file. This option can be used only if option above is checked as well. The naming of the files is the same as for the option above.
-* **Overwrite same language files** - If checked, when user downloads multiple subtitles of the same language Subloader won't create multiple files named *movie-name.(1).lang-id.format*, *movie-name.(2).lang-id.format* etc. but overwrite the existing *movie-title.lang-id.format* file with the last downloaded subtitle.
+<p align="center"><img src="./Screenshots/searchView.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
 
-### Portable
+After the search is complete, you can select a subtitle from the list and double-click it or press Enter to download. If results are by searching without selected video file you will be prompted for file location upon download.
 
-You can now also use Subloader as a portable exe file, included in the latest release. It will use a config file in the same directory.
+When searching for subtitles by selecting the video file, **_the text of subtitle entries in the result table which have a matching movie hash will be bolded._** Also the initial sort of the subtitle entries will put the entries which have the most similar Release name to the video file name on top (sorted by Levenshtein distance).
+
+The location of the downloaded subtitle for a video file will depend on the user's Settings.
+
+#### Login
+
+The new OpenSubtitles REST API <span style="color:red">**limits the number of allowed downloads based on the level of your account on their website**</span>. You can find the details in the table **[here](https://www.opensubtitles.com/en/support_us/)** although the values listed there are not always up to date.
+
+For example, at the time of writing this, anonymous users are able to download 5 subtitle files daily and logged in users 20 files daily. Paying **VIP users** can download up to **1000 files** daily and use the VIP API endpoint, with other levels in between.
+
+In the Settings > Login tab you will be able to login and see some details of your account:
+
+<p align="center"><img src="./Screenshots/loggedInView.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
+
+### CLI Usage
+
+If you installed subloader CLI tool with the Installer, you will be able to run the tool from any directory by opening a Command Prompt/PowerShell window. Currently there are 3 commands:
+
+* **dir** - Download subtitles for all video files in the directory (can be recursive)
+* **file** - Download subtitle for a single file
+* **languages** - Used for finding appropriate language codes
+
+You can find all the commands and paramaters description by using -h or --help parameter. You can use it on root or specific command, for example:
+
+<p align="center"><img src="./Screenshots/terminalDirHelp.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
+
+Command run example:
+
+<p align="center"><img src="./Screenshots/dirRunCommand.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
+
+### Wiki
+
+You can find more details about the usage, settings and implementation of Subloader on the **[Wiki pages](https://github.com/Valyreon/Subloader/wiki)**.
 
 ### Acknowledgments
 
 Icon made by **[Freepik](https://www.flaticon.com/authors/freepik)** from **[Flaticon](https://www.flaticon.com )**.
 
-### Screenshots
-| | |
-|:-------------------------:|:-------------------------:|
-| ![image](https://github.com/Valyreon/Subloader/assets/18052197/bdb0cc0b-5971-4ff7-a246-31f96a951b03) | ![image](https://github.com/Valyreon/Subloader/assets/18052197/26b4b4e0-5809-458f-9932-520ed00e4fff) |
-
 License
 ----
 
-This free software is released under **[MIT License](https://opensource.org/licenses/MIT)**.
+This free software is released under a modified **[MIT License](https://opensource.org/licenses/MIT)**.

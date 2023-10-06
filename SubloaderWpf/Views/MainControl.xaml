@@ -4,17 +4,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Converters="clr-namespace:SubloaderWpf.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:SubloaderWpf.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:attachedProperties="clr-namespace:SubloaderWpf.AttachedProperties"
-    xmlns:Behaviours="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:themes="clr-namespace:SubloaderWpf.Themes"
+    xmlns:viewmodels="clr-namespace:SubloaderWpf.ViewModels"
     x:Name="TheControl"
+    d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
     AllowDrop="True"
     Background="#e8e8e8"
     DragDrop.DragOver="OnDragOverFile"
     DragDrop.Drop="OnDropFile"
     FontFamily="Segoe UI Semibold"
-    RenderOptions.BitmapScalingMode="HighQuality"
+    RenderOptions.BitmapScalingMode="LowQuality"
     UseLayoutRounding="True"
     mc:Ignorable="d">
     <UserControl.InputBindings>
@@ -22,22 +23,16 @@
         <KeyBinding Key="Return" Command="{Binding OpenSearchModalCommand}" />
         <KeyBinding Key="Esc" Command="{Binding CloseSearchModalCommand}" />
     </UserControl.InputBindings>
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <Converters:ColorBrightnessConverter x:Key="ColorConverter" />
-            <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        </ResourceDictionary>
-    </UserControl.Resources>
 
-    <Grid>
-        <Grid x:Name="searchModal"
-              Visibility="{Binding IsSearchModalOpen, Converter={StaticResource BoolToVisibilityConverter}}"
-              IsVisibleChanged="searchModal_IsVisibleChanged"
-              HorizontalAlignment="Stretch"
-              VerticalAlignment="Stretch"
-              Panel.ZIndex="5000">
+    <Grid Focusable="False">
+        <Grid
+            x:Name="searchModal"
+            Panel.ZIndex="5000"
+            Focusable="False"
+            IsVisibleChanged="searchModal_IsVisibleChanged"
+            Visibility="{Binding IsSearchModalOpen, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid.Background>
-                <SolidColorBrush Opacity="0.65" Color="Gray" />
+                <SolidColorBrush Opacity="0.35" Color="#222" />
             </Grid.Background>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -48,203 +43,237 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Border
-            Grid.Row="1"
-            attachedProperties:UI.Elevation="4"
-            Background="#f2f2f2"
-            BorderBrush="DarkGray"
-            BorderThickness="1">
-                <Grid Margin="15">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="10" />
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBox
-                        x:Name="searchTextBox"
-                    Grid.Column="1"
-                    Grid.Row="1"
-                    VerticalContentAlignment="Center"
-                    HorizontalContentAlignment="Center"
-                    Text="{Binding SearchModalInputText, UpdateSourceTrigger=PropertyChanged}"
-                    FontSize="15"
-                    attachedProperties:Focusable.IsFocused="{Binding IsSearchModalOpen}">
-                        <TextBox.InputBindings>
-                            <KeyBinding Key="Return" Command="{Binding SearchCommand}" />
-                        </TextBox.InputBindings>
-                    </TextBox>
-                    <Grid Grid.Row="3">
+                Grid.Row="1"
+                Padding="15"
+                Background="#f2f2f2"
+                BorderBrush="{StaticResource MainBorderColor}"
+                BorderThickness="0,1">
+                <Border.Effect>
+                    <DropShadowEffect
+                        BlurRadius="8"
+                        Direction="0"
+                        Opacity="0.3" />
+                </Border.Effect>
+                <StackPanel>
+                    <ContentControl x:Name="searchFormContent" Content="{Binding SearchForm}" />
+                    <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="10"/>
-                            <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Button Command="{Binding SearchCommand}" Content="Search" Grid.Column="1" Background="#ffffff"></Button>
-                        <Button Command="{Binding CloseSearchModalCommand}" Content="Cancel" CommandParameter="no" Grid.Column="3" Background="#ffffff"></Button>
-
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding SearchCommand}"
+                            Content="Search" />
+                        <Button
+                            Grid.Column="3"
+                            Command="{Binding CloseSearchModalCommand}"
+                            CommandParameter="no"
+                            Content="Cancel"
+                            PreviewLostKeyboardFocus="CancelButton_PreviewLostKeyboardFocus" />
                     </Grid>
-                </Grid>
+                </StackPanel>
             </Border>
         </Grid>
-        <Grid Margin="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <DataGrid
-            AutoGenerateColumns="False"
-            Background="#f5f5f5"
-            BorderBrush="#bbbbbb"
-            BorderThickness="0,0,0,1"
-            CanUserResizeRows="False"
-            CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
-            FontFamily="Segoe UI"
-            GridLinesVisibility="All"
-            HeadersVisibility="Column"
-            HorizontalGridLinesBrush="#EDEDED"
-            IsReadOnly="True"
-            ItemsSource="{Binding SubtitleList}"
-            RowHeight="22"
-            ScrollViewer.VerticalScrollBarVisibility="Auto"
-            SelectedItem="{Binding SelectedItem}"
-            SelectionMode="Single"
-            Style="{StaticResource DatagridStyle}"
-            VerticalGridLinesBrush="#EDEDED">
-                <DataGrid.InputBindings>
-                    <MouseBinding Command="{Binding DownloadCommand}" MouseAction="LeftDoubleClick" />
-                    <KeyBinding Key="Return" Command="{Binding DownloadCommand}" />
-                </DataGrid.InputBindings>
-                <DataGrid.Columns>
-                    <DataGridTextColumn
-                    Width="15*"
-                    Binding="{Binding Name}"
-                    ElementStyle="{StaticResource ColumnElementStyle}"
-                    Header="Name">
-                        <DataGridTextColumn.HeaderStyle>
-                            <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                <Setter Property="Background" Value="#e8e8e8" />
-                                <Setter Property="BorderBrush" Value="#bbb" />
-                                <Setter Property="BorderThickness" Value="1" />
-                                <Setter Property="FontFamily" Value="Segoe UI Semibold" />
-                            </Style>
-                        </DataGridTextColumn.HeaderStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn
-                    Width="5*"
-                    Binding="{Binding Language}"
-                    ElementStyle="{StaticResource ColumnElementStyle}"
-                    Header="Language"
-                    SortDirection="Ascending">
-                        <DataGridTextColumn.HeaderStyle>
-                            <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                <Setter Property="Background" Value="#e8e8e8" />
-                                <Setter Property="BorderBrush" Value="#bbb" />
-                                <Setter Property="BorderThickness" Value="1" />
-                                <Setter Property="Height" Value="25" />
-                                <Setter Property="FontFamily" Value="Segoe UI Semibold" />
-                            </Style>
-                        </DataGridTextColumn.HeaderStyle>
-                    </DataGridTextColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+        <DockPanel Focusable="False">
+            <StackPanel
+                Grid.Row="3"
+                Margin="10"
+                DockPanel.Dock="Bottom"
+                Orientation="Horizontal">
+                <Button
+                    Grid.Column="0"
+                    Width="129"
+                    Margin="0,0,10,0"
+                    Command="{Binding ChooseFileCommand}"
+                    Content="File" />
+                <Button
+                    Grid.Column="2"
+                    Width="129"
+                    Margin="0,0,10,0"
+                    Command="{Binding OpenSearchModalCommand}"
+                    Content="Search"
+                    IsDefault="True" />
+                <Button
+                    Grid.Column="4"
+                    Width="129"
+                    Margin="0,0,10,0"
+                    Command="{Binding RefreshCommand}"
+                    Content="Refresh"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource ReverseBoolConverter}}" />
+                <Button
+                    Grid.Column="6"
+                    Width="129"
+                    Command="{Binding SettingsCommand}"
+                    Content="Settings" />
+            </StackPanel>
             <Border
-            Grid.Row="1"
-            HorizontalAlignment="Stretch"
-            Background="#e8e8e8"
-            BorderBrush="#bbbbbb"
-            BorderThickness="0,0,0,1">
-                <Grid>
+                Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                BorderBrush="{StaticResource LighterBorderColor}"
+                BorderThickness="0,0,0,1"
+                DockPanel.Dock="Bottom">
+                <DockPanel>
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="5,0,10,0"
+                        DockPanel.Dock="Right"
+                        Orientation="Horizontal">
+                        <StackPanel.Visibility>
+                            <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
+                                <Binding Path="CurrentPage" />
+                                <Binding Path="TotalPages" />
+                            </MultiBinding>
+                        </StackPanel.Visibility>
+                        <Button
+                            Width="20"
+                            Height="20"
+                            Padding="0,0"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Command="{Binding PreviousPageCommand}">
+                            <Image
+                                Width="10"
+                                Height="10"
+                                Source="{StaticResource ChevronDown}" />
+                            <Button.RenderTransform>
+                                <RotateTransform Angle="90" CenterX="10" CenterY="10" />
+                            </Button.RenderTransform>
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
+                                    <MultiBinding.ConverterParameter>
+                                        <sys:Boolean>False</sys:Boolean>
+                                    </MultiBinding.ConverterParameter>
+                                    <Binding Path="CurrentPage" />
+                                    <Binding Path="TotalPages" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                        </Button>
+                        <TextBlock Margin="5,0" VerticalAlignment="Center">
+                            <Run>Page</Run>
+                            <Run Text="{Binding CurrentPage}" />
+                            <Run>of</Run>
+                            <Run Text="{Binding TotalPages}" />
+                        </TextBlock>
+                        <Button
+                            Width="20"
+                            Height="20"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Command="{Binding NextPageCommand}">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource PageParamsToVisibilityMultiConverter}">
+                                    <MultiBinding.ConverterParameter>
+                                        <sys:Boolean>True</sys:Boolean>
+                                    </MultiBinding.ConverterParameter>
+                                    <Binding Path="CurrentPage" />
+                                    <Binding Path="TotalPages" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                            <Image
+                                Width="10"
+                                Height="10"
+                                Source="{StaticResource ChevronDown}" />
+                            <Button.RenderTransform>
+                                <RotateTransform Angle="-90" CenterX="10" CenterY="10" />
+                            </Button.RenderTransform>
+                        </Button>
+                    </StackPanel>
                     <TextBlock
-                    Grid.Row="1"
-                    Margin="0,5"
+                        Margin="0,5"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource MainDarkColor}"
+                        Text="{Binding StatusText, UpdateSourceTrigger=PropertyChanged}"
+                        TextAlignment="Center" />
+                </DockPanel>
+            </Border>
+            <Grid>
+                <themes:Spinner
+                    Width="45"
+                    Height="45"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    FontFamily="Segoe UI Semibold"
-                    FontStyle="Italic"
-                    Text="{Binding StatusText, UpdateSourceTrigger=PropertyChanged}"
-                    TextAlignment="Center" />
-                </Grid>
-            </Border>
-            <Grid
-            Grid.Row="2"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="15" />
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="8" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="5" />
-                </Grid.RowDefinitions>
-                <CheckBox
-                Grid.Row="1"
-                Grid.Column="1"
-                Content="Search by name"
-                IsChecked="{Binding SearchByName, UpdateSourceTrigger=PropertyChanged}" />
-                <CheckBox
-                Grid.Row="1"
-                Grid.Column="3"
-                Content="Search by hash"
-                IsChecked="{Binding SearchByHash, UpdateSourceTrigger=PropertyChanged}" />
+                    Panel.ZIndex="1000"
+                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <ListView
+                    x:Name="resultsDataGrid"
+                    BorderBrush="{StaticResource MainBorderColor}"
+                    BorderThickness="0,0,0,1"
+                    Foreground="{StaticResource MainDarkColor}"
+                    GridViewColumnHeader.Click="resultsDataGrid_Click"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource ReverseBoolConverter}}"
+                    ItemsSource="{Binding SubtitleList}"
+                    SelectedItem="{Binding SelectedItem}"
+                    SelectionMode="Single">
+                    <ListView.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding DownloadCommand}" />
+                    </ListView.InputBindings>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn
+                                Width="433"
+                                DisplayMemberBinding="{Binding Release}"
+                                Header="Release" />
+                            <GridViewColumn
+                                Width="130"
+                                DisplayMemberBinding="{Binding Language}"
+                                Header="Language" />
+                        </GridView>
+                    </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <EventSetter Event="PreviewMouseDoubleClick" Handler="ListViewItem_DoubleClick" />
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Foreground" Value="{StaticResource MainDarkColor}" />
+                            <Setter Property="Height" Value="24" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="BorderThickness" Value="0,0,0,1" />
+                            <Setter Property="BorderBrush" Value="#e5e5e5" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <Border
+                                            x:Name="Bd"
+                                            Margin="0"
+                                            Padding="0"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}">
+                                            <GridViewRowPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                        </Border>
+
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsHashMatch}" Value="True">
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                </DataTrigger>
+                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                    <Setter Property="Background" Value="#f5f5f5" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource AccentColor}" />
+                                    <Setter Property="Foreground" Value="White" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="true" />
+                                        <Condition Property="Selector.IsSelectionActive" Value="false" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" Value="Gray" />
+                                    <Setter Property="Foreground" Value="White" />
+                                </MultiTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
             </Grid>
-            <Grid Grid.Row="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="5" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="10" />
-                </Grid.RowDefinitions>
-                <Button
-                Grid.Row="1"
-                Grid.Column="1"
-                Background="#ffffff"
-                Command="{Binding ChooseFileCommand}"
-                Content="File" />
-                <Button
-                Grid.Row="1"
-                Grid.Column="3"
-                Background="#ffffff"
-                Command="{Binding OpenSearchModalCommand}"
-                Content="Search"
-                IsDefault="True"/>
-                <Button
-                Grid.Row="1"
-                Grid.Column="5"
-                Background="#ffffff"
-                Command="{Binding RefreshCommand}"
-                Content="Refresh" />
-                <Button
-                Grid.Row="1"
-                Grid.Column="7"
-                Background="#ffffff"
-                Command="{Binding SettingsCommand}"
-                Content="Settings" />
-            </Grid>
-        </Grid>
+        </DockPanel>
     </Grid>
 </UserControl>
