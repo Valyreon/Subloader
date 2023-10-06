@@ -1,2 +1,1 @@
-*.axaml linguist-detectable=false
-*.md linguist-detectable=false
+* linguist-language=C#
