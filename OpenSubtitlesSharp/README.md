@@ -1,7 +1,5 @@
 OpenSubtitlesSharp is a .NET library I developed for the Subloader application. It enables the developer to send requests to most useful OpenSubtitles API endpoints specified **[here](https://opensubtitles.stoplight.io/docs/opensubtitles-api/e3750fd63a100-getting-started)**.
 
-It is available as a **[NuGet package]()**.
-
 The implemented endpoints include `Login`, `Logout`, `Search`(by file or query), `Download`, `Get Languages`, `Get Formats` and `Get User Info`.
 
 ### Usage
