@@ -45,14 +45,14 @@ public static class ApplicationDataReader
 
         if (!File.Exists(path))
         {
-            return new ApplicationSettings().Initialize();
+            return new ApplicationSettings();
         }
 
         await semaphore.WaitAsync();
         try
         {
             var text = await File.ReadAllTextAsync(path);
-            return JsonSerializer.Deserialize<ApplicationSettings>(text).Initialize();
+            return JsonSerializer.Deserialize<ApplicationSettings>(text);
         }
         catch (Exception)
         {
@@ -62,7 +62,7 @@ public static class ApplicationDataReader
             semaphore.Release();
         }
 
-        return new ApplicationSettings().Initialize();
+        return new ApplicationSettings();
     }
 
     public static ApplicationSettings LoadSettings()
@@ -71,14 +71,14 @@ public static class ApplicationDataReader
 
         if (!File.Exists(path))
         {
-            return new ApplicationSettings().Initialize();
+            return new ApplicationSettings();
         }
 
         semaphore.Wait();
         try
         {
             var text = File.ReadAllText(path);
-            return JsonSerializer.Deserialize<ApplicationSettings>(text).Initialize();
+            return JsonSerializer.Deserialize<ApplicationSettings>(text);
         }
         catch (Exception)
         {
@@ -88,7 +88,7 @@ public static class ApplicationDataReader
             semaphore.Release();
         }
 
-        return new ApplicationSettings().Initialize();
+        return new ApplicationSettings();
     }
 
     private static string GetConfigPath()

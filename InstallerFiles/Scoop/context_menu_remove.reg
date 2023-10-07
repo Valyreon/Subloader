@@ -1,0 +1,5 @@
+Windows Registry Editor Version 5.00
+
+[-HKEY_CLASSES_ROOT\SystemFileAssociations\.avi\shell\Subloader]
+[-HKEY_CLASSES_ROOT\SystemFileAssociations\.mp4\shell\Subloader]
+[-HKEY_CLASSES_ROOT\SystemFileAssociations\.mkv\shell\Subloader]

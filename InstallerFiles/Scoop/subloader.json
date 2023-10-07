@@ -1,0 +1,11 @@
+{
+    "version": "1.6.0",
+    "description": "Subloader is a subtitle downloader that enables you to quickly find and download subtitles for your video files.",
+    "extract_to": "",
+    "bin": ["subloader-cli.exe", "SubLoad.exe"],
+    "url": "D:\\Repositories\\Subloader\\InstallerFiles\\Scoop\\SubloaderScoop.zip",
+    "homepage": "https://github.com/Valyreon/Subloader",
+    "licence": "https://github.com/Valyreon/Subloader/blob/master/LICENSE",
+    "post_install": "reg.exe import context_menu_add.reg",
+    "post_uninstall": "reg.exe import context_menu_remove.reg"
+}
