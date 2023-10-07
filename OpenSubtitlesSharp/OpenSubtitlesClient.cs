@@ -76,7 +76,7 @@ public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
             _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
         }
 
-        _client.DefaultRequestHeaders.Add("User-Agent", "Subloader v1.5");
+        _client.DefaultRequestHeaders.Add("User-Agent", "OpenSubtitlesSharp v1.0.1");
         _client.DefaultRequestHeaders.Add("Accept", "application/json");
         //_client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
     }
