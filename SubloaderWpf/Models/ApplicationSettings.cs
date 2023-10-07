@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using OpenSubtitlesSharp;
 using SubloaderWpf.Extensions;
 
@@ -7,7 +8,9 @@ namespace SubloaderWpf.Models;
 
 public class ApplicationSettings
 {
-    private User loggedInUser;
+    public static readonly IReadOnlyList<string> ValidFormats = new List<string> { "srt", "sub", "mpl", "webvtt", "dfxp", "txt" };
+
+private User loggedInUser;
     private SearchParameters defaultSearchParameters;
     private string preferredFormat = "srt";
     private IReadOnlyList<string> wantedLanguages;
@@ -31,7 +34,7 @@ public class ApplicationSettings
 
     public string PreferredFormat
     {
-        get => string.IsNullOrWhiteSpace(preferredFormat) ? "srt" : preferredFormat;
+        get => !ValidFormats.Contains(preferredFormat) ? "srt" : preferredFormat;
         set => preferredFormat = value;
     }
 

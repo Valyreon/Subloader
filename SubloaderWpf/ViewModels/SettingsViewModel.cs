@@ -50,7 +50,7 @@ public class SettingsViewModel : ObservableEntity
         _settings = settings;
         SelectedFormat = _settings.PreferredFormat;
 
-        Formats = new List<string> { "srt", "sub", "mpl", "webvtt", "dfxp", "txt" };
+        Formats = ApplicationSettings.ValidFormats;
 
         if (_settings.WantedLanguages?.Any() == true)
         {
