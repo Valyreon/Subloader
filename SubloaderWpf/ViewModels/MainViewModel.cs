@@ -230,7 +230,14 @@ public class MainViewModel : ObservableEntity
         await RunAndHandleAsync(async () =>
         {
             var info = await _openSubtitlesService.DownloadSubtitleAsync(SelectedItem, CurrentPath, destination);
-            StatusText = $"Subtitle downloaded. Remaining today: " + info.Remaining;
+            var sText = "Subtitle downloaded. Remaining today: " + info.Remaining;
+
+            if(info.Remaining <= 0 && _settings.Value.LoggedInUser == null)
+            {
+                sText += ". Login for more.";
+            }
+
+            StatusText = sText;
         });
     }
 

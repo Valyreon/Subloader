@@ -36,74 +36,76 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "context_menu"; Description: "Add 'Find subtitles' to context menu of .avi, .mp4 and .mkv files"; GroupDescription: "{cm:AdditionalIcons}";
 
 [InstallDelete]
 Type: files; Name: "{app}\Uninstall.exe"
+Type: filesandordirs; Name: "{pf64}/Subloader"
+Type: filesandordirs; Name: "{commonappdata}/Roaming/Microsoft/Windows/Start Menu/Programs/Subloader"
+Type: filesandordirs; Name: "{commonappdata}/Microsoft/Windows/Start Menu/Programs/Subloader"
+Type: filesandordirs; Name: "{userappdata}/Roaming/Microsoft/Windows/Start Menu/Programs/Subloader"
+Type: filesandordirs; Name: "{userappdata}/Microsoft/Windows/Start Menu/Programs/Subloader"
 
 [Files]
 Source: "{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyAppCliExeName}"; DestDir: "{app}"; Flags: ignoreversion; Components: cli
 Source: "remove_path.ps1"; DestDir: "{app}/UninstallerScripts"; Flags: ignoreversion; Components: cli
 Source: "set_path.ps1"; DestDir: "{tmp}"; Flags: ignoreversion; Components: cli
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+[Registry]
+Root: HKLM; Subkey: "Software\Classes\Subloader.avi"; Flags: uninsdeletekey deletekey
+Root: HKLM; Subkey: "Software\Classes\Subloader.avi\shell\open"; ValueType: string; ValueName: "FriendlyAppName"; ValueData: "Subloader";
+Root: HKLM; Subkey: "Software\Classes\Subloader.avi\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1""";
+Root: HKLM; Subkey: "Software\Classes\.avi\OpenWithProgIds"; ValueType: string; ValueName: "Subloader.avi";
+
+Root: HKLM; Subkey: "Software\Classes\Subloader.mp4"; Flags: uninsdeletekey deletekey
+Root: HKLM; Subkey: "Software\Classes\Subloader.mp4\shell\open"; ValueType: string; ValueName: "FriendlyAppName"; ValueData: "Subloader";
+Root: HKLM; Subkey: "Software\Classes\Subloader.mp4\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1""";
+Root: HKLM; Subkey: "Software\Classes\.mp4\OpenWithProgIds"; ValueType: string; ValueName: "Subloader.mp4";
+
+Root: HKLM; Subkey: "Software\Classes\Subloader.mkv"; Flags: uninsdeletekey deletekey
+Root: HKLM; Subkey: "Software\Classes\Subloader.mkv\shell\open"; ValueType: string; ValueName: "FriendlyAppName"; ValueData: "Subloader";
+Root: HKLM; Subkey: "Software\Classes\Subloader.mkv\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1""";
+Root: HKLM; Subkey: "Software\Classes\.mkv\OpenWithProgIds"; ValueType: string; ValueName: "Subloader.mkv";
+
+; clean old registry items from old installers
+Root: HKCR; Subkey: "SystemFileAssociations\.avi\shell\Subloader"; Flags: uninsdeletekey deletekey;
+Root: HKCR; Subkey: "SystemFileAssociations\.avi\shell\Subloader"; Flags: uninsdeletekey deletekey;
+Root: HKCR; Subkey: "SystemFileAssociations\.mkv\shell\Subloader"; Flags: uninsdeletekey deletekey;
+Root: HKLM; Subkey: "Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Subloader"; Flags: uninsdeletekey deletekey;
+
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.avi\shell\Subloader"; Flags: uninsdeletekey deletekey; Check: IsContextMenuTaskChecked
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.avi\shell\Subloader"; ValueType: string; ValueName: ""; ValueData: "Find subtitles"; Check: IsContextMenuTaskChecked
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.avi\shell\Subloader"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\{#MyAppExeName}"; Check: IsContextMenuTaskChecked
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.avi\shell\Subloader\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Check: IsContextMenuTaskChecked
+
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.mp4\shell\Subloader"; Flags: uninsdeletekey deletekey; Check: IsContextMenuTaskChecked
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.mp4\shell\Subloader"; ValueType: string; ValueName: ""; ValueData: "Find subtitles"; Check: IsContextMenuTaskChecked
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.mp4\shell\Subloader"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\{#MyAppExeName}"; Check: IsContextMenuTaskChecked
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.mp4\shell\Subloader\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Check: IsContextMenuTaskChecked
+
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.mkv\shell\Subloader"; Flags: uninsdeletekey deletekey; Check: IsContextMenuTaskChecked
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.mkv\shell\Subloader"; ValueType: string; ValueName: ""; ValueData: "Find subtitles"; Check: IsContextMenuTaskChecked
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.mkv\shell\Subloader"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\{#MyAppExeName}"; Check: IsContextMenuTaskChecked
+Root: HKLM; Subkey: "Software\Classes\SystemFileAssociations\.mkv\shell\Subloader\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Check: IsContextMenuTaskChecked
 
 [Components]
 Name: "main"; Description: "Main Files"; Types: full compact custom; Flags: fixed
-Name: "context_menu"; Description: "Add to context menu (.avi, .mp4 and .mkv files)"; Types: full compact
+; Name: "context_menu"; Description: "Add to context menu (.avi, .mp4 and .mkv files)"; Types: full compact
 Name: "cli"; Description: "Command Line Interface (Installs CLI executable and adds it to Path env variable)"; Types: full
 
 [Run]
-Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File ""{tmp}/set_path.ps1"" ""{app}"" "; Flags: runhidden; Check: ShouldAddToPathEnvVar
+Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File ""{tmp}/set_path.ps1"" ""{app}"" "; Flags: runhidden; Components: cli
 
 [UninstallRun]
-Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File ""{app}/UninstallerScripts/remove_path.ps1"" ""{app}"" "; Flags: runhidden; Check: ShouldAddToPathEnvVar; RunOnceId: remove_path
+Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File ""{app}/UninstallerScripts/remove_path.ps1"" ""{app}"" "; Flags: runhidden; Components: cli; RunOnceId: remove_path
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Code]
-function ShouldAddToPathEnvVar: Boolean;
+function IsContextMenuTaskChecked: Boolean;
 begin
-  Result := WizardIsComponentSelected('cli');
-end;
-
-procedure UpdateStatusLabel(StepText: String);
-begin
-  WizardForm.StatusLabel.Caption := StepText;
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-begin
-  if CurStep = ssPostInstall then
-  begin
-    // From the old installer
-    RegDeleteKeyIncludingSubkeys(HKLM, 'SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Subloader');
-
-    if WizardIsComponentSelected('context_menu') then
-    begin
-      UpdateStatusLabel('Adding entry to context menu...');
-      // AVI
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.avi\shell\Subloader', '', 'Find subtitles');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.avi\shell\Subloader', 'Icon', WizardDirValue + '\SubLoad.exe');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.avi\shell\Subloader\command', '', '"' + WizardDirValue + '\SubLoad.exe' + '" ' + '"%1"');
-      // MP4
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader', '', 'Find subtitles');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader', 'Icon', WizardDirValue + '\SubLoad.exe');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader\command', '', '"' + WizardDirValue + '\SubLoad.exe' + '" ' + '"%1"');
-      // MKV
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader', '', 'Find subtitles');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader', 'Icon', WizardDirValue + '\SubLoad.exe');
-      RegWriteStringValue(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader\command', '', '"' + WizardDirValue + '\SubLoad.exe' + '" ' + '"%1"');
-    end;
-  end;
-end;
-
-procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
-begin
-  if CurUninstallStep = usUninstall then begin
-    RegDeleteKeyIncludingSubkeys(HKCR, 'SystemFileAssociations\.avi\shell\Subloader');
-    RegDeleteKeyIncludingSubkeys(HKCR, 'SystemFileAssociations\.mp4\shell\Subloader');
-    RegDeleteKeyIncludingSubkeys(HKCR, 'SystemFileAssociations\.mkv\shell\Subloader');
-  end;
+  Result := WizardIsTaskSelected('context_menu');
 end;

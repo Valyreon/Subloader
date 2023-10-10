@@ -50,7 +50,7 @@ public class SettingsViewModel : ObservableEntity
         _settings = settings;
         SelectedFormat = _settings.PreferredFormat;
 
-        Formats = new List<string> { "srt", "sub", "mpl", "webvtt", "dfxp", "txt" };
+        Formats = ApplicationSettings.ValidFormats;
 
         if (_settings.WantedLanguages?.Any() == true)
         {
@@ -202,12 +202,16 @@ public class SettingsViewModel : ObservableEntity
             }
             else
             {
+#if SCOOP_RELEASE || SCOOP_DEBUG
+                MessageBox.Show("There is a newer version! Use Scoop to update.", "Update available");
+#else
                 var result = MessageBox.Show("New version of Subloader is available. Do you want to download now?", "Update available", MessageBoxButton.YesNo);
 
                 if (result == MessageBoxResult.Yes)
                 {
                     Process.Start(new ProcessStartInfo("https://github.com/Valyreon/Subloader/releases/latest") { UseShellExecute = true });
                 }
+#endif
             }
         }
         catch (Exception)

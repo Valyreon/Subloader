@@ -489,3 +489,6 @@ __pycache__/
 /OpenSubtitlesSharp.Tests/coveragereport/badge_shieldsio_methodcoverage_yellowgreen.svg
 /OpenSubtitlesSharp.Tests/coveragereport/CoverageHistory.htm
 /OpenSubtitlesSharp.Tests/coveragereport/summary.htm
+
+*.zip
+ReleaseOutput/

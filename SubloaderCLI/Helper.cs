@@ -62,10 +62,14 @@ public static class Helper
 
             ConsoleHelper.WriteMessageForFile(path.Name, "No valid subtitles found.", ConsoleColor.Red);
         }
-        catch (Exception ex)
+        catch (RequestFailedException ex)
         {
             ConsoleHelper.WriteExceptionMessage(ex.Message);
             return false;
+        }
+        catch (Exception)
+        {
+            ConsoleHelper.WriteLine("Something is wrong with the OS server. Please try again later.");
         }
 
         return true;

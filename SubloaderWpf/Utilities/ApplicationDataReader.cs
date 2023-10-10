@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,12 +14,13 @@ public static class ApplicationDataReader
 
     public static event Action Saved;
 
+    private static readonly Lazy<string> ConfigPath = new(() => GetConfigPath());
+
     public static async Task SaveSettingsAsync(ApplicationSettings settings)
     {
         await semaphore.WaitAsync();
         try
         {
-            var path = GetConfigPath();
             var json = JsonSerializer.Serialize(settings
 #if DEBUG
                 , new JsonSerializerOptions { WriteIndented = true }
@@ -26,7 +28,7 @@ public static class ApplicationDataReader
                 , new JsonSerializerOptions { WriteIndented = false }
 #endif
                 );
-            await File.WriteAllTextAsync(path, json);
+            await File.WriteAllTextAsync(ConfigPath.Value, json);
             Saved?.Invoke();
         }
         catch (Exception)
@@ -41,18 +43,16 @@ public static class ApplicationDataReader
 
     public static async Task<ApplicationSettings> LoadSettingsAsync()
     {
-        var path = GetConfigPath();
-
-        if (!File.Exists(path))
+        if (!File.Exists(ConfigPath.Value))
         {
-            return new ApplicationSettings().Initialize();
+            return new ApplicationSettings();
         }
 
         await semaphore.WaitAsync();
         try
         {
-            var text = await File.ReadAllTextAsync(path);
-            return JsonSerializer.Deserialize<ApplicationSettings>(text).Initialize();
+            var text = await File.ReadAllTextAsync(ConfigPath.Value);
+            return JsonSerializer.Deserialize<ApplicationSettings>(text);
         }
         catch (Exception)
         {
@@ -62,23 +62,21 @@ public static class ApplicationDataReader
             semaphore.Release();
         }
 
-        return new ApplicationSettings().Initialize();
+        return new ApplicationSettings();
     }
 
     public static ApplicationSettings LoadSettings()
     {
-        var path = GetConfigPath();
-
-        if (!File.Exists(path))
+        if (!File.Exists(ConfigPath.Value))
         {
-            return new ApplicationSettings().Initialize();
+            return new ApplicationSettings();
         }
 
         semaphore.Wait();
         try
         {
-            var text = File.ReadAllText(path);
-            return JsonSerializer.Deserialize<ApplicationSettings>(text).Initialize();
+            var text = File.ReadAllText(ConfigPath.Value);
+            return JsonSerializer.Deserialize<ApplicationSettings>(text);
         }
         catch (Exception)
         {
@@ -88,12 +86,12 @@ public static class ApplicationDataReader
             semaphore.Release();
         }
 
-        return new ApplicationSettings().Initialize();
+        return new ApplicationSettings();
     }
 
     private static string GetConfigPath()
     {
-#if PORTABLE_RELEASE
+#if PORTABLE_RELEASE || PORTABLE_DEBUG
         var path = "subLoadConfig.json";
 #else
         var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
