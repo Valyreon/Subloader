@@ -59,7 +59,7 @@ public static class ApplicationDataReader
 
     private static string GetConfigPath()
     {
-#if PORTABLE_RELEASE
+#if PORTABLE_RELEASE || PORTABLE_DEBUG
         var path = "subLoadConfig.json";
 #else
         var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);

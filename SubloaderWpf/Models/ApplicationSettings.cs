@@ -34,13 +34,13 @@ private User loggedInUser;
 
     public string PreferredFormat
     {
-        get => !ValidFormats.Contains(preferredFormat) ? "srt" : preferredFormat;
+        get => ValidFormats.Contains(preferredFormat) ? preferredFormat : "srt";
         set => preferredFormat = value;
     }
 
     public IReadOnlyList<string> WantedLanguages
     {
-        get => wantedLanguages ??= new List<string>() { "en" };
+        get => wantedLanguages == null || !wantedLanguages.Any() ? wantedLanguages = new List<string>() { "en" } : wantedLanguages;
         set => wantedLanguages = value;
     }
 }

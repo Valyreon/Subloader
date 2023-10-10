@@ -2,11 +2,11 @@
     "version": "1.6.0",
     "description": "Subloader enables you to quickly find and download subtitles for your video files using OpenSubtitles API.",
     "homepage": "https://github.com/Valyreon/Subloader",
-    "licence": "MIT",
+    "license": "MIT-Modern-Variant",
     "architecture": {
         "64bit": {
             "url": "https://github.com/Valyreon/Subloader/releases/download/v1.6.0/scoop.zip",
-            "hash": "eb93a495599e68b2c85c603009c14ba40348ed91b5da90c048704ccbc29c43dc"
+            "hash": "f7e0f5ced70a6260fec80eaa8864ae507381f5fdb294a48cf2c867d41cc198fd"
         }
     },
     "post_install": "add_to_openwith_menu.ps1",

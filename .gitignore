@@ -491,3 +491,4 @@ __pycache__/
 /OpenSubtitlesSharp.Tests/coveragereport/summary.htm
 
 *.zip
+ReleaseOutput/
