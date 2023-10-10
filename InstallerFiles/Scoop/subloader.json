@@ -1,11 +1,27 @@
 {
     "version": "1.6.0",
-    "description": "Subloader is a subtitle downloader that enables you to quickly find and download subtitles for your video files.",
-    "extract_to": "",
-    "bin": ["subloader-cli.exe", "SubLoad.exe"],
-    "url": "D:\\Repositories\\Subloader\\InstallerFiles\\Scoop\\SubloaderScoop.zip",
+    "description": "Subloader enables you to quickly find and download subtitles for your video files using OpenSubtitles API.",
     "homepage": "https://github.com/Valyreon/Subloader",
-    "licence": "https://github.com/Valyreon/Subloader/blob/master/LICENSE",
-    "post_install": "reg.exe import context_menu_add.reg",
-    "post_uninstall": "reg.exe import context_menu_remove.reg"
+    "licence": "MIT",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/Valyreon/Subloader/releases/download/v1.6.0/scoop.zip",
+            "hash": "eb93a495599e68b2c85c603009c14ba40348ed91b5da90c048704ccbc29c43dc"
+        }
+    },
+    "post_install": "add_to_openwith_menu.ps1",
+    "bin": ["subloader-cli.exe"],
+    "shortcuts": [["subload.exe", "Subloader"]],
+    "post_uninstall": "reg.exe import clean_registry.reg",
+    "checkver": "github",
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/Valyreon/Subloader/releases/download/v$version/scoop.zip"
+            }
+        },
+        "hash": {
+            "url": "$url.sha256"
+        }
+    }
 }
