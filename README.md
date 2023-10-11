@@ -5,27 +5,31 @@
 ![](https://img.shields.io/badge/License-MIT-blue.svg)
 ![](https://img.shields.io/badge/Release-1.6.0-blue.svg)
 
-**Subloader** is a simple and minimalistic application that enables you to quickly find and download subtitles for your movies and TV Shows. It interfaces with **Opensubtitles** database by using REST API for searching and downloading subtitles.
+**Subloader** is a simple and minimalistic application that enables you to quickly find and download subtitles for your movies and TV Shows.
 
-Subloader searches subtitles by using a special file hash. This enables the user to get the best possible search results for their video file. **Installer** will also add an entry to **right click context menu** of **.avi**, **.mkv** and **.mp4** files for easy access.
-
-The application now also includes a **Subloader CLI** tool that can search through a directory and download subtitles for all found video files. It is included in the installer.
+The application now also features a **Subloader CLI** tool that can search through a directory and download subtitles for all found video files. It is included in the installer.
 
 This app was built with **.NET 6**, using **C#** and **WPF**. Search and download is provided by **[Opensubtitles API](http://www.opensubtitles.com/)**.
+
+---
 
 ### Installation
 
 #### Windows
-Download the **[latest version of Subloader](https://github.com/Valyreon/Subloader/releases/latest)**, run the setup and choose desired components. You will be able to right click on your video file and get subtitles in a matter of seconds. Enjoy!
 
-There is also a portable version of the subloader you can find in the link above. It will keep the config file in the same directory as the executable.
+You can install Subloader by using the **[latest installer](https://github.com/Valyreon/Subloader/releases/latest)**.
 
-If the CLI component is selected, installer will also add a **subloader-cli** executable and add the Subloader installation directory to PATH environment variable.
+In the link above you can also find a portable versions of the app, both GUI and the CLI tool.
 
-Subloader requires **[.NET 6 Runtime](https://dotnet.microsoft.com/download)** to run and this will probably be included with your Windows. If not, you will be prompted to download it on starting the app.
+##### Scoop
+If you use [Scoop package manager](https://scoop.sh/) for Windows, you can also install Subloader by running:
+
+`scoop install https://raw.githubusercontent.com/Valyreon/Subloader/master/InstallerFiles/Scoop/subloader.json`
 
 #### Linux
 I am currently in the process of implementing the Subloader for Linux using Avalonia UI. Once I'm finished I will add a deb package and Linux executable to the release.
+
+---
 
 ### Usage
 
@@ -57,6 +61,8 @@ In the Settings > Login tab you will be able to login and see some details of yo
 
 <p align="center"><img src="./Screenshots/loggedInView.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
 
+---
+
 ### CLI Usage
 
 If you installed subloader CLI tool with the Installer, you will be able to run the tool from any directory by opening a Command Prompt/PowerShell window. Currently there are 3 commands:
@@ -72,6 +78,8 @@ You can find all the commands and paramaters description by using -h or --help p
 Command run example:
 
 <p align="center"><img src="./Screenshots/dirRunCommand.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
+
+---
 
 ### Wiki
 
