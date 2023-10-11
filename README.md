@@ -24,7 +24,9 @@ In the link above you can also find a portable versions of the app, both GUI and
 ##### Scoop
 If you use [Scoop package manager](https://scoop.sh/) for Windows, you can also install Subloader by running:
 
-`scoop install https://raw.githubusercontent.com/Valyreon/Subloader/master/InstallerFiles/Scoop/subloader.json`
+```
+scoop install https://raw.githubusercontent.com/Valyreon/Subloader/master/InstallerFiles/Scoop/subloader.json
+```
 
 #### Linux
 I am currently in the process of implementing the Subloader for Linux using Avalonia UI. Once I'm finished I will add a deb package and Linux executable to the release.
