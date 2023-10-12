@@ -3,7 +3,8 @@
 # Subloader
 ![](https://img.shields.io/badge/Price-Free-brightgreen.svg)
 ![](https://img.shields.io/badge/License-MIT-blue.svg)
-![](https://img.shields.io/badge/Release-1.6.0-blue.svg)
+![](https://img.shields.io/github/v/release/Valyreon/Subloader)
+![](https://img.shields.io/github/downloads/Valyreon/Subloader/total.svg)
 
 **Subloader** is a simple and minimalistic application that enables you to quickly find and download subtitles for your movies and TV Shows.
 
