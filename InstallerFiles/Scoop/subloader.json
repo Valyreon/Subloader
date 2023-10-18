@@ -6,7 +6,7 @@
     "architecture": {
         "64bit": {
             "url": "https://github.com/Valyreon/Subloader/releases/download/v1.6.0/scoop.zip",
-            "hash": "f7e0f5ced70a6260fec80eaa8864ae507381f5fdb294a48cf2c867d41cc198fd"
+            "hash": "9aad9fc9ab680d2c58af124783bd7fe632668adbe5d761b278d5b76b1b85b572"
         }
     },
     "post_install": "add_to_openwith_menu.ps1",

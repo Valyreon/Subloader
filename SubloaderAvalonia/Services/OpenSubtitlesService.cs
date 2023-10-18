@@ -41,14 +41,6 @@ public class OpenSubtitlesService : IOpenSubtitlesService
 
         File.WriteAllBytes(destination, await GetRawFileAsync(downloadInfo.Link));
 
-        if (_settings.LoggedInUser != null)
-        {
-            _settings.LoggedInUser.ResetTime = downloadInfo.ResetTimeUtc;
-            _settings.LoggedInUser.RemainingDownloads = downloadInfo.Remaining;
-
-            _ = ApplicationDataReader.SaveSettingsAsync(_settings);
-        }
-
         return downloadInfo;
     }
 
@@ -92,13 +84,11 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         return new User
         {
             Token = info.Token,
-            BaseUrl = info.BaseUrl,
             AllowedDownloads = info.User.AllowedDownloads,
-            RemainingDownloads = info.User.RemainingDownloads,
             IsVIP = info.User.Vip,
             Level = info.User.Level,
             UserId = info.User.UserId,
-            Username = username
+            Username = username,
         };
     }
 

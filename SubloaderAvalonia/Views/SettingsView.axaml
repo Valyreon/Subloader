@@ -1,8 +1,338 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SubloaderAvalonia.Views.SettingsView">
-  Welcome to Avalonia!
+<UserControl
+    x:Class="SubloaderAvalonia.Views.SettingsView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:SubloaderAvalonia.ViewModels"
+    d:DesignHeight="600"
+    d:DesignWidth="600"
+    x:DataType="vm:SettingsViewModel"
+    mc:Ignorable="d">
+    <Design.DataContext>
+        <vm:SettingsViewModel />
+    </Design.DataContext>
+    <DockPanel Background="White">
+        <Border
+            Padding="10"
+            Background="{StaticResource MainBackgroundColor}"
+            BorderBrush="{StaticResource MainBorderColor}"
+            BorderThickness="0,1,0,0"
+            DockPanel.Dock="Bottom">
+            <Button
+                Grid.Column="2"
+                Width="150"
+                Height="30"
+                HorizontalAlignment="Right"
+                Command="{Binding BackCommand}"
+                Content="Back" />
+        </Border>
+        <TabControl
+            Name="MainTabControl"
+            Padding="0"
+            Focusable="False">
+            <TabItem Header="General">
+                <DockPanel>
+                    <Grid Margin="0,0,0,10" DockPanel.Dock="Bottom">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="10" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            Content="Always on top"
+                            IsChecked="{Binding AlwaysOnTop}" />
+                        <CheckBox
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            Content="Download to Subs folder"
+                            IsChecked="{Binding DownloadToSubsFolder}"
+                            IsEnabled="{Binding AllowMultipleDownloads}" />
+                        <CheckBox
+                            Grid.Row="0"
+                            Grid.Column="3"
+                            HorizontalAlignment="Left"
+                            Content="Allow multiple downloads"
+                            IsChecked="{Binding AllowMultipleDownloads}" />
+                        <CheckBox
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            HorizontalAlignment="Left"
+                            Content="Overwrite same language files"
+                            IsChecked="{Binding OverwriteSameLanguageSubs}"
+                            IsEnabled="{Binding AllowMultipleDownloads}" />
+                    </Grid>
+
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <DockPanel VerticalAlignment="Stretch">
+                            <Label Margin="0,0,0,2" DockPanel.Dock="Top">Wanted languages:</Label>
+                            <ListBox
+                                x:Name="wantedLanguageList"
+                                VerticalAlignment="Stretch"
+                                ItemsSource="{Binding WantedLanguageList, Mode=TwoWay}"
+                                SelectedItem="{Binding SelectedWantedLanguage}" />
+                        </DockPanel>
+
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="5,0"
+                            VerticalAlignment="Center">
+                            <Button
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                Width="40"
+                                Height="40"
+                                Margin="0,0,0,10"
+                                Command="{Binding AddCommand}"
+                                Content="3"
+                                FontFamily="Marlett"
+                                FontSize="20"
+                                IsEnabled="{Binding IsLanguageSelected}" />
+                            <Button
+                                Grid.Row="4"
+                                Grid.Column="2"
+                                Width="40"
+                                Height="40"
+                                Command="{Binding DeleteCommand}"
+                                Content="4"
+                                FontFamily="Marlett"
+                                FontSize="20"
+                                IsEnabled="{Binding IsWantedLanguageSelected}" />
+                        </StackPanel>
+
+                        <DockPanel Grid.Column="2">
+                            <DockPanel Margin="0,0,0,5" DockPanel.Dock="Top">
+                                <Label
+                                    Margin="0,0,5,0"
+                                    VerticalAlignment="Center"
+                                    DockPanel.Dock="Left">
+                                    Search:
+                                </Label>
+                                <TextBox x:Name="searchLanguagesTextBox" Text="{Binding SearchText}" />
+                            </DockPanel>
+
+                            <ListBox
+                                x:Name="unselectedLanguageList"
+                                Grid.Row="1"
+                                Grid.RowSpan="6"
+                                Grid.Column="4"
+                                ItemsSource="{Binding LanguageList, Mode=TwoWay}"
+                                SelectedItem="{Binding SelectedLanguage}" />
+                        </DockPanel>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+            <TabItem BorderThickness="0" Header="Subtitles">
+                <DockPanel>
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <StackPanel Margin="0,0,0,8">
+                            <Label Content="Preferred subtitle format: " Target="{Binding ElementName=subtitleFormatComboBox}" />
+                            <ComboBox
+                                x:Name="subtitleFormatComboBox"
+                                ItemsSource="{Binding Formats}"
+                                SelectedItem="{Binding SelectedFormat}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Margin="0,0,0,8">
+                            <Label
+                                Grid.Row="1"
+                                Content="Foreign parts only: "
+                                Target="{Binding ElementName=foreignPartsComboBox}" />
+                            <ComboBox x:Name="foreignPartsComboBox" SelectedIndex="{Binding ForeignPartsSelectedIndex, Mode=TwoWay}">
+                                <ComboBoxItem Content="Include" />
+                                <ComboBoxItem Content="Exclude" />
+                                <ComboBoxItem Content="Only" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Margin="0,0,0,8">
+                            <Label Content="For hearing impaired: " Target="{Binding ElementName=hearingImpairedCombobox}" />
+                            <ComboBox
+                                x:Name="hearingImpairedCombobox"
+                                Grid.Column="2"
+                                SelectedIndex="{Binding HearingImpairedSelectedIndex, Mode=TwoWay}">
+                                <ComboBoxItem Content="Include" />
+                                <ComboBoxItem Content="Exclude" />
+                                <ComboBoxItem Content="Only" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <CheckBox
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Margin="0,5"
+                            HorizontalAlignment="Left"
+                            Content="Only from trusted sources"
+                            IsChecked="{Binding OnlyFromTrustedSources}" />
+                        <CheckBox
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Margin="0,5"
+                            HorizontalAlignment="Left"
+                            Content="Include AI translated"
+                            IsChecked="{Binding IncludeAiTranslated}" />
+                        <CheckBox
+                            Grid.Row="5"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Margin="0,5"
+                            HorizontalAlignment="Left"
+                            Content="Include machine translated"
+                            IsChecked="{Binding IncludeMachineTranslated}" />
+                    </StackPanel>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Login">
+                <Border
+                    Padding="20,10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="{StaticResource MainBackgroundColor}"
+                    BorderBrush="{StaticResource MainBorderColor}"
+                    BorderThickness="1">
+                    <Grid>
+                        <StackPanel IsVisible="{Binding IsLoggedIn}">
+                            <TextBlock Margin="0,0,0,5" HorizontalAlignment="Left">
+                                <Run Text="You are logged in as" />
+                                <Run Foreground="{StaticResource AccentColor}" Text="{Binding Username}" />
+                            </TextBlock>
+                            <TextBlock
+                                Margin="0,0,0,5"
+                                HorizontalAlignment="Left"
+                                IsVisible="{Binding User.Level, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                <Run Text="User level:" />
+                                <Run Foreground="{StaticResource AccentColor}" Text="{Binding User.Level}" />
+                            </TextBlock>
+                            <TextBlock Margin="0,0,0,5" HorizontalAlignment="Left">
+                                <Run Text="Daily download limit:" />
+                                <Run Text="{Binding User.AllowedDownloads, Mode=TwoWay}" />
+                            </TextBlock>
+                            <TextBlock Margin="0,0,0,5" HorizontalAlignment="Left">
+                                <Run Text="Login valid until:" />
+                                <Run Text="{Binding User.TokenExpirationTimestampString, Mode=TwoWay}" />
+                            </TextBlock>
+                            <Button
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Width="80"
+                                Margin="0,5"
+                                HorizontalAlignment="Center"
+                                Command="{Binding LogoutCommand}"
+                                Content="Logout"
+                                IsVisible="{Binding !IsLoggingOut}" />
+                            <!--<themes:Spinner
+                                Width="30"
+                                Height="30"
+                                Margin="0,5,0,0"
+                                IsVisible="{Binding IsLoggingOut, Converter={StaticResource BoolToVisibilityConverter}}" />-->
+                        </StackPanel>
+                        <StackPanel Width="280" IsVisible="{Binding !IsLoggedIn}">
+                            <TextBlock Margin="0,0,0,10" HorizontalAlignment="Center">
+                                Login to OpenSubtitles.com
+                            </TextBlock>
+
+                            <StackPanel Margin="0,0,0,10" IsVisible="{Binding !IsLoggingIn}">
+                                <Label Content="Username: " Target="{Binding ElementName=usernameTextBox}" />
+                                <TextBox x:Name="usernameTextBox" Text="{Binding Username}" />
+                            </StackPanel>
+
+                            <StackPanel
+                                Grid.Row="1"
+                                Margin="0,0,0,10"
+                                IsVisible="{Binding !IsLoggingIn}">
+                                <Label
+                                    Grid.Row="1"
+                                    Content="Password: "
+                                    Target="{Binding ElementName=passwordTextBox}" />
+                                <TextBox x:Name="passwordTextBox" />
+                            </StackPanel>
+
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                HorizontalAlignment="Center"
+                                Foreground="Red"
+                                IsVisible="{Binding LoginErrorText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                Text="{Binding LoginErrorText, Mode=TwoWay}"
+                                TextWrapping="Wrap" />
+
+                            <StackPanel
+                                Grid.Row="3"
+                                HorizontalAlignment="Center"
+                                IsVisible="{Binding !IsLoggingIn}"
+                                Orientation="Horizontal">
+                                <Button
+                                    Grid.ColumnSpan="3"
+                                    Width="80"
+                                    Margin="5,5"
+                                    HorizontalAlignment="Center"
+                                    Content="Login"
+                                    IsDefault="True" />
+                                <Button
+                                    Grid.ColumnSpan="3"
+                                    Width="80"
+                                    Margin="5,5"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding RegisterCommand}"
+                                    Content="Register"
+                                    IsDefault="True" />
+                            </StackPanel>
+
+
+                            <!--<themes:Spinner
+                                Width="30"
+                                Height="30"
+                                Margin="0,5,0,0"
+                                IsVisible="{Binding IsLoggingIn, Converter={StaticResource BoolToVisibilityConverter}}" />-->
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </TabItem>
+            <TabItem Header="About">
+                <Border
+                    Padding="20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="{StaticResource MainBackgroundColor}"
+                    BorderBrush="{StaticResource MainBorderColor}"
+                    BorderThickness="1">
+                    <StackPanel Width="150">
+                        <TextBlock Margin="0,0,0,10" HorizontalAlignment="Center">
+                            <Run Text="Created by" />
+                            <Run Foreground="{StaticResource AccentColor}" Text="Valyreon" />
+                        </TextBlock>
+                        <Button Margin="0,0,0,10" Command="{Binding OpenProjectHomeCommand}">Project Home</Button>
+                        <Button Command="{Binding CheckForUpdatesCommand}" IsVisible="{Binding !IsCheckingForUpdates}">Check for updates</Button>
+                        <!--
+                        <themes:Spinner
+                            Width="30"
+                            Height="30"
+                            IsVisible="{Binding IsCheckingForUpdates, Converter={StaticResource BoolToVisibilityConverter}}" />-->
+                    </StackPanel>
+                </Border>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </UserControl>

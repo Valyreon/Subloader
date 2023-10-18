@@ -32,7 +32,8 @@ public class MainWindowViewModel : ViewModelBase, INavigator
         private set
         {
             previousControl = currentControl;
-            this.RaiseAndSetIfChanged(ref currentControl, value);
+            currentControl = value;
+            this.RaisePropertyChanged(nameof(CurrentControl));
         }
     }
 

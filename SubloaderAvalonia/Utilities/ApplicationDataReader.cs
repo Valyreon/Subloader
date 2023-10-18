@@ -40,7 +40,7 @@ public static class ApplicationDataReader
 
         if (!File.Exists(path))
         {
-            return new ApplicationSettings().Initialize();
+            return new ApplicationSettings();
         }
 
         await semaphore.WaitAsync();
@@ -48,13 +48,13 @@ public static class ApplicationDataReader
         semaphore.Release();
         try
         {
-            return JsonSerializer.Deserialize<ApplicationSettings>(text).Initialize();
+            return JsonSerializer.Deserialize<ApplicationSettings>(text);
         }
         catch (Exception)
         {
         }
 
-        return new ApplicationSettings().Initialize();
+        return new ApplicationSettings();
     }
 
     private static string GetConfigPath()

@@ -10,7 +10,7 @@ public class ApplicationSettings
 {
     public static readonly IReadOnlyList<string> ValidFormats = new List<string> { "srt", "sub", "mpl", "webvtt", "dfxp", "txt" };
 
-private User loggedInUser;
+    private User loggedInUser;
     private SearchParameters defaultSearchParameters;
     private string preferredFormat = "srt";
     private IReadOnlyList<string> wantedLanguages;
