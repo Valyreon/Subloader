@@ -12,6 +12,7 @@ using OpenSubtitlesSharp;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
 using SubloaderWpf.Mvvm;
+using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf.ViewModels;
 
@@ -165,8 +166,9 @@ public class MainViewModel : ObservableEntity
             SubtitleList = null;
             CurrentPath = fileChooseDialog.FileName;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Logger.LogException(ex);
         }
     }
 
@@ -254,7 +256,7 @@ public class MainViewModel : ObservableEntity
         {
             ProcessFileAsync();
         }
-        else if (!string.IsNullOrWhiteSpace(SearchForm.Text))
+        else if (SearchForm != null && !string.IsNullOrWhiteSpace(SearchForm.Text))
         {
             SearchPage(CurrentPage);
         }
@@ -364,11 +366,13 @@ public class MainViewModel : ObservableEntity
             }
             catch (RequestFailedException ex)
             {
+                await Logger.LogExceptionAsync(ex);
                 StatusText = ex.Message?.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0] ?? "Something went wrong.";
                 SystemSounds.Hand.Play();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                await Logger.LogExceptionAsync(ex);
                 StatusText = "Something went wrong. Please try again.";
                 SystemSounds.Hand.Play();
             }

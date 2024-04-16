@@ -60,8 +60,9 @@ public partial class App : Application
             InstanceMediator = new InstanceMediator();
             InstanceMediator.StartListening();
         }
-        catch
+        catch (Exception ex)
         {
+            Logger.LogException(ex);
             Cleanup();
         }
     }

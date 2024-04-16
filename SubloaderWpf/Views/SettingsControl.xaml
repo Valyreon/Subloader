@@ -371,6 +371,7 @@
                             <Run Foreground="{StaticResource AccentColor}" Text="Valyreon" />
                         </TextBlock>
                         <Button Margin="0,0,0,10" Command="{Binding OpenProjectHomeCommand}">Project Home</Button>
+                        <Button Margin="0,0,0,10" Command="{Binding OpenLogsCommand}">Logs</Button>
                         <Button Command="{Binding CheckForUpdatesCommand}" Visibility="{Binding IsCheckingForUpdates, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true}">Check for updates</Button>
                         <themes:Spinner
                             Width="30"

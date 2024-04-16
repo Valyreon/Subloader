@@ -31,8 +31,9 @@ public static class ApplicationDataReader
             await File.WriteAllTextAsync(ConfigPath.Value, json);
             Saved?.Invoke();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            await Logger.LogExceptionAsync(ex);
         }
         finally
         {
@@ -54,8 +55,9 @@ public static class ApplicationDataReader
             var text = await File.ReadAllTextAsync(ConfigPath.Value);
             return JsonSerializer.Deserialize<ApplicationSettings>(text);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            await Logger.LogExceptionAsync(ex);
         }
         finally
         {
@@ -78,8 +80,9 @@ public static class ApplicationDataReader
             var text = File.ReadAllText(ConfigPath.Value);
             return JsonSerializer.Deserialize<ApplicationSettings>(text);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Logger.LogException(ex);
         }
         finally
         {

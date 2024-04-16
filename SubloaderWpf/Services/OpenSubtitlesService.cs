@@ -13,14 +13,9 @@ using SubloaderWpf.Utilities;
 
 namespace SubloaderWpf.Services;
 
-public class OpenSubtitlesService : IOpenSubtitlesService
+public class OpenSubtitlesService(Lazy<ApplicationSettings> settings) : IOpenSubtitlesService
 {
-    private readonly Lazy<ApplicationSettings> _settings;
-
-    public OpenSubtitlesService(Lazy<ApplicationSettings> settings)
-    {
-        _settings = settings;
-    }
+    private readonly Lazy<ApplicationSettings> _settings = settings;
 
     public async Task<DownloadInfo> DownloadSubtitleAsync(SubtitleEntry subtitle, string videoPath, string savePath = null)
     {
@@ -71,7 +66,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         // order by levenshtein distance
         var wantedLanguages = StaticResources.AllLanguages.Where(l => _settings.Value.WantedLanguages.Contains(l.Code));
         var laven = new Levenshtein(Path.GetFileNameWithoutExtension(filePath));
-        var items = result.Items.Select(i => new SubtitleEntry(i, laven.DistanceFrom(i.Information.Release), wantedLanguages))
+        var items = result.Items.Where(i => i.Information.Files != null && i.Information.Files.Any()).Select(i => new SubtitleEntry(i, laven.DistanceFrom(i.Information.Release), wantedLanguages))
             .OrderBy(i => i.LevenshteinDistance);
 
         return (items, result.Page, result.TotalPages);
@@ -88,11 +83,11 @@ public class OpenSubtitlesService : IOpenSubtitlesService
             var res = JwtParser.ParseClaimsFromJwt(info.Token).SingleOrDefault(c => c.Type == "exp");
             unixTimestamp = long.Parse(res.Value);
         }
-        catch(Exception)
+        catch(Exception ex)
         {
+            await Logger.LogExceptionAsync(ex);
             unixTimestamp = DateTime.UtcNow.ToUnixTimestamp();
         }
-        
 
         return new User
         {
@@ -114,8 +109,9 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         {
             return await client.LogoutAsync();
         }
-        catch (RequestFailedException)
+        catch (RequestFailedException ex)
         {
+            await Logger.LogExceptionAsync(ex);
             return false;
         }
     }
@@ -149,7 +145,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         var result = await newClient.SearchAsync(parameters);
 
         var wantedLanguages = StaticResources.AllLanguages.Where(l => _settings.Value.WantedLanguages.Contains(l.Code));
-        return (result.Items.Select(c => new SubtitleEntry(c, 0, wantedLanguages)), result.Page, result.TotalPages);
+        return (result.Items.Where(i => i.Information?.Files != null && i.Information.Files.Any()).Select(c => new SubtitleEntry(c, 0, wantedLanguages)), result.Page, result.TotalPages);
     }
 
     private static async Task<byte[]> GetRawFileAsync(string url)

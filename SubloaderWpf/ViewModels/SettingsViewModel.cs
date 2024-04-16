@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -186,6 +187,14 @@ public class SettingsViewModel : ObservableEntity
 
     public ICommand CheckForUpdatesCommand => new RelayCommand(CheckForUpdates);
 
+    public ICommand OpenLogsCommand => new RelayCommand(OpenLogs);
+
+    private void OpenLogs()
+    {
+        var logsDir = Logger.GetLogsDirectory();
+        _ = Process.Start("explorer.exe", logsDir.FullName);
+    }
+
     private async void CheckForUpdates()
     {
         var service = new GitHubService();
@@ -214,8 +223,9 @@ public class SettingsViewModel : ObservableEntity
 #endif
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            await Logger.LogExceptionAsync(ex);
             MessageBox.Show("Something went wrong while checking for updates, please try again later.");
         }
     }
@@ -372,10 +382,12 @@ public class SettingsViewModel : ObservableEntity
         }
         catch (RequestFailedException ex)
         {
+            await Logger.LogExceptionAsync(ex);
             LoginErrorText = ex.Message;
         }
         catch(Exception ex)
         {
+            await Logger.LogExceptionAsync(ex);
             LoginErrorText = "Something went wrong. Please try again later.";
         }
         finally
@@ -387,7 +399,7 @@ public class SettingsViewModel : ObservableEntity
     private async void Logout()
     {
         IsLoggingOut = true;
-        await _openSubtitlesService.LogoutAsync();
+        _ = await _openSubtitlesService.LogoutAsync();
         _settings.LoggedInUser = null;
         IsLoggedIn = false;
         User = null;

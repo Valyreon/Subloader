@@ -15,7 +15,7 @@ public class InstanceMediator
 
     public void StartListening()
     {
-        Task.Run(() =>
+        _ = Task.Run(() =>
         {
             while (!tokenSource.IsCancellationRequested)
             {
@@ -42,8 +42,9 @@ public class InstanceMediator
         {
             client.Connect();
         }
-        catch
+        catch (Exception ex)
         {
+            Logger.LogException(ex);
             return;
         }
 
