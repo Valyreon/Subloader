@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -22,6 +21,7 @@ public class SettingsViewModel : ObservableEntity
     private readonly INavigator navigator;
     private bool allowMultipleDownloads;
     private bool alwaysOnTop;
+    private bool showLogsButton;
     private bool downloadToSubsFolder;
     private int foreignPartsSelectedIndex;
     private int hearingImpairedSelectedIndex;
@@ -87,6 +87,12 @@ public class SettingsViewModel : ObservableEntity
 
         PropertyChanged += (e, v) => Save();
         WantedLanguageList.CollectionChanged += (e, v) => Save();
+
+#if PORTABLE_RELEASE || PORTABLE_DEBUG
+        ShowLogsButton = false;
+#else
+        ShowLogsButton = true;
+#endif
     }
 
     public ICommand AddCommand => new RelayCommand(Add);
@@ -107,6 +113,12 @@ public class SettingsViewModel : ObservableEntity
     {
         get => alwaysOnTop;
         set => Set(() => AlwaysOnTop, ref alwaysOnTop, value);
+    }
+
+    public bool ShowLogsButton
+    {
+        get => showLogsButton;
+        set => Set(() => ShowLogsButton, ref showLogsButton, value);
     }
 
     public bool IsLoggingIn
