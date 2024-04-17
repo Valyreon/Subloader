@@ -18,7 +18,7 @@ public static class Logger
     public static void LogException(Exception exception)
     {
 #if PORTABLE_RELEASE || PORTABLE_DEBUG
-        return Task.CompletedTask;
+        return;
 #else
         var (path, text) = GetLogParameters(exception);
         File.WriteAllText(path, text);
