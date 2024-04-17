@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:oss="using:OpenSubtitlesSharp"
     xmlns:view="clr-namespace:SubloaderAvalonia.Views"
     xmlns:vm="using:SubloaderAvalonia.ViewModels"
     Title="Subloader"
@@ -30,6 +31,11 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:SearchFormViewModel}">
             <view:SearchFormView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type oss:SubtitleLanguage}">
+            <Border>
+                <TextBlock HorizontalAlignment="Left" Text="{Binding Name}" />
+            </Border>
         </DataTemplate>
     </Window.DataTemplates>
     <ContentControl Content="{Binding CurrentControl}" Focusable="False" />

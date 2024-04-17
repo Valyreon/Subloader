@@ -28,16 +28,16 @@ $publishWpfScoopCommand = "dotnet publish SubloaderWpf -c 'Scoop Release' -p:Pub
 $publishCliCommand = "dotnet publish SubloaderCLI -c 'Release' -p:PublishSingleFile=true --no-self-contained -r win-x64 -o " + $outputPath
 
 Write-Host "Publishing regular release..." -ForegroundColor Cyan
-Invoke-Expression $publishWpfReleaseCommand 2>&1 | Out-Null
+Invoke-Expression $publishWpfReleaseCommand
 
 Write-Host "Publishing portable release..." -ForegroundColor Cyan
-Invoke-Expression $publishWpfPortableCommand 2>&1 | Out-Null
+Invoke-Expression $publishWpfPortableCommand
 
 Write-Host "Publishing scoop release..." -ForegroundColor Cyan
-Invoke-Expression $publishWpfScoopCommand 2>&1 | Out-Null
+Invoke-Expression $publishWpfScoopCommand
 
 Write-Host "Publishing CLI release..." -ForegroundColor Cyan
-Invoke-Expression $publishCliCommand 2>&1 | Out-Null
+Invoke-Expression $publishCliCommand
 
 # Scoop archive and hash create
 Write-Host "Creating scoop archive and hash..." -ForegroundColor Cyan
@@ -65,8 +65,10 @@ $scoopManifestFile = "InstallerFiles/Scoop/subloader.json"
 $scoopManifest = Get-Content -Path $scoopManifestFile
 $hashLineRegexPattern = "`"hash`"\s*:\s*`"[a-z0-9]{64}`""
 $versionLineRegexPattern = "`"version`"\s*:\s*`"\d\.\d\.\d`""
+$linkVersionRegexPattern = "download/v\d\.\d\.\d/scoop.zip"
 $scoopManifest = $scoopManifest -replace $hashLineRegexPattern, ("`"hash`": `"" + $hash.Hash.ToLowerInvariant() + "`"")
 $scoopManifest = $scoopManifest -replace $versionLineRegexPattern, ("`"version`": `"" + $Version + "`"")
+$scoopManifest = $scoopManifest -replace $linkVersionRegexPattern, ("download/v" + $Version + "/scoop.zip")
 Set-Content -Path $scoopManifestFile -Value $scoopManifest
 
 # Create Inno setup

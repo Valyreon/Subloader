@@ -21,6 +21,7 @@ public class SettingsViewModel : ObservableEntity
     private readonly INavigator navigator;
     private bool allowMultipleDownloads;
     private bool alwaysOnTop;
+    private bool showLogsButton;
     private bool downloadToSubsFolder;
     private int foreignPartsSelectedIndex;
     private int hearingImpairedSelectedIndex;
@@ -86,6 +87,12 @@ public class SettingsViewModel : ObservableEntity
 
         PropertyChanged += (e, v) => Save();
         WantedLanguageList.CollectionChanged += (e, v) => Save();
+
+#if PORTABLE_RELEASE || PORTABLE_DEBUG
+        ShowLogsButton = false;
+#else
+        ShowLogsButton = true;
+#endif
     }
 
     public ICommand AddCommand => new RelayCommand(Add);
@@ -106,6 +113,12 @@ public class SettingsViewModel : ObservableEntity
     {
         get => alwaysOnTop;
         set => Set(() => AlwaysOnTop, ref alwaysOnTop, value);
+    }
+
+    public bool ShowLogsButton
+    {
+        get => showLogsButton;
+        set => Set(() => ShowLogsButton, ref showLogsButton, value);
     }
 
     public bool IsLoggingIn
@@ -186,6 +199,14 @@ public class SettingsViewModel : ObservableEntity
 
     public ICommand CheckForUpdatesCommand => new RelayCommand(CheckForUpdates);
 
+    public ICommand OpenLogsCommand => new RelayCommand(OpenLogs);
+
+    private void OpenLogs()
+    {
+        var logsDir = Logger.GetLogsDirectory();
+        _ = Process.Start("explorer.exe", logsDir.FullName);
+    }
+
     private async void CheckForUpdates()
     {
         var service = new GitHubService();
@@ -214,8 +235,9 @@ public class SettingsViewModel : ObservableEntity
 #endif
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            await Logger.LogExceptionAsync(ex);
             MessageBox.Show("Something went wrong while checking for updates, please try again later.");
         }
     }
@@ -372,10 +394,12 @@ public class SettingsViewModel : ObservableEntity
         }
         catch (RequestFailedException ex)
         {
+            await Logger.LogExceptionAsync(ex);
             LoginErrorText = ex.Message;
         }
         catch(Exception ex)
         {
+            await Logger.LogExceptionAsync(ex);
             LoginErrorText = "Something went wrong. Please try again later.";
         }
         finally
@@ -387,7 +411,7 @@ public class SettingsViewModel : ObservableEntity
     private async void Logout()
     {
         IsLoggingOut = true;
-        await _openSubtitlesService.LogoutAsync();
+        _ = await _openSubtitlesService.LogoutAsync();
         _settings.LoggedInUser = null;
         IsLoggedIn = false;
         User = null;

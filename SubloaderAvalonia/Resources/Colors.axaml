@@ -5,25 +5,28 @@
     <Converters:PageParamsToVisibilityMultiConverter x:Key="PageParamsToVisibilityMultiConverter" />
 
     <SolidColorBrush x:Key="MainDarkColor" Color="#323232" />
-    <SolidColorBrush x:Key="MainBorderColor" Color="#bfbfbf" />
+    <SolidColorBrush x:Key="MainBorderColor" Color="#bbb" />
     <SolidColorBrush x:Key="MainBackgroundColor" Color="#e8e8e8" />
     <SolidColorBrush x:Key="LighterBorderColor" Color="#ddd" />
     <SolidColorBrush x:Key="AccentColor" Color="#6495ED" />
-
-    <SolidColorBrush x:Key="HighlightBrush" Color="#6495ED" />
-    <SolidColorBrush x:Key="ThemeAccentBrush" Color="#6495ED" />
-    <SolidColorBrush x:Key="ThemeAccentBrush2" Color="#6495ED" />
-    <SolidColorBrush x:Key="ThemeAccentBrush3" Color="#6495ED" />
-    <SolidColorBrush x:Key="ThemeAccentBrush4" Color="#6495ED" />
-
 
     <SolidColorBrush x:Key="MediumLightAccentColor" Color="#9abaf3" />
     <SolidColorBrush x:Key="LighterAccentColor" Color="#eff4fd" />
     <SolidColorBrush x:Key="MediumAccentColor" Color="#bbd0f7" />
 
-    <Color x:Key="SystemAccentColor">#6495ED</Color>
-    <Color x:Key="SystemAccentColorLight1">#eff4fd</Color>
-    <Color x:Key="SystemAccentColorDark1">#bbd0f7</Color>
+    <Color x:Key="HighlightColor">#FF6495ED</Color>
+    <Color x:Key="HighlightColor2">#FF6495ED</Color>
+    <Color x:Key="ThemeAccentColor">#CC6495ED</Color>
+    <Color x:Key="ThemeAccentColor2">#996495ED</Color>
+    <Color x:Key="ThemeAccentColor3">#666495ED</Color>
+    <Color x:Key="ThemeAccentColor4">#336495ED</Color>
+
+    <SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource HighlightColor}" />
+    <SolidColorBrush x:Key="HighlightBrush2" Color="{StaticResource HighlightColor2}" />
+    <SolidColorBrush x:Key="ThemeAccentBrush2" Color="{StaticResource ThemeAccentColor2}" />
+    <SolidColorBrush x:Key="ThemeAccentBrush3" Color="{StaticResource ThemeAccentColor3}" />
+    <SolidColorBrush x:Key="ThemeAccentBrush4" Color="{StaticResource ThemeAccentColor4}" />
+    <SolidColorBrush x:Key="ThemeAccentBrush" Color="{StaticResource ThemeAccentColor}" />
 
     <DrawingImage x:Key="ChevronDown">
         <DrawingImage.Drawing>

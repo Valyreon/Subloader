@@ -56,6 +56,11 @@ public class SettingsViewModel : ViewModelBase
         AllLanguages = JsonSerializer.Deserialize<IEnumerable<SubtitleLanguage>>(manager.GetString("LanguagesList")).ToDictionary(x => x.Code);
     }
 
+    public SettingsViewModel()
+    {
+
+    }
+
     public SettingsViewModel(INavigator navigator, IOpenSubtitlesService openSubtitlesService, ApplicationSettings settings)
     {
         this.navigator = navigator;
@@ -96,12 +101,6 @@ public class SettingsViewModel : ViewModelBase
         User = _settings.LoggedInUser;
         Username = _settings.LoggedInUser?.Username;
         IsLoggedIn = _settings.LoggedInUser != null;
-
-        if (IsLoggedIn && User.ResetTime.HasValue && User.ResetTime.Value > DateTime.UtcNow)
-        {
-            var timeSpan = User.ResetTime.Value - DateTime.UtcNow;
-            ResetTimer = $"{timeSpan.Hours:D2} hours and {timeSpan.Minutes:D2} minutes";
-        }
 
         PropertyChanged += (e, v) => Save();
         WantedLanguageList.CollectionChanged += (e, v) => Save();
@@ -239,6 +238,7 @@ public class SettingsViewModel : ViewModelBase
     }
 
     public ReactiveCommand<Unit, Process> OpenProjectHomeCommand => ReactiveCommand.Create(() => Process.Start(new ProcessStartInfo("https://github.com/Valyreon/Subloader") { UseShellExecute = true }));
+    public ReactiveCommand<Unit, Process> RegisterCommand => ReactiveCommand.Create(() => Process.Start(new ProcessStartInfo("https://www.opensubtitles.com/en/users/sign_up") { UseShellExecute = true }));
 
     public string LoginErrorText
     {

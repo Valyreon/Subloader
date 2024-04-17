@@ -25,7 +25,6 @@ public partial class App : Application
 
     public override async void OnFrameworkInitializationCompleted()
     {
-        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             CheckMutex(desktop.Args);

@@ -13,29 +13,52 @@
         <Setter Property="Background" Value="White" />
         <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
     </Style>
-    <Style Selector="TextBox:focus Border">
+    <Style Selector="TextBox:focus /template/ Border">
         <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
     </Style>
-    <Style Selector="TextBox:pointerover Border">
+    <Style Selector="TextBox:pointerover /template/ Border">
         <Setter Property="BorderBrush" Value="{DynamicResource MediumAccentColor}" />
     </Style>
-    <Style Selector="TextBox:focus:pointerover Border">
+    <Style Selector="TextBox:focus:pointerover /template/ Border">
         <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
     </Style>
 
     <Style Selector="ComboBox">
         <Setter Property="Background" Value="White" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
     </Style>
     <Style Selector="ComboBox:focus Border">
         <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
     </Style>
-
-    <Style Selector="Label">
-        <Setter Property="Margin" Value="0,0,0,5" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="Foreground" Value="{DynamicResource MainDarkColor}" />
+    <Style Selector="ComboBox:pointerover /template/ Border">
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
     </Style>
 
+    <Style Selector="CheckBox">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
+    </Style>
+    <Style Selector="CheckBox:pointover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource LighterAccentColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
+    </Style>
 
+    <Style Selector="Button">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
+    </Style>
+    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+    </Style>
+    <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Background" Value="{DynamicResource ThemeAccentColor4}" />
+    </Style>
+
+    <Style Selector="TabItem /template/ ContentPresenter#PART_HeaderPresenter">
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="Red" />
+    </Style>
 </Styles>
