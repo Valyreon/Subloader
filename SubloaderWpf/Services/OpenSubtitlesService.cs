@@ -140,7 +140,7 @@ public class OpenSubtitlesService(Lazy<ApplicationSettings> settings) : IOpenSub
             Page = currentPage
         };
 
-        using var newClient = GetClient();
+        using var newClient = GetClient(forceDefaultUrl: true);
 
         var result = await newClient.SearchAsync(parameters);
 
@@ -158,12 +158,12 @@ public class OpenSubtitlesService(Lazy<ApplicationSettings> settings) : IOpenSub
             : null;
     }
 
-    private OpenSubtitlesClient GetClient()
+    private OpenSubtitlesClient GetClient(bool forceDefaultUrl = false)
     {
         return new OpenSubtitlesClient(
             App.APIKey,
             _settings.Value.LoggedInUser?.Token,
-            _settings.Value.LoggedInUser?.IsVIP == true ? BaseUrlType.VIP : BaseUrlType.Default);
+            _settings.Value.LoggedInUser?.IsVIP == true && !forceDefaultUrl ? BaseUrlType.VIP : BaseUrlType.Default);
     }
 
     private string GetDestinationPath(string CurrentPath, string languageCode, string format)
