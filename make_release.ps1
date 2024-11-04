@@ -89,11 +89,15 @@ foreach ($file in $innoFilesToCopy) {
 Copy-Item -Path ($outputPath + "/SubloaderWpf.exe") -Destination ($innoFolder + "/SubLoad.exe")
 Copy-Item -Path ($outputPath + "/subloader-cli.exe") -Destination ($innoFolder + "/subloader-cli.exe")
 
+$innoSetupFile = Get-Content -Path ($innoFolder + "/inno_setup.iss")
+$innoSetupFile = $innoSetupFile -replace "SubloaderV160", ("SubloaderV" + $versionWithoutDots)
+$innoSetupFile = $innoSetupFile -replace "1.6", $Version
+Set-Content -Path ($innoFolder + "/inno_setup.iss") -Value $innoSetupFile
 $compileInnoSetupExpression = "& 'C:/Program Files (x86)/Inno Setup 6/ISCC.exe' /q " + $innoFolder + "/inno_setup.iss"
 Invoke-Expression $compileInnoSetupExpression 2>&1
 
-$setupFile = (Get-ChildItem -Path ($innoFolder + "/Output") -File)[0]
-Copy-Item -Path $setupFile -Destination ($outputPath + "/SubloaderV" + $versionWithoutDots + "Installer.exe")
+$setupFile = (Get-ChildItem -Path ($innoFolder + "/Output") -File)
+Copy-Item -Path ($innoFolder + "/Output/" + $setupFile) -Destination ($outputPath + "/SubloaderV" + $versionWithoutDots + "Installer.exe")
 Remove-Item -Path $innoFolder -Recurse -Force
 
 # Copy Portable file
