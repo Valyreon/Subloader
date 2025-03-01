@@ -40,8 +40,8 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    private void OnApplicationExiting(object? sender, ControlledApplicationLifetimeExitEventArgs e)
-    {
+	private void OnApplicationExiting(object sender, ControlledApplicationLifetimeExitEventArgs e)
+	{
         Cleanup();
     }
 

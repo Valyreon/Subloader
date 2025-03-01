@@ -7,11 +7,8 @@ internal class OrderedCsvValueConverter : IDictionaryValueConverter<IEnumerable<
     public string Convert(IEnumerable<string> value)
     {
         var filteredOrderedValues = value?.Where(v => !string.IsNullOrWhiteSpace(v)).Select(v => v.ToLowerInvariant()).OrderBy(v => v).ToList();
-        if (filteredOrderedValues == null || filteredOrderedValues.Count == 0)
-        {
-            return null;
-        }
-
-        return string.Join(',', filteredOrderedValues);
+        return filteredOrderedValues == null || filteredOrderedValues.Count == 0
+            ? null
+            : string.Join(',', filteredOrderedValues);
     }
 }

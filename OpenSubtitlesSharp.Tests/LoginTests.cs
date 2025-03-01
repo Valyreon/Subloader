@@ -35,7 +35,7 @@ public class LoginTests
            )
            .Callback<HttpRequestMessage, CancellationToken>(async (req, token) =>
            {
-               var contentString = req.Content != null ? await req.Content.ReadAsStringAsync() : string.Empty;
+               var contentString = req.Content != null ? await req.Content.ReadAsStringAsync(token) : string.Empty;
                contentString.ShouldBe("{\"username\":\"my-username\",\"password\":\"my-password\"}");
            })
            .ReturnsAsync(new HttpResponseMessage()
@@ -69,7 +69,7 @@ public class LoginTests
            .Callback<HttpRequestMessage, CancellationToken>(async (req, token) =>
            {
                // You can add your custom logic here
-               var contentString = req.Content != null ? await req.Content.ReadAsStringAsync() : string.Empty;
+               var contentString = req.Content != null ? await req.Content.ReadAsStringAsync(token) : string.Empty;
                contentString.ShouldBe("{\"username\":\"my-username\",\"password\":\"my-password\"}");
            })
            // prepare the expected response of the mocked http call

@@ -19,14 +19,21 @@ public enum BaseUrlType
     VIP
 }
 
-public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
+public partial class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
 {
     #region REGEXs
 
-    private static readonly Regex _cleanRegex = new(@"[^\d\w\ ]");
-    private static readonly Regex _multipleSpacesCleanRegex = new(@"\s+");
-    private static readonly Regex _seasonEpisodeRegex = new(@"[sS](\d{1,2})[\s\.]?[eE](\d{1,2})");
-    private static readonly Regex _yearRegex = new(@"\(\s*([12][90]\d{2})\s*\)");
+    [GeneratedRegex(@"[^\d\w\ ]")]
+    private static partial Regex CleanRegex();
+
+    [GeneratedRegex(@"\s+")]
+    private static partial Regex MultipleSpacesCleanRegex();
+
+    [GeneratedRegex(@"[sS](\d{1,2})[\s\.]?[eE](\d{1,2})")]
+    private static partial Regex SeasonEpisodeRegex();
+
+    [GeneratedRegex(@"\(\s*([12][90]\d{2})\s*\)")]
+    private static partial Regex YearRegex();
 
     #endregion REGEXs
 
@@ -235,7 +242,7 @@ public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
         var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
 
         // try to extract season and episode info from file name
-        var seasonEpisodeInfo = _seasonEpisodeRegex.Match(fileNameWithoutExt);
+        var seasonEpisodeInfo = SeasonEpisodeRegex().Match(fileNameWithoutExt);
         if (seasonEpisodeInfo.Success)
         {
             var season = int.Parse(seasonEpisodeInfo.Groups[1].Value);
@@ -245,7 +252,7 @@ public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
             parameters.EpisodeNumber = episode == 0 ? null : episode;
             parameters.Type = FileTypeFilter.Episode;
 
-            fileNameWithoutExt = _seasonEpisodeRegex.Replace(fileNameWithoutExt, string.Empty);
+            fileNameWithoutExt = SeasonEpisodeRegex().Replace(fileNameWithoutExt, string.Empty);
         }
 
         // tv shows usually dont have year in the episode name so we will ignore year
@@ -253,7 +260,7 @@ public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
         if (!seasonEpisodeInfo.Success)
         {
             // try to extract year info from file name
-            var yearInfo = _yearRegex.Match(fileNameWithoutExt);
+            var yearInfo = YearRegex().Match(fileNameWithoutExt);
             if (yearInfo.Success)
             {
                 var year = int.Parse(yearInfo.Groups[1].Value);
@@ -262,13 +269,12 @@ public class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
                 {
                     parameters.Year = year;
 
-                    fileNameWithoutExt = _yearRegex.Replace(fileNameWithoutExt, string.Empty);
+                    fileNameWithoutExt = YearRegex().Replace(fileNameWithoutExt, string.Empty);
                 }
             }
         }
 
-        parameters.Query = _multipleSpacesCleanRegex.Replace(_cleanRegex.Replace(fileNameWithoutExt, " "), " ").Trim();
-
+        parameters.Query = MultipleSpacesCleanRegex().Replace(CleanRegex().Replace(fileNameWithoutExt, " "), " ").Trim();
         return parameters;
     }
 }

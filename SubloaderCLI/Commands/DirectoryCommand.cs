@@ -1,41 +1,40 @@
 using System.CommandLine;
-using OpenSubtitlesSharp;
 using SubloaderCLI.Interfaces;
 
 namespace SubloaderCLI.Commands;
 public class DirectoryCommand : ICommand
 {
-    private static readonly IReadOnlyList<string> subtitleExtensions = new string[] { "srt", "sub", "mpl", "webvtt", "dfxp", "txt" };
+    private static readonly IReadOnlyList<string> subtitleExtensions = ["srt", "sub", "mpl", "webvtt", "dfxp", "txt"];
 
     public Command BuildCommand()
     {
         var pathOption = new Option<DirectoryInfo>(
-            aliases: new string[] { "--path", "-p" },
+            aliases: ["--path", "-p"],
             () => new DirectoryInfo("."),
             description: "The folder to scan for video files and download subtitles.");
 
         var languageOption = new Option<string>(
-            aliases: new string[] { "--lang", "-l" },
+            aliases: ["--lang", "-l"],
             () => "en",
             description: "Specify desired language of the subtitles.");
 
         var recursiveOption = new Option<bool>(
-            aliases: new string[] { "--recursive", "-r" },
+            aliases: ["--recursive", "-r"],
             () => true,
             description: "If true, subfolders will also be scanned for matching files.");
 
         var overwriteOption = new Option<bool>(
-            aliases: new string[] { "--overwrite", "-o" },
+            aliases: ["--overwrite", "-o"],
             () => false,
             description: "Specify whether you want to override already present subtitle files.");
 
         var extensionOption = new Option<string>(
-            aliases: new string[] { "--ext", "-e" },
+            aliases: ["--ext", "-e"],
             () => "avi|mkv|mp4",
             description: "Specify for which video file extensions to scan for. Separate extensions with '|'.");
 
         var usernameOption = new Option<string>(
-            aliases: new string[] { "--user", "--username", "-u" },
+            aliases: ["--user", "--username", "-u"],
             description: "If specified, you will be prompted to enter your password. " +
             "Command will login and use your token for the entire operation after which it will log you out.");
 
@@ -96,11 +95,11 @@ public class DirectoryCommand : ICommand
         await Helper.Logout(session);
     }
 
-    private static IReadOnlyList<string> GetFilePaths(string sourcePath, bool recursiveScan, IReadOnlyList<string> extensions, bool overwrite)
+    private static List<string> GetFilePaths(string sourcePath, bool recursiveScan, IReadOnlyList<string> extensions, bool overwrite)
     {
         if (!Directory.Exists(sourcePath))
         {
-            throw new ArgumentException(nameof(sourcePath));
+            throw new ArgumentException("Source path must be specified.", nameof(sourcePath));
         }
 
         var filesToScan = new List<string>();
@@ -108,7 +107,7 @@ public class DirectoryCommand : ICommand
         var directories = new Stack<string>();
         directories.Push(sourcePath);
 
-        while (directories.Any())
+        while (directories.Count != 0)
         {
             var currentDir = directories.Pop();
             filesToScan.AddRange(Directory.GetFiles(currentDir)

@@ -66,7 +66,7 @@ public class OpenSubtitlesService(Lazy<ApplicationSettings> settings) : IOpenSub
         // order by levenshtein distance
         var wantedLanguages = StaticResources.AllLanguages.Where(l => _settings.Value.WantedLanguages.Contains(l.Code));
         var laven = new Levenshtein(Path.GetFileNameWithoutExtension(filePath));
-        var items = result.Items.Where(i => i.Information.Files != null && i.Information.Files.Any()).Select(i => new SubtitleEntry(i, laven.DistanceFrom(i.Information.Release), wantedLanguages))
+        var items = result.Items.Where(i => i.Information.Files != null && i.Information.Files.Count != 0).Select(i => new SubtitleEntry(i, laven.DistanceFrom(i.Information.Release), wantedLanguages))
             .OrderBy(i => i.LevenshteinDistance);
 
         return (items, result.Page, result.TotalPages);
@@ -145,7 +145,7 @@ public class OpenSubtitlesService(Lazy<ApplicationSettings> settings) : IOpenSub
         var result = await newClient.SearchAsync(parameters);
 
         var wantedLanguages = StaticResources.AllLanguages.Where(l => _settings.Value.WantedLanguages.Contains(l.Code));
-        return (result.Items.Where(i => i.Information?.Files != null && i.Information.Files.Any()).Select(c => new SubtitleEntry(c, 0, wantedLanguages)), result.Page, result.TotalPages);
+        return (result.Items.Where(i => i.Information?.Files != null && i.Information.Files.Count != 0).Select(c => new SubtitleEntry(c, 0, wantedLanguages)), result.Page, result.TotalPages);
     }
 
     private static async Task<byte[]> GetRawFileAsync(string url)
@@ -168,7 +168,7 @@ public class OpenSubtitlesService(Lazy<ApplicationSettings> settings) : IOpenSub
 
     private string GetDestinationPath(string CurrentPath, string languageCode, string format)
     {
-        format = format.StartsWith(".") ? format[1..] : format;
+        format = format.StartsWith('.') ? format[1..] : format;
 
         var directoryPath = _settings.Value.DownloadToSubsFolder
             ? Path.Combine(Path.GetDirectoryName(CurrentPath), "Subs")

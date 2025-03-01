@@ -170,7 +170,7 @@ public class MainViewModel : ViewModelBase
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                FileTypeFilter = new List<FilePickerFileType> {
+                FileTypeFilter = [
                 new FilePickerFileType("Video files")
                 {
                     Patterns ="*.mp4; *.mkv; *.avi; *.wmv; *.mov; *.flv; *.webm; *.3gp; *.mpeg; *.ogv; *.rmvb; *.vob; *.mts; *.m2ts; *.wav; *.mpg;".Split(';', StringSplitOptions.TrimEntries)
@@ -179,7 +179,7 @@ public class MainViewModel : ViewModelBase
                 {
                     Patterns ="*.*;".Split(';', StringSplitOptions.TrimEntries)
                 },
-            },
+            ],
                 AllowMultiple = false,
                 Title = "Choose video file"
             });
@@ -386,7 +386,7 @@ public class MainViewModel : ViewModelBase
             {
                 StatusText = ex.Message?.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0] ?? "Something went wrong.";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 StatusText = "Something went wrong.";
             }

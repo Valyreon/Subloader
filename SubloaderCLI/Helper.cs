@@ -13,7 +13,7 @@ public static class Helper
             using var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token, session.IsVIP);
             var results = await client.SearchAsync(path.FullName, new SearchParameters
             {
-                Languages = new List<string> { language }
+                Languages = [language]
             });
 
             if (results == null)

@@ -6,9 +6,10 @@ using SubloaderWpf.Mvvm;
 
 namespace SubloaderWpf.ViewModels;
 
-public class SearchFormViewModel : ObservableEntity
+public partial class SearchFormViewModel : ObservableEntity
 {
-    private static readonly Regex numRegex = new(@"^\d*$");
+    [GeneratedRegex(@"^\d*$")]
+    private static partial Regex NumberRegex();
 
     private readonly Action searchAction;
     public int? Episode { get; set; }
@@ -63,7 +64,7 @@ public class SearchFormViewModel : ObservableEntity
         get => episodeText;
         set
         {
-            if (episodeText != value && numRegex.IsMatch(value))
+            if (episodeText != value && NumberRegex().IsMatch(value))
             {
                 episodeText = value;
                 RaisePropertyChanged(() => EpisodeText);
@@ -82,7 +83,7 @@ public class SearchFormViewModel : ObservableEntity
         get => seasonText;
         set
         {
-            if (seasonText != value && numRegex.IsMatch(value))
+            if (seasonText != value && NumberRegex().IsMatch(value))
             {
                 seasonText = value;
                 RaisePropertyChanged(() => SeasonText);
@@ -101,7 +102,7 @@ public class SearchFormViewModel : ObservableEntity
         get => yearText;
         set
         {
-            if (yearText != value && numRegex.IsMatch(value))
+            if (yearText != value && NumberRegex().IsMatch(value))
             {
                 yearText = value;
                 RaisePropertyChanged(() => YearText);
@@ -120,7 +121,7 @@ public class SearchFormViewModel : ObservableEntity
         get => imdbIdText;
         set
         {
-            if (imdbIdText != value && numRegex.IsMatch(value))
+            if (imdbIdText != value && NumberRegex().IsMatch(value))
             {
                 imdbIdText = value;
                 RaisePropertyChanged(() => ImdbIdText);
@@ -139,7 +140,7 @@ public class SearchFormViewModel : ObservableEntity
         get => parentImdbIdText;
         set
         {
-            if (parentImdbIdText != value && numRegex.IsMatch(value))
+            if (parentImdbIdText != value && NumberRegex().IsMatch(value))
             {
                 parentImdbIdText = value;
                 RaisePropertyChanged(() => ParentImdbIdText);

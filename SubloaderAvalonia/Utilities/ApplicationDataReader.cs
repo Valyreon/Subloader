@@ -9,6 +9,9 @@ namespace SubloaderAvalonia.Utilities;
 
 public static class ApplicationDataReader
 {
+#if DEBUG
+    private static readonly JsonSerializerOptions jsonIndentedOptions = new() { WriteIndented = true };
+#endif
     private static readonly SemaphoreSlim semaphore = new(1, 1);
 
     public static event Action Saved;
@@ -21,7 +24,7 @@ public static class ApplicationDataReader
             var path = GetConfigPath();
             var json = JsonSerializer.Serialize(settings
 #if DEBUG
-                , new JsonSerializerOptions { WriteIndented = true }
+                , jsonIndentedOptions
 #endif
                 );
             await File.WriteAllTextAsync(path, json);

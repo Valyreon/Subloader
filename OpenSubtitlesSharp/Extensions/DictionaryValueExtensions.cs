@@ -56,7 +56,7 @@ internal static class DictionaryValueExtensions
                 }
 
                 var methodInfo = converterType.GetMethod("Convert");
-                var convertedValue = methodInfo.Invoke(converter, new object[] { value });
+                var convertedValue = methodInfo.Invoke(converter, [value]);
 
                 if(convertedValue == null)
                 {

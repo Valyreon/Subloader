@@ -43,7 +43,7 @@ public class SettingsViewModel : ViewModelBase
 
     private User user;
     private string username;
-    private ObservableCollection<SubtitleLanguage> languageList = new();
+    private ObservableCollection<SubtitleLanguage> languageList = [];
     private bool isLoggingIn;
     private bool isLoggingOut;
     private bool isCheckingForUpdates;
@@ -68,7 +68,7 @@ public class SettingsViewModel : ViewModelBase
         _settings = settings;
         SelectedFormat = _settings.PreferredFormat;
 
-        Formats = new List<string> { "srt", "sub", "mpl", "webvtt", "dfxp", "txt" };
+        Formats = ["srt", "sub", "mpl", "webvtt", "dfxp", "txt"];
 
         if (_settings.WantedLanguages?.Any() == true)
         {
@@ -332,7 +332,7 @@ public class SettingsViewModel : ViewModelBase
 
     public string Username { get => username; set => this.RaiseAndSetIfChanged(ref username, value); }
 
-    public ObservableCollection<SubtitleLanguage> WantedLanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
+    public ObservableCollection<SubtitleLanguage> WantedLanguageList { get; set; } = [];
 
     public void Add()
     {

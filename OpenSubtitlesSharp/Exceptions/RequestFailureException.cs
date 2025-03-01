@@ -2,12 +2,7 @@ using System.Net;
 
 namespace OpenSubtitlesSharp;
 
-public class RequestFailedException : Exception
+public class RequestFailedException(HttpStatusCode code, string message) : Exception(message)
 {
-    public RequestFailedException(HttpStatusCode code, string message) : base(message)
-    {
-        StatusCode = code;
-    }
-
-    public HttpStatusCode StatusCode { get; }
+    public HttpStatusCode StatusCode { get; } = code;
 }

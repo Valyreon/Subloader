@@ -3,15 +3,8 @@ using System.Windows.Input;
 
 namespace SubloaderWpf.Mvvm;
 
-internal class RelayCommand : ICommand
+internal class RelayCommand(Action action) : ICommand
 {
-    private readonly Action action;
-
-    public RelayCommand(Action action)
-    {
-        this.action = action;
-    }
-
     public event EventHandler CanExecuteChanged
     {
         add { }

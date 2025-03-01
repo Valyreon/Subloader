@@ -12,13 +12,13 @@ public class GetSubtitleFormatsTests
         {
             Data = new SubtitleFormatsData
             {
-                OutputFormats = new List<string>
-                {
+                OutputFormats =
+                [
                     "srt",
                     "vtt",
                     "ass",
                     "sub",
-                }
+                ]
             }
         };
 

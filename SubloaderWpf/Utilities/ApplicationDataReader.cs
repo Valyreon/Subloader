@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +9,9 @@ namespace SubloaderWpf.Utilities;
 
 public static class ApplicationDataReader
 {
+#if DEBUG
+    private static readonly JsonSerializerOptions jsonIndentedOptions = new() { WriteIndented = true };
+#endif
     private static readonly SemaphoreSlim semaphore = new(1, 1);
 
     public static event Action Saved;
@@ -23,9 +25,7 @@ public static class ApplicationDataReader
         {
             var json = JsonSerializer.Serialize(settings
 #if DEBUG
-                , new JsonSerializerOptions { WriteIndented = true }
-#else
-                , new JsonSerializerOptions { WriteIndented = false }
+                , jsonIndentedOptions
 #endif
                 );
             await File.WriteAllTextAsync(ConfigPath.Value, json);

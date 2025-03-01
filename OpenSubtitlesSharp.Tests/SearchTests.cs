@@ -11,8 +11,8 @@ public class SearchTests
     {
         var searchResult = new SearchResult
         {
-            Items = new List<Subtitle>
-            {
+            Items =
+            [
                 new Subtitle
                 {
                     Id = "123",
@@ -38,15 +38,15 @@ public class SearchTests
                             TmdbId = 9876,
                             Year = 2023
                         },
-                        Files = new List<SubtitleFileInfo>
-                        {
+                        Files =
+                        [
                             new SubtitleFileInfo
                             {
                                 CdNumber = 1,
                                 FileId = 567,
                                 FileName = "subtitle.srt"
                             }
-                        },
+                        ],
                         ForeignPartsOnly = false,
                         Fps = 24.0,
                         FromTrusted = true,
@@ -57,15 +57,15 @@ public class SearchTests
                         MachineTranslated = false,
                         NewDownloadCount = 200,
                         Ratings = 4.5,
-                        RelatedLinks = new List<RelatedLink>
-                        {
+                        RelatedLinks =
+                        [
                             new RelatedLink
                             {
                                 ImgUrl = "https://example.com/image.jpg",
                                 Label = "Website",
                                 Url = "https://example.com"
                             }
-                        },
+                        ],
                         Release = "Sample Release",
                         SubtitleId = "12345",
                         UploadDate = DateTime.Now,
@@ -79,7 +79,7 @@ public class SearchTests
                         Votes = 500
                     }
                 }
-            },
+            ],
             Page = 1,
             PerPage = 10,
             TotalCount = 1,

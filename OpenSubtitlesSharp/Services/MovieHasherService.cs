@@ -27,7 +27,7 @@ public class MovieHasherService : IMovieHasherService
         return ToHexadecimal(ComputeMovieHashToByte(filename));
     }
 
-    private static byte[] ComputeMovieHash(Stream input)
+    private static byte[] ComputeMovieHash(FileStream input)
     {
         long lhash, streamsize;
         streamsize = input.Length;

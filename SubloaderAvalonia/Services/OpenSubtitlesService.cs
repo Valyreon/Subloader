@@ -5,23 +5,14 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Fastenshtein;
 using OpenSubtitlesSharp;
-using SubloaderAvalonia;
 using SubloaderAvalonia.Interfaces;
 using SubloaderAvalonia.Models;
-using SubloaderAvalonia.Utilities;
 using SubloaderAvalonia.ViewModels;
 
 namespace SubloaderAvalonia.Services;
 
-public class OpenSubtitlesService : IOpenSubtitlesService
+public class OpenSubtitlesService(ApplicationSettings settings) : IOpenSubtitlesService
 {
-    private readonly ApplicationSettings _settings;
-
-    public OpenSubtitlesService(ApplicationSettings settings)
-    {
-        _settings = settings;
-    }
-
     public async Task<DownloadInfo> DownloadSubtitleAsync(SubtitleEntry subtitle, string videoPath, string savePath = null)
     {
         using var osClient = GetClient();
@@ -29,7 +20,7 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         var downloadParameters = new DownloadParameters
         {
             FileId = subtitle.FileId,
-            SubFormat = _settings.PreferredFormat
+            SubFormat = settings.PreferredFormat
         };
 
         var downloadInfo = await osClient.GetDownloadInfoAsync(downloadParameters);
@@ -60,9 +51,9 @@ public class OpenSubtitlesService : IOpenSubtitlesService
     {
         using var newClient = GetClient();
 
-        var parameters = _settings.DefaultSearchParameters with
+        var parameters = settings.DefaultSearchParameters with
         {
-            Languages = _settings.WantedLanguages,
+            Languages = settings.WantedLanguages,
             Page = currentPage
         };
 
@@ -116,9 +107,9 @@ public class OpenSubtitlesService : IOpenSubtitlesService
         int? parentImdbId = null,
         int currentPage = 1)
     {
-        var parameters = _settings.DefaultSearchParameters with
+        var parameters = settings.DefaultSearchParameters with
         {
-            Languages = _settings.WantedLanguages,
+            Languages = settings.WantedLanguages,
             OnlyMovieHashMatch = false,
             Query = token,
             EpisodeNumber = episodeNumber,
@@ -151,26 +142,26 @@ public class OpenSubtitlesService : IOpenSubtitlesService
     {
         return new OpenSubtitlesClient(
             App.APIKey,
-            _settings.LoggedInUser?.Token,
-            _settings.LoggedInUser?.IsVIP == true ? BaseUrlType.VIP : BaseUrlType.Default);
+            settings.LoggedInUser?.Token,
+            settings.LoggedInUser?.IsVIP == true ? BaseUrlType.VIP : BaseUrlType.Default);
     }
 
     private string GetDestinationPath(string CurrentPath, string languageCode, string format)
     {
-        format = format.StartsWith(".") ? format[1..] : format;
+        format = format.StartsWith('.') ? format[1..] : format;
 
-        var directoryPath = _settings.DownloadToSubsFolder
+        var directoryPath = settings.DownloadToSubsFolder
             ? Path.Combine(Path.GetDirectoryName(CurrentPath), "Subs")
             : Path.GetDirectoryName(CurrentPath);
 
         Directory.CreateDirectory(directoryPath);
 
-        if (_settings.AllowMultipleDownloads)
+        if (settings.AllowMultipleDownloads)
         {
             var fileNameWithoutPathOrExtension = Path.GetFileNameWithoutExtension(CurrentPath);
             var path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.{languageCode}.{format}");
 
-            if (!_settings.OverwriteSameLanguageSub && File.Exists(path))
+            if (!settings.OverwriteSameLanguageSub && File.Exists(path))
             {
                 var counter = 1;
                 while (File.Exists(path = Path.Combine(directoryPath, $"{fileNameWithoutPathOrExtension}.({counter}).{languageCode}.{format}")))
