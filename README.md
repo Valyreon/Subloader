@@ -10,7 +10,7 @@
 
 The application now also features a **Subloader CLI** tool that can search through a directory and download subtitles for all found video files. It is included in the installer.
 
-This app was built with **.NET 6**, using **C#** and **WPF**. Search and download is provided by **[Opensubtitles API](http://www.opensubtitles.com/)**.
+This app was built with **.NET 8**, using **C#** and **WPF**. Search and download is provided by **[Opensubtitles API](http://www.opensubtitles.com/)**.
 
 ---
 
@@ -30,7 +30,7 @@ scoop install https://raw.githubusercontent.com/Valyreon/Subloader/master/Instal
 ```
 
 #### Linux
-I am currently in the process of implementing the Subloader for Linux using Avalonia UI. Once I'm finished I will add a deb package and Linux executable to the release.
+I started to work on an Avalonia version of the app for Linux, but I don't have time to finish this soon.
 
 ---
 
