@@ -23,6 +23,7 @@ public class ApplicationSettings
     }
     public bool DownloadToSubsFolder { get; set; }
     public bool KeepWindowOnTop { get; set; } = true;
+    public bool ForceDefaultApiUrl { get; set; }
 
     public User LoggedInUser
     {

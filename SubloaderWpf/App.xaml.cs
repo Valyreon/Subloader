@@ -12,8 +12,9 @@ namespace SubloaderWpf;
 public partial class App : Application
 {
     private static Mutex mutex;
-    public static readonly string VersionTag = "v1.6.0";
     public static string APIKey { get; private set; } = "";
+    public static readonly string VersionTag = "v1.6.3";
+    public static string UserAgent => $"Subloader {VersionTag}";
     public static InstanceMediator InstanceMediator { get; private set; }
     public string PathArg { get; set; }
 

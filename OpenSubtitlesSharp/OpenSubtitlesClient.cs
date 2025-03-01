@@ -56,7 +56,7 @@ public partial class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
     /// <param name="jwtToken">Logged in user token.</param>
     /// <param name="baseUrlType">Indicates which base URL to use. VIP users can use the VIP endpoint.</param>
     /// <exception cref="ArgumentNullException">Thrown if the API Key is not provided.</exception>
-    public OpenSubtitlesClient(string apiKey, string jwtToken = null, BaseUrlType baseUrlType = BaseUrlType.Default)
+    public OpenSubtitlesClient(string apiKey, string jwtToken = null, BaseUrlType baseUrlType = BaseUrlType.Default, string userAgent = null)
     {
         if (string.IsNullOrWhiteSpace(apiKey))
         {
@@ -83,7 +83,7 @@ public partial class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
             _client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
         }
 
-        _client.DefaultRequestHeaders.Add("User-Agent", "OpenSubtitlesSharp v1.0.1");
+        _client.DefaultRequestHeaders.Add("User-Agent", userAgent ?? "OpenSubtitlesSharp v1.0.1");
         _client.DefaultRequestHeaders.Add("Accept", "application/json");
         //_client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
     }
@@ -95,8 +95,8 @@ public partial class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
     /// <param name="jwtToken">Logged in user token.</param>
     /// <param name="isVip">If true, client will use the VIP base URL.</param>
     /// <exception cref="ArgumentNullException">Thrown if the API Key is not provided.</exception>
-    public OpenSubtitlesClient(string apiKey, string jwtToken = null, bool isVip = false)
-        : this(apiKey, jwtToken, isVip ? BaseUrlType.VIP : BaseUrlType.Default)
+    public OpenSubtitlesClient(string apiKey, string jwtToken = null, bool isVip = false, string userAgent = null)
+        : this(apiKey, jwtToken, isVip ? BaseUrlType.VIP : BaseUrlType.Default, userAgent)
     {
     }
 
@@ -221,7 +221,7 @@ public partial class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
 
         foreach (var kvp in paramsDict.OrderBy(c => c.Key))
         {
-            query.Add(kvp.Key, kvp.Value);
+            query.Add(kvp.Key.ToLowerInvariant(), kvp.Value.ToLowerInvariant());
         }
 
         return "?" + query;

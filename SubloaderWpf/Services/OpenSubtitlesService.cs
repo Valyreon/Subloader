@@ -53,7 +53,7 @@ public class OpenSubtitlesService(Lazy<ApplicationSettings> settings) : IOpenSub
 
     public async Task<(IEnumerable<SubtitleEntry> Items, int CurrentPage, int TotalPages)> GetSubtitlesForFileAsync(string filePath, int currentPage = 1)
     {
-        using var newClient = GetClient();
+        using var newClient = GetClient(_settings.Value.ForceDefaultApiUrl);
 
         var parameters = _settings.Value.DefaultSearchParameters with
         {
@@ -140,7 +140,7 @@ public class OpenSubtitlesService(Lazy<ApplicationSettings> settings) : IOpenSub
             Page = currentPage
         };
 
-        using var newClient = GetClient(forceDefaultUrl: true);
+        using var newClient = GetClient(_settings.Value.ForceDefaultApiUrl);
 
         var result = await newClient.SearchAsync(parameters);
 
@@ -163,7 +163,8 @@ public class OpenSubtitlesService(Lazy<ApplicationSettings> settings) : IOpenSub
         return new OpenSubtitlesClient(
             App.APIKey,
             _settings.Value.LoggedInUser?.Token,
-            _settings.Value.LoggedInUser?.IsVIP == true && !forceDefaultUrl ? BaseUrlType.VIP : BaseUrlType.Default);
+            _settings.Value.LoggedInUser?.IsVIP == true && !forceDefaultUrl ? BaseUrlType.VIP : BaseUrlType.Default,
+            App.UserAgent);
     }
 
     private string GetDestinationPath(string CurrentPath, string languageCode, string format)

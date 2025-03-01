@@ -234,6 +234,18 @@
                             HorizontalAlignment="Left"
                             Content="Include machine translated"
                             IsChecked="{Binding IncludeMachineTranslated, UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox
+                            Grid.Row="5"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Margin="0,5"
+                            HorizontalAlignment="Left"
+                            Content="Force default API search (for VIP users)"
+                            IsChecked="{Binding ForceDefaultApiUrl, UpdateSourceTrigger=PropertyChanged}" >
+                            <CheckBox.ToolTip>
+                                <ToolTip Content="If you are a VIP user and have trouble with searching." />
+                            </CheckBox.ToolTip>
+                        </CheckBox>
                     </StackPanel>
                 </DockPanel>
             </TabItem>

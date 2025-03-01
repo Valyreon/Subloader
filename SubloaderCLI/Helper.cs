@@ -10,7 +10,7 @@ public static class Helper
     {
         try
         {
-            using var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token, session.IsVIP);
+            using var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token, session.IsVIP, Constants.UserAgent);
             var results = await client.SearchAsync(path.FullName, new SearchParameters
             {
                 Languages = [language]
@@ -152,7 +152,7 @@ public static class Helper
             return null;
         }
 
-        using var client = new OpenSubtitlesClient(Constants.APIKey, null, false);
+        using var client = new OpenSubtitlesClient(Constants.APIKey, null, false, Constants.UserAgent);
         var loginInfo = await client.LoginAsync(username, password);
 
         var session = new Session
@@ -180,7 +180,7 @@ public static class Helper
             return;
         }
 
-        using var client = new OpenSubtitlesClient(Constants.APIKey, session.Token, session.IsVIP);
+        using var client = new OpenSubtitlesClient(Constants.APIKey, session.Token, session.IsVIP, Constants.UserAgent);
         await client.LogoutAsync();
         ConsoleHelper.WriteLine($"Logged out.", ConsoleColor.Green);
     }

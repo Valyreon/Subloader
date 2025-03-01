@@ -26,6 +26,7 @@ public class SettingsViewModel : ObservableEntity
     private int foreignPartsSelectedIndex;
     private int hearingImpairedSelectedIndex;
     private bool includeAiTranslated;
+    private bool forceDefaultApiUrl;
     private bool includeMachineTranslated;
     private bool isLoggedIn;
     private string loginErrorText;
@@ -168,6 +169,12 @@ public class SettingsViewModel : ObservableEntity
     {
         get => includeMachineTranslated;
         set => Set(() => IncludeMachineTranslated, ref includeMachineTranslated, value);
+    }
+
+    public bool ForceDefaultApiUrl
+    {
+        get => forceDefaultApiUrl;
+        set => Set(() => ForceDefaultApiUrl, ref forceDefaultApiUrl, value);
     }
 
     public bool IsLanguageSelected => SelectedLanguage != null;
@@ -422,6 +429,7 @@ public class SettingsViewModel : ObservableEntity
 
     private void Save()
     {
+        _settings.ForceDefaultApiUrl = forceDefaultApiUrl;
         _settings.KeepWindowOnTop = alwaysOnTop;
         _settings.AllowMultipleDownloads = allowMultipleDownloads;
         _settings.DownloadToSubsFolder = downloadToSubsFolder;
