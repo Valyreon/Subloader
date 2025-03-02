@@ -16,7 +16,7 @@ public class LanguagesCommand : ICommand
             searchOption
         };
 
-        languages.SetHandler((string search) => GetLanguagesAsync(search), searchOption);
+        languages.SetHandler(GetLanguagesAsync, searchOption);
 
         return languages;
     }

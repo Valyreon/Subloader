@@ -10,11 +10,15 @@ public static class Helper
     {
         try
         {
-            using var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token, session.IsVIP, Constants.UserAgent);
-            var results = await client.SearchAsync(path.FullName, new SearchParameters
+            SearchResult results;
+            using (var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token, session.IsVIP && !GlobalOptions.ForceDefaultApiUrl, Constants.UserAgent))
             {
-                Languages = [language]
-            });
+                results = await client.SearchAsync(path.FullName, new SearchParameters
+                {
+                    Languages = [language]
+                });
+            }
+                
 
             if (results == null)
             {
@@ -41,6 +45,7 @@ public static class Helper
                 .Select(i => i.ResultItem);
             foreach (var item in levenResults)
             {
+                using var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token, session.IsVIP, Constants.UserAgent);
                 var downloadInfo = await client.GetDownloadInfoAsync(item.Information.Files[0].FileId.Value);
                 var extension = Path.GetExtension(downloadInfo.FileName);
                 var destination = Path.ChangeExtension(path.FullName, extension);

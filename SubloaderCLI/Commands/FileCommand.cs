@@ -27,7 +27,7 @@ public class FileCommand : ICommand
             usernameOption
         };
 
-        fileDownload.SetHandler((FileInfo path, string language, string username) => DownloadSubtitlesForFile(path, language, username), pathOption, languageOption, usernameOption);
+        fileDownload.SetHandler(DownloadSubtitlesForFile, pathOption, languageOption, usernameOption);
 
         return fileDownload;
     }

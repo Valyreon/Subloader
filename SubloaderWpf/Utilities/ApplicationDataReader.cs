@@ -16,7 +16,7 @@ public static class ApplicationDataReader
 
     public static event Action Saved;
 
-    private static readonly Lazy<string> ConfigPath = new(() => GetConfigPath());
+    private static readonly Lazy<string> ConfigPath = new(GetConfigPath);
 
     public static async Task SaveSettingsAsync(ApplicationSettings settings)
     {

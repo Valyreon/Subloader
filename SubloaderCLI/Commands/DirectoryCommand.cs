@@ -20,12 +20,10 @@ public class DirectoryCommand : ICommand
 
         var recursiveOption = new Option<bool>(
             aliases: ["--recursive", "-r"],
-            () => true,
             description: "If true, subfolders will also be scanned for matching files.");
 
         var overwriteOption = new Option<bool>(
             aliases: ["--overwrite", "-o"],
-            () => false,
             description: "Specify whether you want to override already present subtitle files.");
 
         var extensionOption = new Option<string>(
@@ -48,9 +46,7 @@ public class DirectoryCommand : ICommand
             usernameOption
         };
 
-        dirDownload.SetHandler((DirectoryInfo path, bool recursive, bool overwrite, string exts, string language, string username)
-            => DownloadSubtitlesForDirectory(path, recursive, overwrite, exts, language, username), pathOption, recursiveOption, overwriteOption, extensionOption, languageOption, usernameOption);
-
+        dirDownload.SetHandler(DownloadSubtitlesForDirectory, pathOption, recursiveOption, overwriteOption, extensionOption, languageOption, usernameOption);
         return dirDownload;
     }
 

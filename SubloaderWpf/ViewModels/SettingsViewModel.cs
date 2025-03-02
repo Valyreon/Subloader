@@ -134,7 +134,7 @@ public class SettingsViewModel : ObservableEntity
         set => Set(() => IsLoggingOut, ref isLoggingOut, value);
     }
 
-    public ICommand BackCommand => new RelayCommand(() => navigator.GoToPreviousControl());
+    public ICommand BackCommand => new RelayCommand(navigator.GoToPreviousControl);
 
     public ICommand DeleteCommand => new RelayCommand(Delete);
 

@@ -448,6 +448,7 @@ dotnet_diagnostic.IDE0058.severity = none
 dotnet_diagnostic.IDE0045.severity = none
 dotnet_diagnostic.IDE0046.severity = none
 dotnet_diagnostic.IDE0079.severity = none
+dotnet_diagnostic.IDE0200.severity = warning
 dotnet_diagnostic.CA1824.severity = none
 
 dotnet_diagnostic.RCS1194.severity = none

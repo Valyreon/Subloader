@@ -138,7 +138,7 @@ public class SettingsViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref isLoggingOut, value);
     }
 
-    public ReactiveCommand<Unit, Unit> BackCommand => ReactiveCommand.Create(() => navigator.GoToPreviousControl());
+    public ReactiveCommand<Unit, Unit> BackCommand => ReactiveCommand.Create(navigator.GoToPreviousControl);
 
     public ReactiveCommand<Unit, Unit> DeleteCommand => ReactiveCommand.Create(Delete);
 

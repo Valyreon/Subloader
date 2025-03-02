@@ -22,7 +22,7 @@ public partial class App : Application
     {
         CheckMutex(e);
 
-        var lazySettings = new Lazy<ApplicationSettings>(() => ApplicationDataReader.LoadSettings());
+        var lazySettings = new Lazy<ApplicationSettings>(ApplicationDataReader.LoadSettings);
         var openSubtitlesService = new OpenSubtitlesService(lazySettings);
         MainWindow = new TheWindow
         {
