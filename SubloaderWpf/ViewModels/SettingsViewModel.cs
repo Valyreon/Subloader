@@ -26,6 +26,7 @@ public class SettingsViewModel : ObservableEntity
     private int foreignPartsSelectedIndex;
     private int hearingImpairedSelectedIndex;
     private bool includeAiTranslated;
+    private bool forceDefaultApiUrl;
     private bool includeMachineTranslated;
     private bool isLoggedIn;
     private string loginErrorText;
@@ -39,7 +40,7 @@ public class SettingsViewModel : ObservableEntity
 
     private User user;
     private string username;
-    private ObservableCollection<SubtitleLanguage> languageList = new();
+    private ObservableCollection<SubtitleLanguage> languageList = [];
     private bool isLoggingIn;
     private bool isLoggingOut;
     private bool isCheckingForUpdates;
@@ -55,7 +56,7 @@ public class SettingsViewModel : ObservableEntity
 
         if (_settings.WantedLanguages?.Any() == true)
         {
-            WantedLanguageList = new ObservableCollection<SubtitleLanguage>(_settings.WantedLanguages.Select(x => StaticResources.AllLanguages.Single(l => l.Code == x.ToLowerInvariant())));
+            WantedLanguageList = new ObservableCollection<SubtitleLanguage>(_settings.WantedLanguages.Select(x => StaticResources.AllLanguages.Single(l => l.Code.Equals(x, StringComparison.InvariantCultureIgnoreCase))));
             LanguageList = new ObservableCollection<SubtitleLanguage>(StaticResources.AllLanguages.Except(WantedLanguageList));
         }
         else
@@ -133,7 +134,7 @@ public class SettingsViewModel : ObservableEntity
         set => Set(() => IsLoggingOut, ref isLoggingOut, value);
     }
 
-    public ICommand BackCommand => new RelayCommand(() => navigator.GoToPreviousControl());
+    public ICommand BackCommand => new RelayCommand(navigator.GoToPreviousControl);
 
     public ICommand DeleteCommand => new RelayCommand(Delete);
 
@@ -170,6 +171,12 @@ public class SettingsViewModel : ObservableEntity
         set => Set(() => IncludeMachineTranslated, ref includeMachineTranslated, value);
     }
 
+    public bool ForceDefaultApiUrl
+    {
+        get => forceDefaultApiUrl;
+        set => Set(() => ForceDefaultApiUrl, ref forceDefaultApiUrl, value);
+    }
+
     public bool IsLanguageSelected => SelectedLanguage != null;
 
     public bool IsLoggedIn
@@ -194,7 +201,7 @@ public class SettingsViewModel : ObservableEntity
 
     public ICommand LoginCommand => new RelayCommand(Login);
 
-    // 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Can't be static because it's needed in the View.")]
     public ICommand RegisterCommand => new RelayCommand(() => Process.Start(new ProcessStartInfo("https://www.opensubtitles.com/en/users/sign_up") { UseShellExecute = true }));
 
     public ICommand CheckForUpdatesCommand => new RelayCommand(CheckForUpdates);
@@ -242,6 +249,7 @@ public class SettingsViewModel : ObservableEntity
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Can't be static beacuse it's needed by the View.")]
     public ICommand OpenProjectHomeCommand => new RelayCommand(() => Process.Start(new ProcessStartInfo("https://github.com/Valyreon/Subloader") { UseShellExecute = true }));
 
     public string LoginErrorText
@@ -278,7 +286,7 @@ public class SettingsViewModel : ObservableEntity
         set
         {
             searchText = value;
-            LanguageList = new(StaticResources.AllLanguages.Where(x => x.Name.ToLower().Contains(searchText == null ? string.Empty : searchText.ToLower()) && !WantedLanguageList.Any(w => w.Code == x.Code)));
+            LanguageList = new(StaticResources.AllLanguages.Where(x => x.Name.Contains(searchText == null ? string.Empty : searchText.ToLower(), StringComparison.CurrentCultureIgnoreCase) && !WantedLanguageList.Any(w => w.Code == x.Code)));
             Set(() => SearchText, ref searchText, value);
         }
     }
@@ -330,7 +338,7 @@ public class SettingsViewModel : ObservableEntity
 
     public string Username { get => username; set => Set(() => Username, ref username, value); }
 
-    public ObservableCollection<SubtitleLanguage> WantedLanguageList { get; set; } = new ObservableCollection<SubtitleLanguage>();
+    public ObservableCollection<SubtitleLanguage> WantedLanguageList { get; set; } = [];
 
     public void Add()
     {
@@ -421,6 +429,7 @@ public class SettingsViewModel : ObservableEntity
 
     private void Save()
     {
+        _settings.ForceDefaultApiUrl = forceDefaultApiUrl;
         _settings.KeepWindowOnTop = alwaysOnTop;
         _settings.AllowMultipleDownloads = allowMultipleDownloads;
         _settings.DownloadToSubsFolder = downloadToSubsFolder;

@@ -7,7 +7,6 @@ namespace SubloaderAvalonia.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase, INavigator
 {
-    private readonly IOpenSubtitlesService _openSubtitlesService;
     private readonly ApplicationSettings _settings;
     private bool alwaysOnTop;
     private object currentControl;
@@ -17,10 +16,8 @@ public class MainWindowViewModel : ViewModelBase, INavigator
     {
         CurrentControl = new MainViewModel(this, openSubtitlesService, settings);
         _settings = settings;
-        _openSubtitlesService = openSubtitlesService;
         AlwaysOnTop = _settings.KeepWindowOnTop;
         ApplicationDataReader.Saved += () => AlwaysOnTop = _settings.KeepWindowOnTop;
-        _openSubtitlesService = openSubtitlesService;
     }
 
     public bool AlwaysOnTop { get => alwaysOnTop; set => this.RaiseAndSetIfChanged(ref alwaysOnTop, value); }

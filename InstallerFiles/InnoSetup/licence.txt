@@ -22,16 +22,26 @@ SOFTWARE.
 
 APPENDIX: DISCLAIMER OF LIABILITY
 
-This software is provided "as is" and "as available" for demonstration purposes only. The author of this application and any contributors to this software, hereby disclaim all legal responsibility and liability for any damages, claims, or other liabilities that may arise from the use, distribution, or modification of this software.
+This software is provided "as is" and "as available" for demonstration purposes only. 
+The author of this application and any contributors to this software, hereby disclaim 
+all legal responsibility and liability for any damages, claims, or other liabilities 
+that may arise from the use, distribution, or modification of this software.
 
 By using this software, you agree that:
 
 1. You assume all risk and responsibility for the use of this software.
 
-2. The author and contributors to this software shall not be held liable for any direct, indirect, incidental, special, exemplary, or consequential damages, including but not limited to loss of data, business interruption, or any other pecuniary loss, arising out of the use or inability to use this software.
+2. The author and contributors to this software shall not be held liable for any direct, 
+indirect, incidental, special, exemplary, or consequential damages, including but not 
+limited to loss of data, business interruption, or any other pecuniary loss, arising out 
+of the use or inability to use this software.
 
-3. This software may not be suitable for any specific purpose, and the author makes no representations or warranties regarding its fitness for any particular use case.
+3. This software may not be suitable for any specific purpose, and the author makes no 
+representations or warranties regarding its fitness for any particular use case.
 
-4. You are responsible for complying with all applicable laws and regulations when using this software.
+4. You are responsible for complying with all applicable laws and regulations when using 
+this software.
 
-This appendix is intended to clarify that the author of this software is not providing any warranties or guarantees, and that you use this software at your own risk. If you do not agree with these terms, do not use or distribute this software.
+This appendix is intended to clarify that the author of this software is not providing any 
+warranties or guarantees, and that you use this software at your own risk. If you do not 
+agree with these terms, do not use or distribute this software.

@@ -22,10 +22,21 @@ if (Test-Path -Path $outputPath -PathType Container) {
     Remove-Item -Path $outputPath -Recurse -Force
 }
 
-$publishWpfReleaseCommand = "dotnet publish SubloaderWpf -c 'Release' -p:PublishSingleFile=true --no-self-contained -r win-x64 -o " + $outputPath
-$publishWpfPortableCommand = "dotnet publish SubloaderWpf -c 'Portable Release' -p:PublishSingleFile=true --no-self-contained -r win-x64 -o " + $portableOutputPath
-$publishWpfScoopCommand = "dotnet publish SubloaderWpf -c 'Scoop Release' -p:PublishSingleFile=true --no-self-contained -r win-x64 -o " + $scoopOutputPath
-$publishCliCommand = "dotnet publish SubloaderCLI -c 'Release' -p:PublishSingleFile=true --no-self-contained -r win-x64 -o " + $outputPath
+Write-Host "Updating version tags..." -ForegroundColor Cyan
+$wpfVersionFilePath = "SubloaderWpf\App.xaml.cs"
+$cliVersionFilePath = "SubloaderCLI\Constants.cs"
+$wpfVersionFileContent = Get-Content -Path $wpfVersionFilePath
+$cliVersionFileContent = Get-Content -Path $cliVersionFilePath
+$versionTagPropertyRegex = "public static readonly string VersionTag = `"v\d\.\d\.\d`"\;"
+$wpfVersionFileContent = $wpfVersionFileContent -replace $versionTagPropertyRegex, "public static readonly string VersionTag = `"v$Version`";"
+$cliVersionFileContent = $cliVersionFileContent -replace $versionTagPropertyRegex, "public static readonly string VersionTag = `"v$Version`";"
+Set-Content -Path $wpfVersionFilePath -Value $wpfVersionFileContent
+Set-Content -Path $cliVersionFilePath -Value $cliVersionFileContent
+
+$publishWpfReleaseCommand = "dotnet publish SubloaderWpf -c 'Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $outputPath
+$publishWpfPortableCommand = "dotnet publish SubloaderWpf -c 'Portable Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $portableOutputPath
+$publishWpfScoopCommand = "dotnet publish SubloaderWpf -c 'Scoop Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $scoopOutputPath
+$publishCliCommand = "dotnet publish SubloaderCLI -c 'Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $outputPath
 
 Write-Host "Publishing regular release..." -ForegroundColor Cyan
 Invoke-Expression $publishWpfReleaseCommand
@@ -97,7 +108,7 @@ $compileInnoSetupExpression = "& 'C:/Program Files (x86)/Inno Setup 6/ISCC.exe' 
 Invoke-Expression $compileInnoSetupExpression 2>&1
 
 $setupFile = (Get-ChildItem -Path ($innoFolder + "/Output") -File)
-Copy-Item -Path ($innoFolder + "/Output/" + $setupFile) -Destination ($outputPath + "/SubloaderV" + $versionWithoutDots + "Installer.exe")
+Copy-Item -Path $setupFile -Destination ($outputPath + "/SubloaderV" + $versionWithoutDots + "Installer.exe")
 Remove-Item -Path $innoFolder -Recurse -Force
 
 # Copy Portable file

@@ -30,7 +30,7 @@ public class GetDownloadInfoTests
               ItExpr.IsAny<CancellationToken>()
            )
            .Callback<HttpRequestMessage, CancellationToken>(
-            async (req, token) => contentString = req.Content != null ? await req.Content.ReadAsStringAsync() : string.Empty)
+            async (req, token) => contentString = req.Content != null ? await req.Content.ReadAsStringAsync(token) : string.Empty)
            .ReturnsAsync(new HttpResponseMessage()
            {
                StatusCode = HttpStatusCode.OK,
@@ -81,7 +81,7 @@ public class GetDownloadInfoTests
                                             && req.RequestUri == new Uri("https://api.opensubtitles.com/api/v1/download")),
               ItExpr.IsAny<CancellationToken>()
            )
-           .Callback<HttpRequestMessage, CancellationToken>(async (req, token) => contentString = req.Content != null ? await req.Content.ReadAsStringAsync() : string.Empty)
+           .Callback<HttpRequestMessage, CancellationToken>(async (req, token) => contentString = req.Content != null ? await req.Content.ReadAsStringAsync(token) : string.Empty)
            .ReturnsAsync(new HttpResponseMessage()
            {
                StatusCode = HttpStatusCode.OK,
@@ -106,10 +106,7 @@ public class GetDownloadInfoTests
         var response = new ErrorResponse
         {
             Status = HttpStatusCode.InternalServerError,
-            Errors = new List<string>
-            {
-                "Something went wrong with our API"
-            }
+            Errors = ["Something went wrong with our API"]
         };
 
         // ARRANGE
@@ -121,7 +118,7 @@ public class GetDownloadInfoTests
                                             && req.RequestUri == new Uri("https://api.opensubtitles.com/api/v1/download")),
               ItExpr.IsAny<CancellationToken>()
            )
-           .Callback<HttpRequestMessage, CancellationToken>(async (req, token) => contentString = req.Content != null ? await req.Content.ReadAsStringAsync() : string.Empty)
+           .Callback<HttpRequestMessage, CancellationToken>(async (req, token) => contentString = req.Content != null ? await req.Content.ReadAsStringAsync(token) : string.Empty)
            .ReturnsAsync(new HttpResponseMessage()
            {
                StatusCode = HttpStatusCode.InternalServerError,

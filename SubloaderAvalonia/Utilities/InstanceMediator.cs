@@ -9,7 +9,7 @@ namespace SubloaderAvalonia.Utilities;
 public class InstanceMediator
 {
     private static readonly string NamedPipeName = "valyreon.subloader.pipe";
-    private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
+    private readonly CancellationTokenSource tokenSource = new();
 
     public event Action<string> ReceivedArgument;
 

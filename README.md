@@ -10,7 +10,7 @@
 
 The application now also features a **Subloader CLI** tool that can search through a directory and download subtitles for all found video files. It is included in the installer.
 
-This app was built with **.NET 6**, using **C#** and **WPF**. Search and download is provided by **[Opensubtitles API](http://www.opensubtitles.com/)**.
+This app was built with **.NET 8**, using **C#** and **WPF**. Search and download is provided by **[Opensubtitles API](http://www.opensubtitles.com/)**.
 
 ---
 
@@ -30,7 +30,20 @@ scoop install https://raw.githubusercontent.com/Valyreon/Subloader/master/Instal
 ```
 
 #### Linux
-I am currently in the process of implementing the Subloader for Linux using Avalonia UI. Once I'm finished I will add a deb package and Linux executable to the release.
+I started to work on an Avalonia version of the app for Linux, but I don't have time to finish this soon.
+
+---
+
+### Build
+
+If you want to build the application yourself:
+1. Go to **[Opensubtitles](http://www.opensubtitles.com/)** and create an API Consumer
+2. Copy the API key and change the APIKey property value in [App.xaml.cs](https://github.com/Valyreon/Subloader/blob/master/SubloaderWpf/App.xaml.cs) for the WPF version and [Constants.cs](https://github.com/Valyreon/Subloader/blob/master/SubloaderCLI/Constants.cs) for the CLI version.
+3. Open powershell in the repository folder and run `.\make_release.ps1 1.0.0`. You can replace the version numbers.
+
+The script will change the version tags, build the projects, create installer file, portable file, scoop package and output everything to ReleaseOutput folder.
+
+Alternatively you can build it yourself with dotnet or VS.
 
 ---
 

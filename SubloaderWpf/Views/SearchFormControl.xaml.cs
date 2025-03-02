@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,8 +10,6 @@ namespace SubloaderWpf.Views;
 /// </summary>
 public partial class SearchFormControl : UserControl
 {
-    private static readonly Regex numRegex = new(@"^\d*$");
-
     public SearchFormControl()
     {
         InitializeComponent();

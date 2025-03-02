@@ -6,9 +6,10 @@ using ReactiveUI;
 
 namespace SubloaderAvalonia.ViewModels;
 
-public class SearchFormViewModel : ViewModelBase
+public partial class SearchFormViewModel : ViewModelBase
 {
-    private static readonly Regex numRegex = new(@"^\d*$");
+    [GeneratedRegex(@"^\d*$")]
+    private static partial Regex NumberRegex();
 
     private readonly Action searchAction;
     public int? Episode { get; set; }
@@ -63,7 +64,7 @@ public class SearchFormViewModel : ViewModelBase
         get => episodeText;
         set
         {
-            if (episodeText != value && numRegex.IsMatch(value))
+            if (episodeText != value && NumberRegex().IsMatch(value))
             {
                 episodeText = value;
                 this.RaisePropertyChanged(nameof(EpisodeText));
@@ -82,7 +83,7 @@ public class SearchFormViewModel : ViewModelBase
         get => seasonText;
         set
         {
-            if (seasonText != value && numRegex.IsMatch(value))
+            if (seasonText != value && NumberRegex().IsMatch(value))
             {
                 seasonText = value;
                 this.RaisePropertyChanged(nameof(SeasonText));
@@ -101,7 +102,7 @@ public class SearchFormViewModel : ViewModelBase
         get => yearText;
         set
         {
-            if (yearText != value && numRegex.IsMatch(value))
+            if (yearText != value && NumberRegex().IsMatch(value))
             {
                 yearText = value;
                 this.RaisePropertyChanged(nameof(YearText));
@@ -120,7 +121,7 @@ public class SearchFormViewModel : ViewModelBase
         get => imdbIdText;
         set
         {
-            if (imdbIdText != value && numRegex.IsMatch(value))
+            if (imdbIdText != value && NumberRegex().IsMatch(value))
             {
                 imdbIdText = value;
                 this.RaisePropertyChanged(nameof(ImdbIdText));
@@ -139,7 +140,7 @@ public class SearchFormViewModel : ViewModelBase
         get => parentImdbIdText;
         set
         {
-            if (parentImdbIdText != value && numRegex.IsMatch(value))
+            if (parentImdbIdText != value && NumberRegex().IsMatch(value))
             {
                 parentImdbIdText = value;
                 this.RaisePropertyChanged(nameof(ParentImdbIdText));
@@ -169,4 +170,6 @@ public class SearchFormViewModel : ViewModelBase
             }
         }
     }
+
+    
 }

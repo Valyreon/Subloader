@@ -8,7 +8,7 @@ public class LanguagesCommand : ICommand
     public Command BuildCommand()
     {
         var searchOption = new Option<string>(
-            aliases: new string[] { "--search", "-s" },
+            aliases: ["--search", "-s"],
             description: "Token to be used for searching the languages. Language names will be in English. For example \"Norwegian\". Search will be case insensitive.");
 
         var languages = new Command("languages", "Get language codes for all available languages on OpenSubtitles.")
@@ -16,14 +16,14 @@ public class LanguagesCommand : ICommand
             searchOption
         };
 
-        languages.SetHandler((string search) => GetLanguagesAsync(search), searchOption);
+        languages.SetHandler(GetLanguagesAsync, searchOption);
 
         return languages;
     }
 
     private static async Task GetLanguagesAsync(string search)
     {
-        using var client = new OpenSubtitlesClient(Constants.APIKey, null, false);
+        using var client = new OpenSubtitlesClient(Constants.APIKey, null, false, Constants.UserAgent);
 
         var languages = await client.GetLanguagesAsync();
 

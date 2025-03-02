@@ -10,8 +10,8 @@ public class GetLanguagesTests
     {
         var languagesResponse = new LanguagesResponse
         {
-            Data = new List<SubtitleLanguage>
-            {
+            Data =
+            [
                 new SubtitleLanguage
                 {
                     Code = "en",
@@ -27,7 +27,7 @@ public class GetLanguagesTests
                     Code = "es",
                     Name = "Spanish"
                 }
-            }
+            ]
         };
 
         // ARRANGE

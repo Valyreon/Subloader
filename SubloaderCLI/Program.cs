@@ -12,6 +12,12 @@ foreach (var command in Helper.GetImplementedCommands().Select(c => c.BuildComma
     rootCommand.AddCommand(command);
 }
 
+var forceDefaultApiUrlOption = new Option<bool>(
+            aliases: ["--force_default_api_url", "-fdu"],
+            description: "If flag is true, app will use the default api url for searching even if user is VIP. This is for VIP users that have a specific issue.");
+
+rootCommand.AddGlobalOption(forceDefaultApiUrlOption);
+
 var parser = new CommandLineBuilder(rootCommand)
     .UseExceptionHandler((e, _) =>
     {
@@ -28,6 +34,11 @@ var parser = new CommandLineBuilder(rootCommand)
     .UseParseErrorReporting()
     .CancelOnProcessTermination()
     .UseHelp()
+    .AddMiddleware(context =>
+    {
+        var globalOptionValue = context.ParseResult.GetValueForOption(forceDefaultApiUrlOption);
+        GlobalOptions.ForceDefaultApiUrl = globalOptionValue;
+    })
     .Build();
 
 var result = await parser.InvokeAsync(args);

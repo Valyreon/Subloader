@@ -13,6 +13,21 @@ internal static class HttpResponseMessageExtensions
         }
 
         var errorResult = await response.Content.ReadFromJsonAsync<ErrorResponse>();
-        throw new RequestFailedException(errorResult.Status ?? response.StatusCode, errorResult.Message?.Trim() ?? errorResult.Errors?.FirstOrDefault()?.Trim() ?? "Something went wrong.");
+
+        string message;
+        if (!string.IsNullOrWhiteSpace(errorResult.Message))
+        {
+            message = errorResult.Message.Trim();
+        }
+        else if (errorResult.Errors != null && errorResult.Errors.Count > 0 && !string.IsNullOrWhiteSpace(errorResult.Errors[0]))
+        {
+            message = errorResult.Errors[0].Trim();
+        }
+        else
+        {
+            message = "Something went wrong.";
+        }
+
+        throw new RequestFailedException(errorResult.Status ?? response.StatusCode, message);
     }
 }

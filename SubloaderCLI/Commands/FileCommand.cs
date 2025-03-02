@@ -7,16 +7,16 @@ public class FileCommand : ICommand
     public Command BuildCommand()
     {
         var pathOption = new Option<FileInfo>(
-        aliases: new string[] { "--path", "-p" },
+        aliases: ["--path", "-p"],
         description: "The file to download subtitle for.");
 
         var languageOption = new Option<string>(
-        aliases: new string[] { "--lang", "-l" },
+        aliases: ["--lang", "-l"],
         () => "en",
         description: "Specify desired language of the subtitle.");
 
         var usernameOption = new Option<string>(
-            aliases: new string[] { "--user", "--username", "-u" },
+            aliases: ["--user", "--username", "-u"],
             description: "If specified, you will be prompted to enter your password. " +
             "Command will login and use your token for the entire operation after which it will log you out.");
 
@@ -27,7 +27,7 @@ public class FileCommand : ICommand
             usernameOption
         };
 
-        fileDownload.SetHandler((FileInfo path, string language, string username) => DownloadSubtitlesForFile(path, language, username), pathOption, languageOption, usernameOption);
+        fileDownload.SetHandler(DownloadSubtitlesForFile, pathOption, languageOption, usernameOption);
 
         return fileDownload;
     }

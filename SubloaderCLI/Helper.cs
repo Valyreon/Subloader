@@ -10,11 +10,15 @@ public static class Helper
     {
         try
         {
-            using var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token, session.IsVIP);
-            var results = await client.SearchAsync(path.FullName, new SearchParameters
+            SearchResult results;
+            using (var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token, session.IsVIP && !GlobalOptions.ForceDefaultApiUrl, Constants.UserAgent))
             {
-                Languages = new List<string> { language }
-            });
+                results = await client.SearchAsync(path.FullName, new SearchParameters
+                {
+                    Languages = [language]
+                });
+            }
+                
 
             if (results == null)
             {
@@ -41,6 +45,7 @@ public static class Helper
                 .Select(i => i.ResultItem);
             foreach (var item in levenResults)
             {
+                using var client = new OpenSubtitlesClient(Constants.APIKey, session?.Token, session.IsVIP, Constants.UserAgent);
                 var downloadInfo = await client.GetDownloadInfoAsync(item.Information.Files[0].FileId.Value);
                 var extension = Path.GetExtension(downloadInfo.FileName);
                 var destination = Path.ChangeExtension(path.FullName, extension);
@@ -111,6 +116,9 @@ public static class Helper
 
     public static string GetPassword()
     {
+        var passwordPrompt = "Password: ";
+        Console.Write(passwordPrompt);
+
         var password = "";
         ConsoleKeyInfo keyInfo;
 
@@ -119,7 +127,7 @@ public static class Helper
             keyInfo = Console.ReadKey(true);
 
             // Ignore any key that isn't a printable character or Enter.
-            if (char.IsControl(keyInfo.KeyChar) && keyInfo.Key != ConsoleKey.Enter)
+            if (char.IsControl(keyInfo.KeyChar) && keyInfo.Key != ConsoleKey.Enter && keyInfo.Key != ConsoleKey.Backspace)
             {
                 continue;
             }
@@ -127,11 +135,29 @@ public static class Helper
             // Handle backspace (remove the last character).
             if (keyInfo.Key == ConsoleKey.Backspace && password.Length > 0)
             {
+                // generate stars for one less character
+                var hiddenPassword = string.Empty;
+                for (var i = 0; i < password.Length - 1; ++i)
+                {
+                    hiddenPassword += '*';
+                }
+
+                // remove last char from password
                 password = password[0..^1];
+
+                // we need to clean the line first
+                Console.Write("\r");
+                for (var i = 0; i < (password.Length + 1 + passwordPrompt.Length); ++i)
+                {
+                    Console.Write(' ');
+                }
+
+                Console.Write("\r" + passwordPrompt + hiddenPassword);
             }
-            else if (keyInfo.Key != ConsoleKey.Enter)
+            else if (!char.IsControl(keyInfo.KeyChar))
             {
                 password += keyInfo.KeyChar;
+                Console.Write("*");
             }
         }
         while (keyInfo.Key != ConsoleKey.Enter);
@@ -143,7 +169,6 @@ public static class Helper
 
     public static async Task<Session> Login(string username)
     {
-        Console.Write("Password: ");
         var password = GetPassword();
 
         if (string.IsNullOrWhiteSpace(password))
@@ -152,7 +177,7 @@ public static class Helper
             return null;
         }
 
-        using var client = new OpenSubtitlesClient(Constants.APIKey, null, false);
+        using var client = new OpenSubtitlesClient(Constants.APIKey, null, false, Constants.UserAgent);
         var loginInfo = await client.LoginAsync(username, password);
 
         var session = new Session
@@ -180,7 +205,7 @@ public static class Helper
             return;
         }
 
-        using var client = new OpenSubtitlesClient(Constants.APIKey, session.Token, session.IsVIP);
+        using var client = new OpenSubtitlesClient(Constants.APIKey, session.Token, session.IsVIP, Constants.UserAgent);
         await client.LogoutAsync();
         ConsoleHelper.WriteLine($"Logged out.", ConsoleColor.Green);
     }

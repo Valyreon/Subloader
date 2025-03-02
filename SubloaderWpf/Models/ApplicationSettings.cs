@@ -8,7 +8,7 @@ namespace SubloaderWpf.Models;
 
 public class ApplicationSettings
 {
-    public static readonly IReadOnlyList<string> ValidFormats = new List<string> { "srt", "sub", "mpl", "webvtt", "dfxp", "txt" };
+    public static readonly IReadOnlyList<string> ValidFormats = ["srt", "sub", "mpl", "webvtt", "dfxp", "txt"];
 
     private User loggedInUser;
     private SearchParameters defaultSearchParameters;
@@ -23,6 +23,7 @@ public class ApplicationSettings
     }
     public bool DownloadToSubsFolder { get; set; }
     public bool KeepWindowOnTop { get; set; } = true;
+    public bool ForceDefaultApiUrl { get; set; }
 
     public User LoggedInUser
     {
@@ -40,7 +41,7 @@ public class ApplicationSettings
 
     public IReadOnlyList<string> WantedLanguages
     {
-        get => wantedLanguages == null || !wantedLanguages.Any() ? wantedLanguages = new List<string>() { "en" } : wantedLanguages;
+        get => wantedLanguages == null || !wantedLanguages.Any() ? wantedLanguages = ["en"] : wantedLanguages;
         set => wantedLanguages = value;
     }
 }

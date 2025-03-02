@@ -8,7 +8,6 @@ namespace SubloaderWpf.ViewModels;
 
 public class TheWindowViewModel : ObservableEntity, INavigator
 {
-    private readonly IOpenSubtitlesService _openSubtitlesService;
     private readonly Lazy<ApplicationSettings> _settings;
     private bool alwaysOnTop;
     private object currentControl;
@@ -18,9 +17,7 @@ public class TheWindowViewModel : ObservableEntity, INavigator
     {
         CurrentControl = new MainViewModel(this, openSubtitlesService, settings);
         _settings = settings;
-        _openSubtitlesService = openSubtitlesService;
         ApplicationDataReader.Saved += () => AlwaysOnTop = _settings.Value.KeepWindowOnTop;
-        _openSubtitlesService = openSubtitlesService;
     }
 
     public bool AlwaysOnTop { get => alwaysOnTop; set => Set(() => AlwaysOnTop, ref alwaysOnTop, value); }
