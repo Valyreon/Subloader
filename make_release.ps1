@@ -33,10 +33,10 @@ $cliVersionFileContent = $cliVersionFileContent -replace $versionTagPropertyRege
 Set-Content -Path $wpfVersionFilePath -Value $wpfVersionFileContent
 Set-Content -Path $cliVersionFilePath -Value $cliVersionFileContent
 
-$publishWpfReleaseCommand = "dotnet publish SubloaderWpf -c 'Release' -p:PublishSingleFile=true --no-self-contained -r win-x64 -o " + $outputPath
-$publishWpfPortableCommand = "dotnet publish SubloaderWpf -c 'Portable Release' -p:PublishSingleFile=true --no-self-contained -r win-x64 -o " + $portableOutputPath
-$publishWpfScoopCommand = "dotnet publish SubloaderWpf -c 'Scoop Release' -p:PublishSingleFile=true --no-self-contained -r win-x64 -o " + $scoopOutputPath
-$publishCliCommand = "dotnet publish SubloaderCLI -c 'Release' -p:PublishSingleFile=true --no-self-contained -r win-x64 -o " + $outputPath
+$publishWpfReleaseCommand = "dotnet publish SubloaderWpf -c 'Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $outputPath
+$publishWpfPortableCommand = "dotnet publish SubloaderWpf -c 'Portable Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $portableOutputPath
+$publishWpfScoopCommand = "dotnet publish SubloaderWpf -c 'Scoop Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $scoopOutputPath
+$publishCliCommand = "dotnet publish SubloaderCLI -c 'Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $outputPath
 
 Write-Host "Publishing regular release..." -ForegroundColor Cyan
 Invoke-Expression $publishWpfReleaseCommand

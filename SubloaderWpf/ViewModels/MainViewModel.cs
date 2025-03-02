@@ -166,6 +166,14 @@ public class MainViewModel : ObservableEntity
             SubtitleList = null;
             CurrentPath = fileChooseDialog.FileName;
         }
+        catch (ArgumentException ex)
+        {
+            // this exception is thrown if no file is picked when dialog closes
+            if (ex.Message.Trim() != "The path is empty. (Parameter 'path')")
+            {
+                Logger.LogException(ex);
+            }
+        }
         catch (Exception ex)
         {
             Logger.LogException(ex);

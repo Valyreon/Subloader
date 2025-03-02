@@ -100,6 +100,9 @@ Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File ""{tmp}/s
 [UninstallRun]
 Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File ""{app}/UninstallerScripts/remove_path.ps1"" ""{app}"" "; Flags: runhidden; Components: cli; RunOnceId: remove_path
 
+[UninstallDelete]
+Type: filesandordirs; Name: "{userappdata}\Subloader"
+
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon

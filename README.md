@@ -34,6 +34,19 @@ I started to work on an Avalonia version of the app for Linux, but I don't have 
 
 ---
 
+### Build
+
+If you want to build the application yourself:
+1. Go to **[Opensubtitles](http://www.opensubtitles.com/)** and create an API Consumer
+2. Copy the API key and change the APIKey property value in [App.xaml.cs](https://github.com/Valyreon/Subloader/blob/master/SubloaderWpf/App.xaml.cs) for the WPF version and [Constants.cs](https://github.com/Valyreon/Subloader/blob/master/SubloaderCLI/Constants.cs) for the CLI version.
+3. Open powershell in the repository folder and run `.\make_release.ps1 1.0.0`. You can replace the version numbers.
+
+The script will change the version tags, build the projects, create installer file, portable file, scoop package and output everything to ReleaseOutput folder.
+
+Alternatively you can build it yourself with dotnet or VS.
+
+---
+
 ### Usage
 
 <p align="center"><img src="./Screenshots/mainView.png?raw=true" title="file sharing" align="center" hspace="5" vspace="5">
