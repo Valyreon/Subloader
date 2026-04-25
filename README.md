@@ -10,7 +10,7 @@
 
 The application now also features a **Subloader CLI** tool that can search through a directory and download subtitles for all found video files. It is included in the installer.
 
-This app was built with **.NET 8**, using **C#** and **WPF**. Search and download is provided by **[Opensubtitles API](http://www.opensubtitles.com/)**.
+This app was built with **.NET 10**, using **C#** and **WPF**. Search and download is provided by **[Opensubtitles API](http://www.opensubtitles.com/)**.
 
 ---
 
@@ -21,13 +21,6 @@ This app was built with **.NET 8**, using **C#** and **WPF**. Search and downloa
 You can install Subloader by using the **[latest installer](https://github.com/Valyreon/Subloader/releases/latest)**.
 
 In the link above you can also find a portable versions of the app, both GUI and the CLI tool.
-
-##### Scoop
-If you use [Scoop package manager](https://scoop.sh/) for Windows, you can also install Subloader by running:
-
-```
-scoop install https://raw.githubusercontent.com/Valyreon/Subloader/master/InstallerFiles/Scoop/subloader.json
-```
 
 #### Linux
 I started to work on an Avalonia version of the app for Linux, but I don't have time to finish this soon.
@@ -41,7 +34,7 @@ If you want to build the application yourself:
 2. Copy the API key and change the APIKey property value in [App.xaml.cs](https://github.com/Valyreon/Subloader/blob/master/SubloaderWpf/App.xaml.cs) for the WPF version and [Constants.cs](https://github.com/Valyreon/Subloader/blob/master/SubloaderCLI/Constants.cs) for the CLI version.
 3. Open powershell in the repository folder and run `.\make_release.ps1 1.0.0`. You can replace the version numbers.
 
-The script will change the version tags, build the projects, create installer file, portable file, scoop package and output everything to ReleaseOutput folder.
+The script will change the version tags, build the projects, create installer file, portable file and output everything to ReleaseOutput folder.
 
 Alternatively you can build it yourself with dotnet or VS.
 

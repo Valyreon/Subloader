@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>subtitles_ebF_icon.ico</ApplicationIcon>
     <StartupObject>SubloaderWpf.App</StartupObject>
@@ -37,7 +37,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fastenshtein" Version="1.0.10" />
+    <PackageReference Include="Fastenshtein" Version="1.0.12" />
   </ItemGroup>
 
   <ItemGroup>

@@ -86,7 +86,7 @@ public class SearchTests
             TotalPages = 1
         };
 
-        const string requestLink = "https://api.opensubtitles.com/api/v1/subtitles?moviehash=abc123&query=Sample+Movie&type=movie";
+        const string requestLink = "https://api.opensubtitles.com/api/v1/subtitles?moviehash=abc123&query=sample+movie&type=movie";
 
         // ARRANGE
         var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
@@ -128,7 +128,7 @@ public class SearchTests
             Status = HttpStatusCode.NotAcceptable
         };
 
-        const string requestLink = "https://api.opensubtitles.com/api/v1/subtitles?moviehash=abc123&query=Sample+Movie&type=movie";
+        const string requestLink = "https://api.opensubtitles.com/api/v1/subtitles?moviehash=abc123&query=sample+movie&type=movie";
 
         // ARRANGE
         var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);

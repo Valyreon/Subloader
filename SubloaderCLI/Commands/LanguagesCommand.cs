@@ -5,18 +5,21 @@ using SubloaderCLI.Interfaces;
 namespace SubloaderCLI.Commands;
 public class LanguagesCommand : ICommand
 {
+    public bool SupportsLogin => false;
+
     public Command BuildCommand()
     {
-        var searchOption = new Option<string>(
-            aliases: ["--search", "-s"],
-            description: "Token to be used for searching the languages. Language names will be in English. For example \"Norwegian\". Search will be case insensitive.");
+        var searchOption = new Option<string>("--search", "-s")
+        {
+            Description = "Token to be used for searching the languages. Language names will be in English. For example \"Norwegian\". Search will be case insensitive."
+        };
 
         var languages = new Command("languages", "Get language codes for all available languages on OpenSubtitles.")
         {
             searchOption
         };
 
-        languages.SetHandler(GetLanguagesAsync, searchOption);
+        languages.SetAction(pr => GetLanguagesAsync(pr.GetValue(searchOption)));
 
         return languages;
     }
@@ -29,7 +32,7 @@ public class LanguagesCommand : ICommand
 
         if(!string.IsNullOrWhiteSpace(search))
         {
-            languages = languages.Where(l => l.Name.Contains(search, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            languages = [.. languages.Where(l => l.Name.Contains(search, StringComparison.InvariantCultureIgnoreCase))];
         }
 
         if (!languages.Any())

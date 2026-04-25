@@ -4,35 +4,36 @@ using SubloaderCLI.Interfaces;
 namespace SubloaderCLI.Commands;
 public class FileCommand : ICommand
 {
+    public bool SupportsLogin => true;
+
     public Command BuildCommand()
     {
-        var pathOption = new Option<FileInfo>(
-        aliases: ["--path", "-p"],
-        description: "The file to download subtitle for.");
+        var pathOption = new Option<FileInfo>("--path", "-p")
+        {
+            Description = "The file to download subtitle for."
+        };
 
-        var languageOption = new Option<string>(
-        aliases: ["--lang", "-l"],
-        () => "en",
-        description: "Specify desired language of the subtitle.");
-
-        var usernameOption = new Option<string>(
-            aliases: ["--user", "--username", "-u"],
-            description: "If specified, you will be prompted to enter your password. " +
-            "Command will login and use your token for the entire operation after which it will log you out.");
+        var languageOption = new Option<string>("--lang", "-l")
+        {
+            DefaultValueFactory = r => "en",
+            Description = "Specify desired language of the subtitle."
+        };
 
         var fileDownload = new Command("file", "Download subtitle for single file based on hash.")
         {
             pathOption,
             languageOption,
-            usernameOption
         };
 
-        fileDownload.SetHandler(DownloadSubtitlesForFile, pathOption, languageOption, usernameOption);
+        fileDownload.SetAction(pr =>
+            DownloadSubtitlesForFile(
+                pr.GetValue(pathOption),
+                pr.GetValue(languageOption)));
 
         return fileDownload;
     }
 
-    private static async Task DownloadSubtitlesForFile(FileInfo path, string language, string username)
+    private static async Task DownloadSubtitlesForFile(FileInfo path, string language)
     {
         if (!path.Exists)
         {
@@ -40,7 +41,7 @@ public class FileCommand : ICommand
             return;
         }
 
-        var session = string.IsNullOrWhiteSpace(username) ? new() : await Helper.Login(username);
+        var session = GlobalOptions.Session;
 
         await Helper.DownloadSubtitlesForFile(path, language, session: session);
 

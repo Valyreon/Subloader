@@ -57,10 +57,7 @@ public static class Helper
 
                 File.WriteAllBytes(destination, await GetRawFileAsync(downloadInfo.Link));
 
-                if (session != null)
-                {
-                    session.RemainingDownloads = downloadInfo.Remaining;
-                }
+                session?.RemainingDownloads = downloadInfo.Remaining;
                 ConsoleHelper.WriteLine(path.Name, "Subtitle downloaded.", ConsoleColor.Green);
                 return true;
             }
@@ -167,10 +164,8 @@ public static class Helper
         return password;
     }
 
-    public static async Task<Session> Login(string username)
+    public static async Task<Session> Login(string username, string password)
     {
-        var password = GetPassword();
-
         if (string.IsNullOrWhiteSpace(password))
         {
             ConsoleHelper.WriteExceptionMessage("Password is empty.");

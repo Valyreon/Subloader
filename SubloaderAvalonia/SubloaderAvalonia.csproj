@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <NeutralLanguage>en-US</NeutralLanguage>
@@ -25,14 +25,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.4" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.4" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.4" />
+    <PackageReference Include="Avalonia" Version="12.0.1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.1" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.8" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.4" />
-    <PackageReference Include="Avalonia.Themes.Simple" Version="11.0.4" />
-    <PackageReference Include="Fastenshtein" Version="1.0.0.8" />
-    <PackageReference Include="MessageBox.Avalonia" Version="3.1.4" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.14" />
+    <PackageReference Include="Avalonia.Themes.Simple" Version="12.0.1" />
+    <PackageReference Include="Fastenshtein" Version="1.0.12" />
+    <PackageReference Include="MessageBox.Avalonia" Version="12.0.0" />
   </ItemGroup>
 
   <ItemGroup>
