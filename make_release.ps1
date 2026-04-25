@@ -12,7 +12,7 @@ $versionWithoutDots = $Version -replace "\.", ""
 
 $outputPath = "./ReleaseOutput"
 $innoFolder = "./ReleaseOutput/Inno"
-# $scoopOutputPath = "./ReleaseOutput/Scoop"
+$scoopOutputPath = "./ReleaseOutput/Scoop"
 $portableOutputPath = "./ReleaseOutput/Portable"
 $ErrorActionPreference = "Stop"
 
@@ -35,7 +35,7 @@ Set-Content -Path $cliVersionFilePath -Value $cliVersionFileContent
 
 $publishWpfReleaseCommand = "dotnet publish SubloaderWpf -c 'Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $outputPath
 $publishWpfPortableCommand = "dotnet publish SubloaderWpf -c 'Portable Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $portableOutputPath
-# $publishWpfScoopCommand = "dotnet publish SubloaderWpf -c 'Scoop Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $scoopOutputPath
+$publishWpfScoopCommand = "dotnet publish SubloaderWpf -c 'Scoop Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $scoopOutputPath
 $publishCliCommand = "dotnet publish SubloaderCLI -c 'Release' -p:PublishSingleFile=true --no-self-contained -p:DebugType=none -r win-x64 -o " + $outputPath
 
 Write-Host "Publishing regular release..." -ForegroundColor Cyan
@@ -44,43 +44,43 @@ Invoke-Expression $publishWpfReleaseCommand
 Write-Host "Publishing portable release..." -ForegroundColor Cyan
 Invoke-Expression $publishWpfPortableCommand
 
-# Write-Host "Publishing scoop release..." -ForegroundColor Cyan
-# Invoke-Expression $publishWpfScoopCommand
+Write-Host "Publishing scoop release..." -ForegroundColor Cyan
+Invoke-Expression $publishWpfScoopCommand
 
 Write-Host "Publishing CLI release..." -ForegroundColor Cyan
 Invoke-Expression $publishCliCommand
 
 # Scoop archive and hash create
-# Write-Host "Creating scoop archive and hash..." -ForegroundColor Cyan
+Write-Host "Creating scoop archive and hash..." -ForegroundColor Cyan
 
-# Rename-Item -Path ($scoopOutputPath + "/SubloaderWpf.exe") -NewName "subload.exe"
+Rename-Item -Path ($scoopOutputPath + "/SubloaderWpf.exe") -NewName "subload.exe"
 Rename-Item -Path ($outputPath + "/SubloaderCLI.exe") -NewName "subloader-cli.exe"
 
-# $file1 = "InstallerFiles/Scoop/add_to_openwith_menu.ps1"
-# $file2 = "InstallerFiles/Scoop/clean_registry.reg"
-# $file3 = $scoopOutputPath + "/subload.exe"
-# $file4 = $outputPath + "/subloader-cli.exe"
+$file1 = "InstallerFiles/Scoop/add_to_openwith_menu.ps1"
+$file2 = "InstallerFiles/Scoop/clean_registry.reg"
+$file3 = $scoopOutputPath + "/subload.exe"
+$file4 = $outputPath + "/subloader-cli.exe"
 
-# $outputZip = $outputPath + "/scoop.zip"
+$outputZip = $outputPath + "/scoop.zip"
 
-# Write-Host "Creating archive..." -ForegroundColor Cyan
-# Compress-Archive -Path $file1, $file2, $file3, $file4 -DestinationPath $outputZip -Force
+Write-Host "Creating archive..." -ForegroundColor Cyan
+Compress-Archive -Path $file1, $file2, $file3, $file4 -DestinationPath $outputZip -Force
 
-# Write-Host "Calculating hash..." -ForegroundColor Cyan
-# $hash = Get-FileHash -Algorithm SHA256 -Path $outputZip
+Write-Host "Calculating hash..." -ForegroundColor Cyan
+$hash = Get-FileHash -Algorithm SHA256 -Path $outputZip
 
-# Set-Content -Path ($outputZip + ".sha256") -Value $hash.Hash.ToLowerInvariant() -NoNewline
-# Remove-Item -Path $scoopOutputPath -Recurse -Force
+Set-Content -Path ($outputZip + ".sha256") -Value $hash.Hash.ToLowerInvariant() -NoNewline
+Remove-Item -Path $scoopOutputPath -Recurse -Force
 
-# $scoopManifestFile = "InstallerFiles/Scoop/subloader.json"
-# $scoopManifest = Get-Content -Path $scoopManifestFile
-# $hashLineRegexPattern = "`"hash`"\s*:\s*`"[a-z0-9]{64}`""
-# $versionLineRegexPattern = "`"version`"\s*:\s*`"\d\.\d\.\d`""
-# $linkVersionRegexPattern = "download/v\d\.\d\.\d/scoop.zip"
-# $scoopManifest = $scoopManifest -replace $hashLineRegexPattern, ("`"hash`": `"" + $hash.Hash.ToLowerInvariant() + "`"")
-# $scoopManifest = $scoopManifest -replace $versionLineRegexPattern, ("`"version`": `"" + $Version + "`"")
-# $scoopManifest = $scoopManifest -replace $linkVersionRegexPattern, ("download/v" + $Version + "/scoop.zip")
-# Set-Content -Path $scoopManifestFile -Value $scoopManifest
+$scoopManifestFile = "InstallerFiles/Scoop/subloader.json"
+$scoopManifest = Get-Content -Path $scoopManifestFile
+$hashLineRegexPattern = "`"hash`"\s*:\s*`"[a-z0-9]{64}`""
+$versionLineRegexPattern = "`"version`"\s*:\s*`"\d\.\d\.\d`""
+$linkVersionRegexPattern = "download/v\d\.\d\.\d/scoop.zip"
+$scoopManifest = $scoopManifest -replace $hashLineRegexPattern, ("`"hash`": `"" + $hash.Hash.ToLowerInvariant() + "`"")
+$scoopManifest = $scoopManifest -replace $versionLineRegexPattern, ("`"version`": `"" + $Version + "`"")
+$scoopManifest = $scoopManifest -replace $linkVersionRegexPattern, ("download/v" + $Version + "/scoop.zip")
+Set-Content -Path $scoopManifestFile -Value $scoopManifest
 
 # Create Inno setup
 Write-Host "Creating installer..." -ForegroundColor Cyan

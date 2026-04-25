@@ -9,7 +9,7 @@
             "hash": "c273d2ea9161b055b245a26b5409e5cecf00879fc3d65f2a0c233017d9886d11"
         }
     },
-    "post_install": "add_to_openwith_menu.ps1",
+    "post_install": ".\\add_to_openwith_menu.ps1",
     "bin": ["subloader-cli.exe"],
     "shortcuts": [["subload.exe", "Subloader"]],
     "post_uninstall": "reg.exe import clean_registry.reg",
