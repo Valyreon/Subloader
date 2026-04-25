@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OpenSubtitlesSharp\OpenSubtitlesSharp.csproj" />
+    <ProjectReference Include="..\Subloader.Common\Subloader.Common.csproj" />
   </ItemGroup>
 
 </Project>

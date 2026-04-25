@@ -24,16 +24,19 @@ public partial class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
     #region REGEXs
 
     [GeneratedRegex(@"[^\d\w\ ]")]
-    private static partial Regex CleanRegex();
+    public static partial Regex CleanRegex();
+
+    [GeneratedRegex(@"(?:(?:\d+p|[248]K))\s*(.*)")]
+    public static partial Regex InfoCleanRegex();
 
     [GeneratedRegex(@"\s+")]
-    private static partial Regex MultipleSpacesCleanRegex();
+    public static partial Regex MultipleSpacesCleanRegex();
 
-    [GeneratedRegex(@"[sS](\d{1,2})[\s\.]?[eE](\d{1,2})")]
-    private static partial Regex SeasonEpisodeRegex();
+    [GeneratedRegex(@"[sS](\d{1,3})[\s\.]?[eE](\d{1,3})")]
+    public static partial Regex SeasonEpisodeRegex();
 
-    [GeneratedRegex(@"\(\s*([12][90]\d{2})\s*\)")]
-    private static partial Regex YearRegex();
+    [GeneratedRegex(@"[\(\.]\s*([12][90]\d{2})\s*[\)\.]")]
+    public static partial Regex YearRegex();
 
     #endregion REGEXs
 
@@ -245,36 +248,41 @@ public partial class OpenSubtitlesClient : IOpenSubtitlesClient, IDisposable
         var seasonEpisodeInfo = SeasonEpisodeRegex().Match(fileNameWithoutExt);
         if (seasonEpisodeInfo.Success)
         {
-            var season = int.Parse(seasonEpisodeInfo.Groups[1].Value);
-            var episode = int.Parse(seasonEpisodeInfo.Groups[2].Value);
+            //var season = int.Parse(seasonEpisodeInfo.Groups[1].Value);
+            //var episode = int.Parse(seasonEpisodeInfo.Groups[2].Value);
 
-            parameters.SeasonNumber = season == 0 ? null : season;
-            parameters.EpisodeNumber = episode == 0 ? null : episode;
+            //parameters.SeasonNumber = season == 0 ? null : season;
+            //parameters.EpisodeNumber = episode == 0 ? null : episode;
             parameters.Type = FileTypeFilter.Episode;
 
-            fileNameWithoutExt = SeasonEpisodeRegex().Replace(fileNameWithoutExt, string.Empty);
+            //fileNameWithoutExt = SeasonEpisodeRegex().Replace(fileNameWithoutExt, string.Empty);
         }
 
         // tv shows usually dont have year in the episode name so we will ignore year
         // when episode info is found
         if (!seasonEpisodeInfo.Success)
         {
-            // try to extract year info from file name
-            var yearInfo = YearRegex().Match(fileNameWithoutExt);
-            if (yearInfo.Success)
-            {
-                var year = int.Parse(yearInfo.Groups[1].Value);
+            //    // try to extract year info from file name
+            //    var yearInfo = YearRegex().Match(fileNameWithoutExt);
+            //    if (yearInfo.Success)
+            //    {
+            //        var year = int.Parse(yearInfo.Groups[1].Value);
 
-                if (year > 1900 && year <= DateTime.Now.Year)
-                {
-                    parameters.Year = year;
+            //        if (year > 1900 && year <= DateTime.Now.Year)
+            //        {
+            //            parameters.Year = year;
 
-                    fileNameWithoutExt = YearRegex().Replace(fileNameWithoutExt, string.Empty);
-                }
-            }
+            //            fileNameWithoutExt = YearRegex().Replace(fileNameWithoutExt, string.Empty);
+            //        }
+            //    }
+        }
+        else
+        {
+            // from testing it seems that including year of the show gives bad results
+            fileNameWithoutExt = YearRegex().Replace(fileNameWithoutExt, " ");
         }
 
-        parameters.Query = MultipleSpacesCleanRegex().Replace(CleanRegex().Replace(fileNameWithoutExt, " "), " ").Trim();
+        parameters.Query = MultipleSpacesCleanRegex().Replace(CleanRegex().Replace(InfoCleanRegex().Replace(fileNameWithoutExt, ""), " "), " ").Trim();
         return parameters;
     }
 }

@@ -7,19 +7,19 @@ namespace SubloaderAvalonia.Interfaces;
 
 public interface IOpenSubtitlesService
 {
-    Task<DownloadInfo> DownloadSubtitleAsync(SubtitleEntry subtitle, string videoPath, string savePath = null);
+    public Task<DownloadInfo> DownloadSubtitleAsync(SubtitleEntry subtitle, string videoPath, string savePath = null);
 
-    Task<IEnumerable<string>> GetFormatsAsync();
+    public Task<IEnumerable<string>> GetFormatsAsync();
 
-    Task<IEnumerable<SubtitleLanguage>> GetLanguagesAsync();
+    public Task<IEnumerable<SubtitleLanguage>> GetLanguagesAsync();
 
-    Task<(IEnumerable<SubtitleEntry> Items, int CurrentPage, int TotalPages)> GetSubtitlesForFileAsync(string filePath, int currentPage = 1);
+    public Task<(IEnumerable<SubtitleEntry> Items, int CurrentPage, int TotalPages)> GetSubtitlesForFileAsync(string filePath, int currentPage = 1);
 
-    Task<User> LoginAsync(string username, string password);
+    public Task<User> LoginAsync(string username, string password);
 
-    Task<bool> LogoutAsync();
+    public Task<bool> LogoutAsync();
 
-    Task<(IEnumerable<SubtitleEntry> Items, int CurrentPage, int TotalPages)> SearchSubtitlesAsync(
+    public Task<(IEnumerable<SubtitleEntry> Items, int CurrentPage, int TotalPages)> SearchSubtitlesAsync(
         string token,
         int? episodeNumber = null,
         int? seasonNumber = null,

@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Fastenshtein;
 using OpenSubtitlesSharp;
+using Subloader.Common;
 using SubloaderWpf.Extensions;
 using SubloaderWpf.Interfaces;
 using SubloaderWpf.Models;
@@ -51,7 +51,7 @@ public class OpenSubtitlesService(Lazy<ApplicationSettings> settings) : IOpenSub
         return await newClient.GetLanguagesAsync();
     }
 
-    public async Task<(IEnumerable<SubtitleEntry> Items, int CurrentPage, int TotalPages)> GetSubtitlesForFileAsync(string filePath, int currentPage = 1)
+    public async Task<(IReadOnlyList<SubtitleEntry> Items, int CurrentPage, int TotalPages)> GetSubtitlesForFileAsync(string filePath, int currentPage = 1)
     {
         using var newClient = GetClient(_settings.Value.ForceDefaultApiUrl);
 
@@ -65,9 +65,11 @@ public class OpenSubtitlesService(Lazy<ApplicationSettings> settings) : IOpenSub
 
         // order by levenshtein distance
         var wantedLanguages = StaticResources.AllLanguages.Where(l => _settings.Value.WantedLanguages.Contains(l.Code));
-        var laven = new Levenshtein(Path.GetFileNameWithoutExtension(filePath));
-        var items = result.Items.Where(i => i.Information.Files != null && i.Information.Files.Count != 0).Select(i => new SubtitleEntry(i, laven.DistanceFrom(i.Information.Release), wantedLanguages))
-            .OrderBy(i => i.LevenshteinDistance);
+        var laven = new SubloaderLevenshtein(Path.GetFileNameWithoutExtension(filePath));
+        var items = result.Items.Where(i => i.Information.Files != null && i.Information.Files.Count != 0)
+            .Select(i => new SubtitleEntry(i, laven.DistanceFrom(i.Information.Release), wantedLanguages))
+            .OrderBy(i => i.LevenshteinDistance)
+            .ToList();
 
         return (items, result.Page, result.TotalPages);
     }

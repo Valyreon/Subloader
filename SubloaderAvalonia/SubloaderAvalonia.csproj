@@ -36,10 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OpenSubtitlesSharp\OpenSubtitlesSharp.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Resources\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -56,5 +52,9 @@
 
   <ItemGroup>
     <Folder Include="CustomComponents\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Subloader.Common\Subloader.Common.csproj" />
   </ItemGroup>
 </Project>
