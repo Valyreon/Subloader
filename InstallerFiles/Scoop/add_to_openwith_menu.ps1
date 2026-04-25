@@ -23,7 +23,7 @@ foreach ($ext in $extensions) {
     WriteRegistry -Path $registryPath -Name "FriendlyAppName" -Value "Subloader"
 
     $registryPath += "\command"
-    WriteRegistry -Path $registryPath -Name "(Default)" -Value ("`"" + $dir + "\subload.exe" + "`" `"%1`"")
+    WriteRegistry -Path $registryPath -Name "(Default)" -Value ("`"" + $PSScriptRoot + "\subload.exe" + "`" `"%1`"")
 
     $openWithRegPath = "HKCU:\Software\Classes\" + $ext + "\OpenWithProgIds"
     WriteRegistry -Path $openWithRegPath -Name ("Subloader" + $ext) -Value ""
@@ -31,10 +31,10 @@ foreach ($ext in $extensions) {
 
     $registryPath = "HKCU:\Software\Classes\SystemFileAssociations\" + $ext + "\shell\Subloader"
     WriteRegistry -Path $registryPath -Name "(Default)" -Value "Find subtitles"
-    WriteRegistry -Path $registryPath -Name "Icon" -Value ($dir + "\subload.exe")
+    WriteRegistry -Path $registryPath -Name "Icon" -Value ($PSScriptRoot + "\subload.exe")
 
     $registryPath += "\command"
-    WriteRegistry -Path $registryPath -Name "(Default)" -Value ("`"" + $dir + "\subload.exe" + "`" `"%1`"")
+    WriteRegistry -Path $registryPath -Name "(Default)" -Value ("`"" + $PSScriptRoot + "\subload.exe" + "`" `"%1`"")
 
     Write-Host ("Added association and context menu entries for " + $ext + " files.") -ForegroundColor Cyan
 }

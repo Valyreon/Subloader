@@ -9,10 +9,10 @@
             "hash": "62587b5aefa650c8a40e035a58503c5bd7a876a60e8673db0fe28cc0d2d6f20e"
         }
     },
-    "post_install": ".\\add_to_openwith_menu.ps1",
+    "post_install": "powershell -NoProfile -Command \"& '$dir\\add_to_openwith_menu.ps1'\"",
     "bin": ["subloader-cli.exe"],
     "shortcuts": [["subload.exe", "Subloader"]],
-    "post_uninstall": "reg.exe import clean_registry.reg",
+    "pre_uninstall": "powershell -NoProfile -Command \"reg.exe import '$dir\\clean_registry.reg'\"",
     "checkver": "github",
     "autoupdate": {
         "architecture": {
