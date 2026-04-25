@@ -59,6 +59,12 @@ if (parseResult.Errors.Count == 0)
         if (string.IsNullOrWhiteSpace(password))
         {
             password = Helper.GetPassword();
+
+            if(string.IsNullOrWhiteSpace(password))
+            {
+                ConsoleHelper.WriteLine("Password is invalid.", ConsoleColor.Red);
+                return 1;
+            }
         }
 
         try

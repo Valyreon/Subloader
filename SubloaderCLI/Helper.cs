@@ -166,12 +166,6 @@ public static class Helper
 
     public static async Task<Session> Login(string username, string password)
     {
-        if (string.IsNullOrWhiteSpace(password))
-        {
-            ConsoleHelper.WriteExceptionMessage("Password is empty.");
-            return null;
-        }
-
         using var client = new OpenSubtitlesClient(Constants.APIKey, null, false, Constants.UserAgent);
         var loginInfo = await client.LoginAsync(username, password);
 
