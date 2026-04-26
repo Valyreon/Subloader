@@ -2,5 +2,5 @@ namespace OpenSubtitlesSharp.Interfaces;
 
 internal interface IDictionaryValueConverter<T>
 {
-    string Convert(T value);
+    public string Convert(T value);
 }

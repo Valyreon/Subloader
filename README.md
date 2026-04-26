@@ -10,7 +10,7 @@
 
 The application now also features a **Subloader CLI** tool that can search through a directory and download subtitles for all found video files. It is included in the installer.
 
-This app was built with **.NET 8**, using **C#** and **WPF**. Search and download is provided by **[Opensubtitles API](http://www.opensubtitles.com/)**.
+This app was built with **.NET 10**, using **C#** and **WPF**. Search and download is provided by **[Opensubtitles API](http://www.opensubtitles.com/)**.
 
 ---
 
@@ -26,7 +26,7 @@ In the link above you can also find a portable versions of the app, both GUI and
 If you use [Scoop package manager](https://scoop.sh/) for Windows, you can also install Subloader by running:
 
 ```
-scoop install https://raw.githubusercontent.com/Valyreon/Subloader/master/InstallerFiles/Scoop/subloader.json
+scoop install https://raw.githubusercontent.com/Valyreon/Subloader/master/subloader.json
 ```
 
 #### Linux

@@ -15,6 +15,7 @@ function WriteRegistry {
 }
 
 $extensions = @(".mp4", ".mkv", ".avi")
+Write-Host ""
 
 foreach ($ext in $extensions) {
     $registryPath = "HKCU:\Software\Classes\Subloader" + $ext + "\shell\open"

@@ -1,6 +1,6 @@
 using System.Reflection;
-using Fastenshtein;
 using OpenSubtitlesSharp;
+using Subloader.Common;
 using SubloaderCLI.Interfaces;
 
 namespace SubloaderCLI;
@@ -38,9 +38,9 @@ public static class Helper
                 return true;
             }
 
-            var leven = new Levenshtein(Path.GetFileNameWithoutExtension(path.Name));
+            var leven = new SubloaderLevenshtein(Path.GetFileNameWithoutExtension(path.Name));
             var levenResults = results.Items.Select(ResultItem => (ResultItem, leven.DistanceFrom(ResultItem.Information.Release)))
-                .OrderBy(i => i.ResultItem.Information.IsHashMatch == true ? 0 : 1)
+                .OrderBy(i => i.ResultItem.Information.IsHashMatch == true ? -1 : 1)
                 .ThenBy(i => i.Item2)
                 .Select(i => i.ResultItem);
             foreach (var item in levenResults)
@@ -57,10 +57,7 @@ public static class Helper
 
                 File.WriteAllBytes(destination, await GetRawFileAsync(downloadInfo.Link));
 
-                if (session != null)
-                {
-                    session.RemainingDownloads = downloadInfo.Remaining;
-                }
+                session?.RemainingDownloads = downloadInfo.Remaining;
                 ConsoleHelper.WriteLine(path.Name, "Subtitle downloaded.", ConsoleColor.Green);
                 return true;
             }
@@ -167,16 +164,8 @@ public static class Helper
         return password;
     }
 
-    public static async Task<Session> Login(string username)
+    public static async Task<Session> Login(string username, string password)
     {
-        var password = GetPassword();
-
-        if (string.IsNullOrWhiteSpace(password))
-        {
-            ConsoleHelper.WriteExceptionMessage("Password is empty.");
-            return null;
-        }
-
         using var client = new OpenSubtitlesClient(Constants.APIKey, null, false, Constants.UserAgent);
         var loginInfo = await client.LoginAsync(username, password);
 

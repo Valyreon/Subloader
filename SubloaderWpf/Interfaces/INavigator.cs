@@ -2,7 +2,7 @@ namespace SubloaderWpf.Interfaces;
 
 public interface INavigator
 {
-    void GoToControl(object control);
+    public void GoToControl(object control);
 
-    void GoToPreviousControl();
+    public void GoToPreviousControl();
 }

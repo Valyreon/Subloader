@@ -6,35 +6,37 @@ public class DirectoryCommand : ICommand
 {
     private static readonly IReadOnlyList<string> subtitleExtensions = ["srt", "sub", "mpl", "webvtt", "dfxp", "txt"];
 
+    public bool SupportsLogin => true;
+
     public Command BuildCommand()
     {
-        var pathOption = new Option<DirectoryInfo>(
-            aliases: ["--path", "-p"],
-            () => new DirectoryInfo("."),
-            description: "The folder to scan for video files and download subtitles.");
+        var pathOption = new Option<DirectoryInfo>("--path", "-p")
+        {
+            Description = "The folder to scan for video files and download subtitles.",
+            DefaultValueFactory = r => new DirectoryInfo(".")
+        };
 
-        var languageOption = new Option<string>(
-            aliases: ["--lang", "-l"],
-            () => "en",
-            description: "Specify desired language of the subtitles.");
+        var languageOption = new Option<string>("--lang", "-l")
+        {
+            Description = "Specify desired language of the subtitles.",
+            DefaultValueFactory = r => "en"
+        };
 
-        var recursiveOption = new Option<bool>(
-            aliases: ["--recursive", "-r"],
-            description: "If true, subfolders will also be scanned for matching files.");
+        var recursiveOption = new Option<bool>("--recursive", "-r")
+        {
+            Description = "If true, subfolders will also be scanned for matching files."
+        };
 
-        var overwriteOption = new Option<bool>(
-            aliases: ["--overwrite", "-o"],
-            description: "Specify whether you want to override already present subtitle files.");
+        var overwriteOption = new Option<bool>("--overwrite", "-o")
+        {
+            Description = "Specify whether you want to override already present subtitle files."
+        };
 
-        var extensionOption = new Option<string>(
-            aliases: ["--ext", "-e"],
-            () => "avi|mkv|mp4",
-            description: "Specify for which video file extensions to scan for. Separate extensions with '|'.");
-
-        var usernameOption = new Option<string>(
-            aliases: ["--user", "--username", "-u"],
-            description: "If specified, you will be prompted to enter your password. " +
-            "Command will login and use your token for the entire operation after which it will log you out.");
+        var extensionOption = new Option<string>("--ext", "-e")
+        {
+            Description = "Specify for which video file extensions to scan for. Separate extensions with '|'.",
+            DefaultValueFactory = r => "avi|mkv|mp4"
+        };
 
         var dirDownload = new Command("dir", "Download subtitles for video files in a directory.")
         {
@@ -43,14 +45,20 @@ public class DirectoryCommand : ICommand
             recursiveOption,
             overwriteOption,
             extensionOption,
-            usernameOption
         };
 
-        dirDownload.SetHandler(DownloadSubtitlesForDirectory, pathOption, recursiveOption, overwriteOption, extensionOption, languageOption, usernameOption);
+        dirDownload.SetAction(pr =>
+            DownloadSubtitlesForDirectory(
+                pr.GetValue(pathOption),
+                pr.GetValue(recursiveOption),
+                pr.GetValue(overwriteOption),
+                pr.GetValue(extensionOption),
+                pr.GetValue(languageOption)));
+
         return dirDownload;
     }
 
-    private static async Task DownloadSubtitlesForDirectory(DirectoryInfo path, bool recursive, bool overwrite, string exts, string language, string username)
+    private static async Task DownloadSubtitlesForDirectory(DirectoryInfo path, bool recursive, bool overwrite, string exts, string language)
     {
         if (!path.Exists)
         {
@@ -58,7 +66,7 @@ public class DirectoryCommand : ICommand
             return;
         }
 
-        var session = string.IsNullOrWhiteSpace(username) ? new() : await Helper.Login(username);
+        var session = GlobalOptions.Session;
 
         var extensions = exts.Split('|').Select(e => "." + e).ToList();
 

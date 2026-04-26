@@ -45,7 +45,7 @@ public class FileSystemServiceTests
 
     [Fact]
 
-    public async void OpenRead_WhenDoesntExist_Error()
+    public async Task OpenRead_WhenDoesntExist_Error()
     {
         var task = Task.Run(() => _fileSystemService.OpenRead(Guid.NewGuid().ToString() + ".txt"));
         await task.ShouldThrowAsync<FileNotFoundException>();

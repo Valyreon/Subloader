@@ -4,4 +4,5 @@ namespace SubloaderCLI.Interfaces;
 public interface ICommand
 {
     public Command BuildCommand();
+    public bool SupportsLogin { get; }
 }

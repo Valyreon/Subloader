@@ -6,5 +6,5 @@ namespace OpenSubtitlesSharp.Interfaces;
 
 internal interface IMovieHasherService
 {
-    string ComputeMovieHash(string filename);
+    public string ComputeMovieHash(string filename);
 }

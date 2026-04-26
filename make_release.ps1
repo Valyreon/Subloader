@@ -72,7 +72,7 @@ $hash = Get-FileHash -Algorithm SHA256 -Path $outputZip
 Set-Content -Path ($outputZip + ".sha256") -Value $hash.Hash.ToLowerInvariant() -NoNewline
 Remove-Item -Path $scoopOutputPath -Recurse -Force
 
-$scoopManifestFile = "InstallerFiles/Scoop/subloader.json"
+$scoopManifestFile = "subloader.json"
 $scoopManifest = Get-Content -Path $scoopManifestFile
 $hashLineRegexPattern = "`"hash`"\s*:\s*`"[a-z0-9]{64}`""
 $versionLineRegexPattern = "`"version`"\s*:\s*`"\d\.\d\.\d`""

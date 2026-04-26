@@ -6,6 +6,6 @@ namespace OpenSubtitlesSharp.Interfaces;
 
 internal interface IFileSystemService
 {
-    bool Exists(string path);
-    FileStream OpenRead(string path);
+    public bool Exists(string path);
+    public FileStream OpenRead(string path);
 }
