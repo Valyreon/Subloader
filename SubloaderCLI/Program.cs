@@ -10,13 +10,13 @@ var forceDefaultApiUrlOption = new Option<bool>("--force_default_api_url", "-fdu
     Description = "If flag is true, app will use the default api url for searching even if user is VIP. This is for VIP users that have a specific issue."
 };
 
-var usernameOption = new Option<string>("--user", "--username", "-u")
+var usernameOption = new Option<string>("--username", "-u")
 {
     Description = "Username for login. If specified, password will need to be input as well. " +
             "Command will login and use your token for the entire operation after which it will log you out."
 };
 
-var passwordOption = new Option<string>("--password", "-pass")
+var passwordOption = new Option<string>("--password", "-pswd")
 {
     Description = "Password to use for login with the provided username. If not specified, you will be prompted on run."
 };

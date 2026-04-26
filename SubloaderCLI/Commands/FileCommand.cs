@@ -10,7 +10,8 @@ public class FileCommand : ICommand
     {
         var pathOption = new Option<FileInfo>("--path", "-p")
         {
-            Description = "The file to download subtitle for."
+            Description = "The file to download subtitle for.",
+            Required = true
         };
 
         var languageOption = new Option<string>("--lang", "-l")
