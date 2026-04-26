@@ -6,7 +6,7 @@
     "architecture": {
         "64bit": {
             "url": "https://github.com/Valyreon/Subloader/releases/download/v1.7.0/scoop.zip",
-            "hash": "95a66eed747f35205b7542e3674c281629fb4f5a101cc1bac726522dc0146f36"
+            "hash": "a0ad188706b219d26992557d861c9ae7ed8b5c6499b6d12aa6f0c4b425e854f4"
         }
     },
     "post_install": "powershell -NoProfile -Command \"& '$dir\\add_to_openwith_menu.ps1'\"",
