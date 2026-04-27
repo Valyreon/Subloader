@@ -3,7 +3,7 @@ param (
 )
 
 $versionRegex = "^\d\.\d\.\d$"
-if(-not $Version -or (-not ($Version -match $versionRegex))) {
+if (-not $Version -or (-not ($Version -match $versionRegex))) {
     Write-Host "Please input the version argument in the correct format: a.b.c" -ForegroundColor Red
     Exit 0
 }
@@ -56,8 +56,8 @@ Write-Host "Creating scoop archive and hash..." -ForegroundColor Cyan
 Rename-Item -Path ($scoopOutputPath + "/SubloaderWpf.exe") -NewName "subload.exe"
 Rename-Item -Path ($outputPath + "/SubloaderCLI.exe") -NewName "subloader-cli.exe"
 
-$file1 = "InstallerFiles/Scoop/add_to_openwith_menu.ps1"
-$file2 = "InstallerFiles/Scoop/clean_registry.reg"
+$file1 = "InstallerFiles/Scoop/create_registry.ps1"
+$file2 = "InstallerFiles/Scoop/clean_registry.ps1"
 $file3 = $scoopOutputPath + "/subload.exe"
 $file4 = $outputPath + "/subloader-cli.exe"
 
